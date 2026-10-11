@@ -119,7 +119,12 @@ window.EcoBiteComplaints = (function() {
     }
 
     // Load User Complaints List (For Donor, NGO, Delivery Dashboards)
-    async function loadUserComplaints(containerId = 'userComplaintsListContainer') {
+    async function loadUserComplaints(containerId) {
+        if (!containerId) {
+            if (document.getElementById('donorComplaintsContainer')) containerId = 'donorComplaintsContainer';
+            else if (document.getElementById('ngoComplaintsContainer')) containerId = 'ngoComplaintsContainer';
+            else containerId = 'userComplaintsListContainer';
+        }
         const container = document.getElementById(containerId);
         if (!container) return;
 

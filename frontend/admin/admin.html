@@ -467,6 +467,13 @@
             color: #ef4444;
         }
 
+        .role-available { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+        .role-claimed { background: rgba(245, 158, 11, 0.1); color: #d97706; }
+        .role-pickup-assigned { background: rgba(234, 88, 12, 0.1); color: #ea580c; }
+        .role-picked-up { background: rgba(147, 51, 234, 0.1); color: #9333ea; }
+        .role-delivered { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+        .role-expired { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+
         /* Toggle Switch */
         .switch {
             position: relative;
@@ -1249,7 +1256,7 @@
                             <td>#${d.id}</td>
                             <td>${d.food_name || d.food_type}</td>
                             <td>${d.donor_name || 'Donor #' + d.donor_id}</td>
-                            <td><span class="role-badge role-${d.status.toLowerCase()}">${d.status}</span></td>
+                            <td><span class="role-badge role-${d.status.toLowerCase().replace(/\s+/g, '-')}">${d.status}</span></td>
                             <td>${date}</td>
                         </tr>
                     `;

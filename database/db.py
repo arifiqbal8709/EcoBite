@@ -182,6 +182,29 @@ def init_db():
         )
     ''')
 
+    # Create Delivery OTPs Table for Secure Hashed OTP Verification
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS delivery_otps (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            donation_id INTEGER UNIQUE NOT NULL,
+            pickup_otp_hash TEXT NOT NULL,
+            pickup_otp_enc TEXT NOT NULL,
+            delivery_otp_hash TEXT NOT NULL,
+            delivery_otp_enc TEXT NOT NULL,
+            pickup_attempts INTEGER DEFAULT 0,
+            delivery_attempts INTEGER DEFAULT 0,
+            max_attempts INTEGER DEFAULT 5,
+            pickup_verified INTEGER DEFAULT 0,
+            delivery_verified INTEGER DEFAULT 0,
+            pickup_verified_at TEXT,
+            delivery_verified_at TEXT,
+            expires_at TEXT NOT NULL,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+            updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (donation_id) REFERENCES donations (id) ON DELETE CASCADE
+        )
+    ''')
+
     # Create Complaints Table
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS complaints (
@@ -243,6 +266,19 @@ def init_db():
         )
     ''')
 
+    # Create Contact Submissions Table
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS contact_submissions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            email TEXT NOT NULL,
+            phone TEXT,
+            subject TEXT NOT NULL,
+            message TEXT NOT NULL,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
+
     # Simple migration for existing tables (if columns missing)
     for column_sql in [
         "ALTER TABLE users ADD COLUMN address TEXT",
@@ -270,11 +306,35 @@ def init_db():
             cursor.execute(column_sql)
         except sqlite3.OperationalError:
             pass
-    
+
+    # Ensure Standard Demo Accounts Exist with Working Passwords
+    default_users = [
+        ('ARSH (Verified Donor)', 'donor@sharemeal.com', 'password123', '7070280186', 'donor', 'Chas, Bokaro, Jharkhand', 'Active Surplus Food Donor'),
+        ('Jyoti NGO Center', 'ngo@sharemeal.com', 'password123', '7070280186', 'ngo', 'GGSESTC, Kandra, Chas', 'Community Hunger Relief Mission'),
+        ('Delivery Partner Rider', 'del@sharemeal.com', 'password123', '9876543212', 'delivery', 'Ranchi Hub Station', 'EcoBite Volunteer Driver'),
+        ('System Administrator', 'admin@sharemeal.com', 'password123', '9876543210', 'admin', 'HQ Office, Ranchi', 'Central Platform Admin'),
+    ]
+
+    for name, email, password, phone, role, address, bio in default_users:
+        existing = cursor.execute('SELECT id FROM users WHERE email = ?', (email,)).fetchone()
+        if not existing:
+            cursor.execute('''
+                INSERT INTO users (name, email, password, phone, role, address, bio)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            ''', (name, email, password, phone, role, address, bio))
+        else:
+            # Keep credentials aligned so user can easily log in
+            cursor.execute('''
+                UPDATE users SET password = ?, role = ? WHERE email = ?
+            ''', (password, role, email))
+
     conn.commit()
     conn.close()
     print("Database initialized successfully.")
 
-# Initialize when imported
-if not os.path.exists(DB_PATH):
+# Initialize when executed directly or when file doesn't exist
+if __name__ == '__main__':
     init_db()
+elif not os.path.exists(DB_PATH):
+    init_db()
+

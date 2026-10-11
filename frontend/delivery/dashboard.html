@@ -917,14 +917,17 @@
                 <button class="sidebar-btn task-nav-btn active" onclick="switchTab('available')">
                     <i class="fa-solid fa-list-check"></i>
                     <span>Available Tasks</span>
+                    <span id="badgeAvailable" class="nav-count-badge" style="margin-left:auto;">0</span>
                 </button>
                 <button class="sidebar-btn task-nav-btn" onclick="switchTab('active')">
                     <i class="fa-solid fa-truck-fast"></i>
                     <span>Active Delivery</span>
+                    <span id="badgeActive" class="nav-count-badge" style="margin-left:auto;">0</span>
                 </button>
                 <button class="sidebar-btn task-nav-btn" onclick="switchTab('history')">
                     <i class="fa-solid fa-clock-rotate-left"></i>
                     <span>Completed Deliveries</span>
+                    <span id="badgeHistory" class="nav-count-badge" style="margin-left:auto;">0</span>
                 </button>
                 <button class="sidebar-btn task-nav-btn" onclick="switchTab('complaints')">
                     <i class="fa-solid fa-headset"></i>
@@ -957,17 +960,17 @@
 
         <!-- 3. Delivery Statistics Cards -->
         <div class="stats-grid">
-            <div class="stat-card-item">
+            <div class="stat-card-item" onclick="switchTab('history')" style="cursor: pointer;" title="Click to view completed history">
                 <i class="fa-solid fa-circle-check stat-card-icon"></i>
                 <div id="statToday" class="stat-val-num">0</div>
                 <div class="stat-label-text">Deliveries Completed Today</div>
             </div>
-            <div class="stat-card-item">
+            <div class="stat-card-item" onclick="switchTab('active')" style="cursor: pointer;" title="Click to view active route">
                 <i class="fa-solid fa-spinner stat-card-icon" style="color: var(--forest-green);"></i>
                 <div id="statActiveCount" class="stat-val-num">0</div>
                 <div class="stat-label-text">Active Assigned Job</div>
             </div>
-            <div class="stat-card-item">
+            <div class="stat-card-item" onclick="switchTab('available')" style="cursor: pointer;" title="Click to view available requests">
                 <i class="fa-solid fa-boxes-packing stat-card-icon" style="color: #3B82F6;"></i>
                 <div id="statTotalAvailable" class="stat-val-num">0</div>
                 <div class="stat-label-text">Nearby Available Requests</div>
@@ -1208,15 +1211,22 @@
 
                 const today = new Date().toDateString();
                 const completedToday = jobs.filter(j =>
-                    j.status === 'Delivered' &&
+                    (j.status === 'Delivered' || j.status === 'Completed') &&
                     new Date(j.timestamp || Date.now()).toDateString() === today
                 );
-                const activeJobs = jobs.filter(j => ['Claimed', 'Picked Up'].includes(j.status));
+                const activeJobs = jobs.filter(j => ['Claimed', 'Picked Up', 'Pickup Assigned'].includes(j.status));
 
-                document.getElementById('statToday').innerText = completedToday.length;
-                document.getElementById('statActiveCount').innerText = activeJobs.length;
-                document.getElementById('badgeActive').innerText = activeJobs.length;
-                document.getElementById('badgeHistory').innerText = jobs.filter(j => j.status === 'Delivered').length;
+                const elToday = document.getElementById('statToday');
+                if (elToday) elToday.innerText = completedToday.length;
+
+                const elActive = document.getElementById('statActiveCount');
+                if (elActive) elActive.innerText = activeJobs.length;
+
+                const elBActive = document.getElementById('badgeActive');
+                if (elBActive) elBActive.innerText = activeJobs.length;
+
+                const elBHist = document.getElementById('badgeHistory');
+                if (elBHist) elBHist.innerText = jobs.filter(j => j.status === 'Delivered' || j.status === 'Completed').length;
 
             } catch (e) {
                 console.error('Error fetching stats:', e);
@@ -1227,13 +1237,21 @@
         async function fetchNewRequests() {
             const container = document.getElementById('availableTasksGrid');
             try {
-                const res = await fetch(`${API_BASE_URL}/donations`);
-                const all = await res.json();
+                let requests = [];
+                const res = await fetch(`${API_BASE_URL}/delivery/available`);
+                if (res.ok) {
+                    requests = await res.json();
+                } else {
+                    const fallbackRes = await fetch(`${API_BASE_URL}/donations`);
+                    const all = await fallbackRes.json();
+                    requests = all.filter(d => d.status === 'Claimed' && (!d.delivery_by || d.delivery_by === 0) && (d.delivery_req === 1 || d.delivery_req === true));
+                }
 
-                const requests = all.filter(d => d.status === 'Claimed' && !d.delivery_by && d.delivery_req !== 0);
+                const elBAvail = document.getElementById('badgeAvailable');
+                if (elBAvail) elBAvail.innerText = requests.length;
 
-                document.getElementById('badgeAvailable').innerText = requests.length;
-                document.getElementById('statTotalAvailable').innerText = requests.length;
+                const elSAvail = document.getElementById('statTotalAvailable');
+                if (elSAvail) elSAvail.innerText = requests.length;
 
                 if (requests.length === 0) {
                     container.innerHTML = `
@@ -1273,12 +1291,12 @@
                                     <div class="step-block pickup">
                                         <h4>PICKUP (DONOR)</h4>
                                         <p>${req.pickup_address || 'Donor Pickup Location'}</p>
-                                        <small><i class="fa-solid fa-user"></i> ${req.donor_name || 'Registered Donor'}</small>
+                                        <small><i class="fa-solid fa-user"></i> Donor: ${req.donor_name || 'Registered Donor'}${req.donor_phone ? ' • ' + req.donor_phone : ''}</small>
                                     </div>
                                     <div class="step-block drop">
                                         <h4>DELIVERY (DESTINATION)</h4>
-                                        <p>Verified Partner NGO Center</p>
-                                        <small><i class="fa-solid fa-building-ngo"></i> Full coordinates unlocked upon acceptance</small>
+                                        <p>${req.drop_address || 'Registered NGO Center'}</p>
+                                        <small><i class="fa-solid fa-building-ngo"></i> Recipient NGO: ${req.ngo_name || 'Verified Partner NGO'}</small>
                                     </div>
                                 </div>
                             </div>
@@ -1307,11 +1325,14 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ donation_id: id, delivery_id: user.id })
                 });
-                if (res.ok) {
+                const data = await res.json().catch(() => ({}));
+                if (res.ok && data.success) {
+                    alert('🎉 Delivery task accepted! Proceed to pickup location.');
                     switchTab('active');
                     fetchStats();
+                    fetchNewRequests();
                 } else {
-                    alert('Job no longer available or already claimed.');
+                    alert(data.message || 'Job no longer available or already claimed.');
                     fetchNewRequests();
                 }
             } catch (e) {
@@ -1321,12 +1342,49 @@
         }
 
         // --- FETCH ACTIVE JOB & INTERACTIVE MAP ---
-        async function fetchActiveJob() {
+        async function fetchActiveJob(autoSwitch = false) {
             const container = document.getElementById('activeJobDetails');
             try {
                 const res = await fetch(`${API_BASE_URL}/donations/delivery/${user.id}`);
                 const jobs = await res.json();
                 const active = jobs.filter(j => ['Claimed', 'Picked Up', 'Pickup Assigned'].includes(j.status));
+
+                // If active delivery exists and autoSwitch requested (on load), navigate to active view
+                if (active.length > 0 && autoSwitch) {
+                    const currentView = document.querySelector('.view-section.active');
+                    if (currentView && currentView.id === 'view-available') {
+                        switchTab('active');
+                        return;
+                    }
+                }
+
+                // Show active banner on available view if active delivery exists
+                const existingBanner = document.getElementById('activeTaskAlertBanner');
+                if (active.length > 0) {
+                    if (!existingBanner) {
+                        const alertDiv = document.createElement('div');
+                        alertDiv.id = 'activeTaskAlertBanner';
+                        alertDiv.style.cssText = 'background: #EFF6FF; border: 1.5px solid #3B82F6; border-radius: 12px; padding: 14px 18px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;';
+                        alertDiv.innerHTML = `
+                            <div style="display:flex; align-items:center; gap:12px;">
+                                <i class="fa-solid fa-truck-fast" style="color:#2563EB; font-size:1.4rem;"></i>
+                                <div>
+                                    <strong style="color:#1E40AF; font-size:0.95rem;">Active Order #${active[0].id}: ${active[0].food_name || active[0].food_type || 'Food Donation'}</strong>
+                                    <div style="color:#3B82F6; font-size:0.83rem;">Status: ${active[0].status} • Ready for OTP verification</div>
+                                </div>
+                            </div>
+                            <button onclick="switchTab('active')" style="background:#2563EB; color:white; border:none; padding:8px 18px; border-radius:8px; font-weight:700; cursor:pointer;">
+                                <i class="fa-solid fa-location-dot"></i> View Active Route
+                            </button>
+                        `;
+                        const availGrid = document.getElementById('availableTasksGrid');
+                        if (availGrid && availGrid.parentNode) {
+                            availGrid.parentNode.insertBefore(alertDiv, availGrid);
+                        }
+                    }
+                } else if (existingBanner) {
+                    existingBanner.remove();
+                }
 
                 if (active.length === 0) {
                     container.innerHTML = `
@@ -1372,13 +1430,13 @@
                             <div class="step-details-wrapper">
                                 <div class="step-block pickup">
                                     <h4>PICKUP LOCATION (DONOR)</h4>
-                                    <p>${job.pickup_address}</p>
+                                    <p>${job.pickup_address || 'Donor Pickup Address'}</p>
                                     <small><i class="fa-solid fa-user"></i> Donor: ${job.donor_name || 'Verified Donor'} ${job.donor_phone ? '• ' + job.donor_phone : ''}</small>
                                 </div>
                                 <div class="step-block drop">
                                     <h4>DELIVERY DESTINATION (NGO)</h4>
-                                    <p>Verified Partner NGO Center</p>
-                                    <small><i class="fa-solid fa-building"></i> Destination Unlocked & Verified</small>
+                                    <p>${job.drop_address || 'Registered NGO Center'}</p>
+                                    <small><i class="fa-solid fa-building"></i> Recipient NGO: ${job.ngo_name || 'Verified Partner NGO'} ${job.ngo_phone ? '• ' + job.ngo_phone : ''}</small>
                                 </div>
                             </div>
                         </div>
@@ -1395,18 +1453,18 @@
                         </div>
 
                         <div class="card-actions-row">
-                            <a href="tel:${job.donor_phone || '1234567890'}" class="btn-action-secondary">
-                                <i class="fa-solid fa-phone"></i> Call Contact
+                            <a href="tel:${isPickedUp ? (job.ngo_phone || job.donor_phone || '1234567890') : (job.donor_phone || '1234567890')}" class="btn-action-secondary">
+                                <i class="fa-solid fa-phone"></i> ${isPickedUp ? 'Call Recipient NGO' : 'Call Donor'}
                             </a>
-                            <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(job.pickup_address)}" target="_blank" class="btn-action-secondary">
-                                <i class="fa-solid fa-location-arrow"></i> Open in Google Maps
+                            <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(isPickedUp ? (job.drop_address || job.pickup_address) : job.pickup_address)}" target="_blank" class="btn-action-secondary">
+                                <i class="fa-solid fa-location-arrow"></i> ${isPickedUp ? 'Navigate to NGO Drop-off' : 'Navigate to Donor Pickup'}
                             </a>
                             ${!isPickedUp ?
                                 `<button class="btn-action-primary" onclick="verifyPickup(${job.id})">
-                                    <i class="fa-solid fa-box-check"></i> CONFIRM PICKUP
+                                    <i class="fa-solid fa-key"></i> VERIFY PICKUP (ENTER OTP)
                                  </button>` :
-                                `<button class="btn-action-primary" style="background:#3B82F6;" onclick="completeDelivery(${job.id})">
-                                    <i class="fa-solid fa-key"></i> COMPLETE DELIVERY (OTP)
+                                `<button class="btn-action-primary" style="background:#2563EB;" onclick="completeDelivery(${job.id})">
+                                    <i class="fa-solid fa-circle-check"></i> VERIFY DELIVERY (ENTER OTP)
                                  </button>`
                             }
                         </div>
@@ -1415,14 +1473,14 @@
 
                 // Initialize Leaflet Map
                 setTimeout(() => {
-                    initMap(job.pickup_address);
+                    initMap(job.pickup_address, job.drop_address, job.ngo_name);
                 }, 150);
 
             } catch (e) { console.error(e); }
         }
 
         // --- LEAFLET MAP INITIALIZATION & ROUTING ---
-        function initMap(pickupAddress) {
+        function initMap(pickupAddress, dropAddress, ngoName) {
             const mapElement = document.getElementById('map');
             if (!mapElement) return;
 
@@ -1450,7 +1508,7 @@
 
             L.marker([pLat, pLng], { icon: pickupIcon })
                 .addTo(mapInstance)
-                .bindPopup(`<b>Pickup Location (Donor)</b><br>${pickupAddress}`)
+                .bindPopup(`<b>Pickup Location (Donor)</b><br>${pickupAddress || 'Donor Address'}`)
                 .openPopup();
 
             // NGO Delivery Marker (Forest Green)
@@ -1459,7 +1517,7 @@
 
             L.marker([dLat, dLng], { icon: dropIcon })
                 .addTo(mapInstance)
-                .bindPopup(`<b>Delivery Destination (NGO)</b><br>EcoBite Partner Center`);
+                .bindPopup(`<b>Delivery Destination (NGO)</b><br>${ngoName ? '<strong>' + ngoName + '</strong><br>' : ''}${dropAddress || 'EcoBite Partner Center'}`);
 
             // Route Polyline
             const latlngs = [[pLat, pLng], [dLat, dLng]];
@@ -1511,31 +1569,51 @@
             return R * c;
         }
 
-        // --- VERIFY & PICKUP ---
-        function verifyPickup(id) {
-            if (confirm('Have you collected and verified the food package from the donor?')) {
-                updateStatus(id, 'Picked Up');
+        // --- VERIFY & PICKUP WITH OTP ---
+        async function verifyPickup(id) {
+            const otp = prompt('🔑 Pickup Verification Required:\n\nPlease request and enter the 4-digit Pickup OTP displayed on the Donor\'s dashboard:');
+            if (otp && otp.trim()) {
+                try {
+                    const res = await fetch(`${API_BASE_URL}/verify-pickup`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ donation_id: id, otp: otp.trim(), delivery_id: user.id })
+                    });
+                    const result = await res.json();
+                    if (res.ok && result.success) {
+                        alert('✅ Pickup Confirmed!\n' + result.message);
+                        fetchActiveJob();
+                        fetchStats();
+                    } else {
+                        alert('❌ Pickup Verification Failed:\n' + (result.message || 'Invalid Pickup OTP.'));
+                    }
+                } catch (e) {
+                    console.error(e);
+                    alert('Server error during Pickup OTP verification.');
+                }
             }
         }
 
         // --- COMPLETE DELIVERY WITH OTP ---
         async function completeDelivery(id) {
-            const otp = prompt('🔑 Verification Required:\nEnter the 4-digit OTP provided by the recipient NGO:');
-            if (otp) {
+            const otp = prompt('🔑 Delivery Verification Required:\n\nPlease request and enter the 4-digit Delivery OTP displayed on the recipient NGO\'s dashboard:');
+            if (otp && otp.trim()) {
                 try {
                     const res = await fetch(`${API_BASE_URL}/verify-delivery`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ donation_id: id, otp: otp })
+                        body: JSON.stringify({ donation_id: id, otp: otp.trim(), delivery_id: user.id })
                     });
                     const result = await res.json();
 
-                    if (res.ok) {
+                    if (res.ok && result.success) {
                         alert('✅ Delivery Verified Successfully!\n' + result.message);
                         fetchActiveJob();
                         fetchStats();
+                        fetchHistory();
+                        switchTab('history');
                     } else {
-                        alert('❌ Verification Failed: ' + result.message);
+                        alert('❌ Delivery Verification Failed:\n' + (result.message || 'Invalid Delivery OTP.'));
                     }
                 } catch (e) {
                     console.error(e);
@@ -1555,6 +1633,10 @@
                 if (res.ok) {
                     fetchActiveJob();
                     fetchStats();
+                    fetchHistory();
+                    if (status === 'Delivered') {
+                        switchTab('history');
+                    }
                 } else {
                     alert('Status update failed.');
                 }
@@ -1570,7 +1652,7 @@
                 const res = await fetch(`${API_BASE_URL}/donations/delivery/${user.id}`);
                 const jobs = await res.json();
 
-                const history = jobs.filter(j => j.status === 'Delivered');
+                const history = jobs.filter(j => j.status === 'Delivered' || j.status === 'Completed');
                 document.getElementById('badgeHistory').innerText = history.length;
 
                 if (history.length === 0) {
@@ -1584,19 +1666,20 @@
 
                 container.innerHTML = '';
                 history.forEach(job => {
+                    const deliveredDate = job.timestamp || new Date().toISOString();
                     container.innerHTML += `
-                        <div class="delivery-task-card" style="opacity: 0.9;">
+                        <div class="delivery-task-card" style="opacity: 0.95; border-left: 5px solid #10B981;">
                             <div class="card-top-header">
                                 <span class="status-pill pill-completed"><i class="fa-solid fa-circle-check"></i> Delivered</span>
-                                <span class="time-tag"><i class="fa-solid fa-calendar"></i> ${new Date(job.timestamp || Date.now()).toLocaleDateString()}</span>
+                                <span class="time-tag"><i class="fa-solid fa-calendar"></i> ${new Date(deliveredDate).toLocaleDateString()}</span>
                             </div>
                             <div class="food-summary-banner">
-                                <div class="food-icon-badge" style="color:#10B981;">
-                                    <i class="fa-solid fa-box"></i>
+                                <div class="food-icon-badge" style="color:#10B981; background:#ECFDF5; border-color:#A7F3D0;">
+                                    <i class="fa-solid fa-circle-check"></i>
                                 </div>
                                 <div class="food-info-text">
                                     <h3>${job.food_name || job.food_type || 'Food Donation'}</h3>
-                                    <p>${job.quantity} Servings • OTP Verified Safe Handover</p>
+                                    <p>${job.quantity || 'Standard'} Servings • Secure 4-Digit OTP Verified</p>
                                 </div>
                             </div>
                             <div class="route-step-container">
@@ -1608,13 +1691,19 @@
                                 <div class="step-details-wrapper">
                                     <div class="step-block pickup">
                                         <h4>PICKUP LOCATION</h4>
-                                        <p>${job.pickup_address}</p>
+                                        <p>${job.pickup_address || 'Donor Location'}</p>
+                                        <small><i class="fa-solid fa-user"></i> Donor: ${job.donor_name || 'Verified Donor'} ${job.donor_phone ? '• ' + job.donor_phone : ''}</small>
                                     </div>
                                     <div class="step-block drop">
                                         <h4>DELIVERY DESTINATION</h4>
-                                        <p>EcoBite Verified Partner NGO</p>
+                                        <p>${job.drop_address || 'Registered NGO Center'}</p>
+                                        <small><i class="fa-solid fa-building"></i> Delivered to: ${job.ngo_name || 'Partner NGO'} ${job.ngo_phone ? '• ' + job.ngo_phone : ''}</small>
                                     </div>
                                 </div>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center; padding-top:12px; border-top:1px solid var(--border-light); margin-top:8px;">
+                                <span style="font-size:0.85rem; color:#10B981; font-weight:700;"><i class="fa-solid fa-shield-halved"></i> Delivery Verified & Handed Over</span>
+                                <span style="font-size:0.8rem; color:var(--text-muted);">Task #${job.task_id || job.id}</span>
                             </div>
                         </div>
                     `;
@@ -1643,10 +1732,20 @@
         // Initial Load
         fetchNewRequests();
         fetchStats();
-        fetchActiveJob();
+        fetchActiveJob(true);
+        fetchHistory();
 
-        // Periodic Refresh
-        setInterval(fetchNewRequests, 10000);
+        // Periodic Refresh (reliable background polling)
+        setInterval(() => {
+            fetchNewRequests();
+            fetchStats();
+            const activeView = document.querySelector('.view-section.active');
+            if (activeView && activeView.id === 'view-active') {
+                fetchActiveJob(false);
+            } else if (activeView && activeView.id === 'view-history') {
+                fetchHistory();
+            }
+        }, 8000);
     </script>
 </body>
 

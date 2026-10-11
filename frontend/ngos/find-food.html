@@ -30,7 +30,7 @@
             --text-muted: #475569;
             --border-light: #EAE5DE;
             --navbar-height: 100px;
-            --sidebar-width: 250px;
+            --sidebar-width: 265px;
         }
 
         body {
@@ -205,46 +205,57 @@
             flex-grow: 1;
         }
 
+        .donor-sidebar .sidebar-btn,
         .sidebar-btn {
             background: transparent;
             border: none;
             color: #E8F0E8;
-            padding: 12px 16px;
+            padding: 10px 14px !important;
             border-radius: 12px;
-            font-size: 0.93rem;
+            font-size: 0.92rem;
             font-weight: 600;
             cursor: pointer;
             text-align: left;
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
             width: 100%;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             outline: none;
+            box-sizing: border-box;
+            white-space: normal;
+            line-height: 1.25;
+            min-height: 46px;
         }
 
+        .donor-sidebar .sidebar-btn i,
         .sidebar-btn i {
             font-size: 1.15rem;
             width: 22px;
             text-align: center;
             color: #C2D6C6;
             transition: color 0.2s ease;
+            flex-shrink: 0;
         }
 
+        .donor-sidebar .sidebar-btn:hover,
         .sidebar-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: #FFFFFF;
+            background: rgba(255, 255, 255, 0.12) !important;
+            color: #FFFFFF !important;
         }
 
+        .donor-sidebar .sidebar-btn:hover i,
         .sidebar-btn:hover i {
             color: var(--primary-orange);
         }
 
+        .donor-sidebar .sidebar-btn:focus-visible,
         .sidebar-btn:focus-visible {
             outline: 2px solid var(--primary-orange);
             outline-offset: 2px;
         }
 
+        .donor-sidebar .sidebar-btn.active,
         .sidebar-btn.active {
             background: var(--primary-orange) !important;
             color: #FFFFFF !important;
@@ -252,8 +263,33 @@
             font-weight: 700;
         }
 
+        .donor-sidebar .sidebar-btn.active i,
         .sidebar-btn.active i {
             color: #FFFFFF !important;
+        }
+
+        .sidebar-text-col {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            line-height: 1.2;
+            min-width: 0;
+            overflow: hidden;
+            text-align: left;
+        }
+
+        .sidebar-main-title {
+            font-size: 0.92rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .sidebar-sub-badge {
+            font-size: 0.72rem;
+            font-weight: 500;
+            opacity: 0.85;
+            margin-top: 2px;
+            white-space: nowrap;
         }
 
         .sidebar-footer {
@@ -377,7 +413,7 @@
             margin: 0;
         }
 
-        .tab-btn {
+        .tab-btn:not(.sidebar-btn) {
             background: #FFFFFF;
             border: 1px solid #EAE5DE;
             color: #475569;
@@ -390,12 +426,12 @@
             white-space: nowrap;
         }
 
-        .tab-btn:hover {
+        .tab-btn:not(.sidebar-btn):hover {
             border-color: #E85D04;
             color: #E85D04;
         }
 
-        .tab-btn.active {
+        .tab-btn:not(.sidebar-btn).active {
             background: #E85D04;
             color: #FFFFFF;
             border-color: #E85D04;
@@ -877,9 +913,19 @@
             </div>
 
             <nav class="sidebar-menu">
-                <button class="sidebar-btn tab-btn active" onclick="switchTab('feed')">
-                    <i class="fa-solid fa-hand-holding-heart"></i>
-                    <span>Find Food</span>
+                <button class="sidebar-btn tab-btn active" id="sidebarHumanBtn" onclick="switchTab('feed'); switchFoodChannel('human');" title="Fresh Food for Human Consumption">
+                    <i class="fa-solid fa-utensils"></i>
+                    <span class="sidebar-text-col">
+                        <span class="sidebar-main-title">Fresh Food</span>
+                        <span class="sidebar-sub-badge">For Humans</span>
+                    </span>
+                </button>
+                <button class="sidebar-btn tab-btn" id="sidebarExpiredBtn" onclick="switchTab('feed'); switchFoodChannel('expired');" title="Expired Food Shelf (Animals & Compost)">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    <span class="sidebar-text-col">
+                        <span class="sidebar-main-title">Expired Shelf</span>
+                        <span class="sidebar-sub-badge">Animals & Compost</span>
+                    </span>
                 </button>
                 <button class="sidebar-btn tab-btn" onclick="switchTab('my-claims')">
                     <i class="fa-solid fa-box-archive"></i>
@@ -924,20 +970,92 @@
                 </div>
             </div>
 
-        <!-- 1. Feed Tab -->
+        <!-- 1. Feed Tab with Explicit Separation -->
         <div id="feed" class="tab-content active">
-            <div class="feed-filters">
-                <button class="filter-btn active" data-filter="all">All</button>
-                <button class="filter-btn" data-filter="human">For Humans 🥘</button>
-                <button class="filter-btn" data-filter="animal">For Animals 🐾</button>
-                <button class="filter-btn" data-filter="compost">Compost 🌿</button>
-                <button class="filter-btn" data-filter="landfill">Landfill ⚠️</button>
+            <!-- Channel Switcher (Human Food vs Expired Shelf) -->
+            <div class="channel-toggle-bar" style="display: flex; gap: 12px; margin-bottom: 24px; background: #F1F5F9; padding: 6px; border-radius: 14px; width: fit-content; max-width: 100%; box-shadow: inset 0 2px 4px rgba(0,0,0,0.04);">
+                <button id="channelHumanBtn" type="button" onclick="switchFoodChannel('human')" class="channel-btn active" style="padding: 10px 22px; border-radius: 10px; border: none; font-weight: 700; font-size: 0.92rem; cursor: pointer; display: flex; align-items: center; gap: 8px; background: #166534; color: white; transition: all 0.2s;">
+                    <i class="fa-solid fa-utensils"></i> <span>For Human Consumption (Fresh)</span> 
+                    <span id="humanCountBadge" style="background: rgba(255,255,255,0.25); color: white; padding: 2px 8px; border-radius: 50px; font-size: 0.75rem;">0</span>
+                </button>
+                <button id="channelExpiredBtn" type="button" onclick="switchFoodChannel('expired')" class="channel-btn" style="padding: 10px 22px; border-radius: 10px; border: none; font-weight: 700; font-size: 0.92rem; cursor: pointer; display: flex; align-items: center; gap: 8px; background: transparent; color: #64748B; transition: all 0.2s;">
+                    <i class="fa-solid fa-clock-rotate-left"></i> <span>Expired Shelf (Animals & Compost)</span> 
+                    <span id="expiredCountBadge" style="background: #FEE2E2; color: #DC2626; padding: 2px 8px; border-radius: 50px; font-size: 0.75rem;">0</span>
+                </button>
             </div>
 
-            <div id="donationGrid" class="donations-grid">
-                <div class="loading-state">
-                    <i class="fa-solid fa-circle-notch fa-spin"></i>
-                    <p>Scanning for available food donations...</p>
+            <!-- SECTION A: 100% FRESH FOOD FOR HUMAN CONSUMPTION -->
+            <div id="humanFoodSection" style="display: block;">
+                <div style="background: #F0FDF4; border: 1.5px solid #86EFAC; border-radius: 12px; padding: 14px 18px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="background: #16A34A; color: white; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem;">
+                            <i class="fa-solid fa-check"></i>
+                        </span>
+                        <div>
+                            <h3 style="margin: 0; color: #166534; font-size: 1.05rem; font-weight: 800;">Fresh Meals for Human Consumption</h3>
+                            <p style="margin: 2px 0 0 0; color: #15803D; font-size: 0.85rem;">Verified within safe preparation window. 100% human-edible food rescue donations.</p>
+                        </div>
+                    </div>
+                    <div class="feed-filters" style="margin: 0;">
+                        <button class="filter-btn active" data-filter="all">All Fresh Food 🥘</button>
+                        <button class="filter-btn" data-filter="veg">Veg 🥬</button>
+                        <button class="filter-btn" data-filter="non-veg">Non-Veg 🍗</button>
+                    </div>
+                </div>
+
+                <div id="donationGrid" class="donations-grid">
+                    <div class="loading-state">
+                        <i class="fa-solid fa-circle-notch fa-spin"></i>
+                        <p>Scanning for fresh food donations...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION B: EXPIRED & DIVERTED FOOD SHELF (ANIMALS & COMPOST) -->
+            <div id="expiredFoodSection" style="display: none;">
+                <!-- Expired Food Automatic Shelf / Slide -->
+                <div id="expiredFoodShelf" class="expired-shelf-container" style="background: linear-gradient(135deg, #FFF7ED 0%, #FEF2F2 100%); border: 1.5px solid #FDBA74; border-radius: 16px; padding: 20px; box-shadow: 0 4px 15px rgba(234, 88, 12, 0.08); margin-bottom: 28px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span style="background: #DC2626; color: white; border-radius: 20px; padding: 3px 10px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
+                                    <i class="fa-solid fa-ban"></i> Expired for Humans
+                                </span>
+                                <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800; color: #9A3412;">Expired Food Repurposing Slide</h3>
+                            </div>
+                            <p style="margin: 4px 0 0 0; font-size: 0.85rem; color: #C2410C;">
+                                Passed human safe window. Automatically diverted here for animal rescue shelters 🐾 and bio-composting 🌿.
+                            </p>
+                        </div>
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <span id="expiredSlideCount" style="font-size: 0.82rem; font-weight: 700; color: #EA580C; background: #FFEDD5; padding: 4px 10px; border-radius: 50px;">0 Items Expired</span>
+                            <button type="button" onclick="slideExpiredShelf(-1)" class="slide-nav-btn" title="Previous" style="background: white; border: 1px solid #FDBA74; color: #EA580C; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </button>
+                            <button type="button" onclick="slideExpiredShelf(1)" class="slide-nav-btn" title="Next" style="background: white; border: 1px solid #FDBA74; color: #EA580C; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Sliding Carousel Track -->
+                    <div id="expiredSlideTrack" style="display: flex; gap: 16px; overflow-x: auto; scroll-behavior: smooth; scroll-snap-type: x mandatory; padding: 4px 2px 14px 2px; -webkit-overflow-scrolling: touch;">
+                        <!-- Dynamically populated expired donation cards -->
+                    </div>
+                </div>
+
+                <div style="margin-top: 24px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+                        <h4 style="margin: 0; font-size: 1.1rem; color: #1C2520; font-weight: 800;">All Diverted Food Donations (Grid View)</h4>
+                        <div class="feed-filters" style="margin: 0;">
+                            <button class="filter-btn active" id="expFilterAll" onclick="filterExpiredGrid('all')">All Repurposed</button>
+                            <button class="filter-btn" id="expFilterAnimal" onclick="filterExpiredGrid('animal')">Animal Feed 🐾</button>
+                            <button class="filter-btn" id="expFilterCompost" onclick="filterExpiredGrid('compost')">Bio-Compost 🌿</button>
+                        </div>
+                    </div>
+                    <div id="expiredFullGrid" class="donations-grid">
+                        <!-- Full grid of all expired items -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -1223,27 +1341,53 @@
                     <input type="text" id="claimAddress" required>
                 </div>
 
-                <div class="form-group" style="background: #F0FDF4; padding: 16px; border-radius: 12px; border: 1px solid #BBF7D0; margin-top: 20px;">
-                    <label style="display: block; margin-bottom: 8px; color: #166534; font-weight: bold; font-size: 0.95rem;">
-                        <i class="fa-solid fa-truck-fast"></i> Delivery Options
+                <div class="form-group" style="margin-top: 20px;">
+                    <label style="display: block; margin-bottom: 10px; color: var(--forest-green); font-weight: 700; font-size: 0.95rem;">
+                        <i class="fa-solid fa-route"></i> Select Fulfillment Method
                     </label>
 
-                    <div style="display: flex; align-items: flex-start; gap: 10px;">
-                        <input type="checkbox" id="claimDeliveryReq" style="width: 18px; height: 18px; accent-color: var(--primary-color); margin-top: 3px;">
-                        <div>
-                            <label for="claimDeliveryReq" style="margin: 0; color: #1C2520; font-weight: 600;">Request a Delivery Partner</label>
-                            <small style="display: block; color: #64748B; margin-top: 4px;">
-                                Check this box if you need a volunteer driver to pick this up. Uncheck if picking up yourself.
-                            </small>
-                            <div id="feeNote" style="display:none; color: #B45309; margin-top: 6px; font-weight:bold; font-size:0.9rem;">
-                                <i class="fa-solid fa-coins"></i> Delivery Fee: ₹50.00
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                        <!-- Option 1: Self-Pickup -->
+                        <label id="optSelfPickupCard" onclick="selectClaimMethod('self')" style="display: flex; flex-direction: column; padding: 14px; border: 2px solid #16A34A; background: #F0FDF4; border-radius: 12px; cursor: pointer; transition: all 0.2s;">
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                                <input type="radio" name="claimDeliveryMethod" value="self" checked style="accent-color: #16A34A; width: 18px; height: 18px; cursor: pointer;">
+                                <strong style="color: #166534; font-size: 0.92rem;"><i class="fa-solid fa-person-walking"></i> Self-Pickup</strong>
                             </div>
+                            <small style="color: #475569; font-size: 0.8rem; line-height: 1.35;">
+                                NGO collects food directly from donor. No delivery partner requested.
+                            </small>
+                        </label>
+
+                        <!-- Option 2: Delivery Partner -->
+                        <label id="optDeliveryCard" onclick="selectClaimMethod('partner')" style="display: flex; flex-direction: column; padding: 14px; border: 1.5px solid #CBD5E1; background: #FFFFFF; border-radius: 12px; cursor: pointer; transition: all 0.2s;">
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                                <input type="radio" name="claimDeliveryMethod" value="partner" style="accent-color: #E85D04; width: 18px; height: 18px; cursor: pointer;">
+                                <strong style="color: #C2410C; font-size: 0.92rem;"><i class="fa-solid fa-truck-fast"></i> Delivery Partner</strong>
+                            </div>
+                            <small style="color: #475569; font-size: 0.8rem; line-height: 1.35;">
+                                Assigned to volunteer driver. Generates a secure 4-digit OTP.
+                            </small>
+                        </label>
+                    </div>
+
+                    <!-- Hidden input for backwards compatibility -->
+                    <input type="checkbox" id="claimDeliveryReq" style="display: none;">
+
+                    <!-- Delivery Partner Info Box (Shows only when Delivery Partner is selected) -->
+                    <div id="deliveryPartnerNoticeBox" style="display: none; background: #FFF7ED; border: 1.5px solid #FDBA74; border-radius: 10px; padding: 12px 14px; margin-top: 10px;">
+                        <div style="display: flex; align-items: center; gap: 8px; color: #9A3412; font-weight: 700; font-size: 0.88rem; margin-bottom: 4px;">
+                            <i class="fa-solid fa-shield-halved" style="color: #EA580C;"></i> 4-Digit Secure Verification & Order Dispatch
                         </div>
+                        <ul style="margin: 0; padding-left: 18px; color: #C2410C; font-size: 0.82rem; line-height: 1.45;">
+                            <li>Order immediately appears under <strong>Available Deliveries</strong> for all active riders.</li>
+                            <li>A <strong>4-digit Delivery OTP</strong> will be issued to your NGO to verify arrival.</li>
+                            <li>The Donor receives a <strong>4-digit Pickup OTP</strong> to verify driver collection.</li>
+                        </ul>
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary" style="width:100%; margin-top:20px; padding: 12px; font-size: 1.05rem;">
-                    Confirm & Claim Donation (Free)
+                <button type="submit" id="btnClaimSubmit" class="btn btn-primary" style="width:100%; margin-top:20px; padding: 13px; font-size: 1.05rem; background: #16A34A; transition: all 0.2s;">
+                    <i class="fa-solid fa-check"></i> Confirm & Claim (Self-Pickup)
                 </button>
             </form>
         </div>
@@ -1293,7 +1437,7 @@
     </div>
 
     <!-- Script Overrides for NGO Logic -->
-    <script src="/app.js?v=4"></script>
+    <script src="/app.js?v=5"></script>
     <script>
         const API_BASE_URL = '/api';
         let userStr = localStorage.getItem('user');
@@ -1375,6 +1519,53 @@
             closeModal('broadcastModal');
         }
 
+        window.selectClaimMethod = function(method) {
+            const rad = document.querySelector(`input[name="claimDeliveryMethod"][value="${method}"]`);
+            if (rad) rad.checked = true;
+            updateDeliveryOptionUI();
+        };
+
+        window.updateDeliveryOptionUI = function() {
+            const method = document.querySelector('input[name="claimDeliveryMethod"]:checked')?.value || 'self';
+            const chk = document.getElementById('claimDeliveryReq');
+            const noticeBox = document.getElementById('deliveryPartnerNoticeBox');
+            const cardSelf = document.getElementById('optSelfPickupCard');
+            const cardDel = document.getElementById('optDeliveryCard');
+            const submitBtn = document.getElementById('btnClaimSubmit');
+
+            if (method === 'partner') {
+                if (chk) chk.checked = true;
+                if (noticeBox) noticeBox.style.display = 'block';
+                if (cardSelf) {
+                    cardSelf.style.borderColor = '#CBD5E1';
+                    cardSelf.style.background = '#FFFFFF';
+                }
+                if (cardDel) {
+                    cardDel.style.borderColor = '#E85D04';
+                    cardDel.style.background = '#FFF7ED';
+                }
+                if (submitBtn) {
+                    submitBtn.innerHTML = '<i class="fa-solid fa-truck-fast"></i> Confirm & Request Delivery Partner (4-Digit OTP)';
+                    submitBtn.style.background = '#E85D04';
+                }
+            } else {
+                if (chk) chk.checked = false;
+                if (noticeBox) noticeBox.style.display = 'none';
+                if (cardSelf) {
+                    cardSelf.style.borderColor = '#16A34A';
+                    cardSelf.style.background = '#F0FDF4';
+                }
+                if (cardDel) {
+                    cardDel.style.borderColor = '#CBD5E1';
+                    cardDel.style.background = '#FFFFFF';
+                }
+                if (submitBtn) {
+                    submitBtn.innerHTML = '<i class="fa-solid fa-check"></i> Confirm & Claim (Self-Pickup)';
+                    submitBtn.style.background = '#16A34A';
+                }
+            }
+        };
+
         function openClaimModal(donationId, triggerBtn) {
             document.getElementById('claimDonationId').value = donationId;
 
@@ -1383,11 +1574,7 @@
             document.getElementById('claimPhone').value = user.phone || '';
             document.getElementById('claimAddress').value = user.address || '';
 
-            document.getElementById('claimDeliveryReq').checked = false;
-
-            const event = new Event('change');
-            document.getElementById('claimDeliveryReq').dispatchEvent(event);
-
+            selectClaimMethod('self');
             openModal('claimModal', triggerBtn);
         }
 
@@ -1535,38 +1722,17 @@
             }
         };
 
-        document.getElementById('claimDeliveryReq').addEventListener('change', function (e) {
-            const btn = document.querySelector('#claimForm button[type="submit"]');
-            if (e.target.checked) {
-                btn.innerHTML = 'Pay ₹50 to Claim Donation';
-                btn.style.background = '#d97706';
-                document.getElementById('feeNote').innerHTML = '<i class="fa-solid fa-coins"></i> Delivery Fee: ₹50.00 will be applied.';
-                document.getElementById('feeNote').style.display = 'block';
-            } else {
-                btn.innerHTML = 'Confirm & Claim Donation (Free)';
-                btn.style.background = 'var(--primary-color)';
-                document.getElementById('feeNote').style.display = 'none';
-            }
-        });
-
         document.getElementById('claimForm').addEventListener('submit', async function (e) {
             e.preventDefault();
-            const isDelivery = document.getElementById('claimDeliveryReq').checked;
-
-            if (isDelivery) {
-                const paid = confirm("💰 EcoBite Secure Payment Gateway\n\n-------------------------------\nPayable Amount: ₹50.00\nReason: Delivery Partner Fee\n-------------------------------\n\nClick OK to simulate Successful Payment (UPI/Card)\nClick Cancel to Abort");
-                if (!paid) {
-                    alert("Payment Cancelled. Claim not processed.");
-                    return;
-                }
-
-                const btn = e.target.querySelector('button');
-                btn.innerHTML = 'Processing Payment...';
-                btn.disabled = true;
-                await new Promise(r => setTimeout(r, 1000));
-            }
-
+            const method = document.querySelector('input[name="claimDeliveryMethod"]:checked')?.value || 'self';
+            const isDelivery = (method === 'partner');
             const donationId = document.getElementById('claimDonationId').value;
+            const claimAddress = (document.getElementById('claimAddress') ? document.getElementById('claimAddress').value : '').trim();
+
+            const btn = document.getElementById('btnClaimSubmit') || e.target.querySelector('button[type="submit"]');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing Claim...';
+            btn.disabled = true;
 
             try {
                 const response = await fetch(`${API_BASE_URL}/update-status`, {
@@ -1577,28 +1743,32 @@
                         status: 'Claimed',
                         ngo_id: user.id,
                         delivery_req: isDelivery,
-                        payment_status: isDelivery ? 'PAID_MOCK_50' : 'NA'
+                        delivery_address: claimAddress
                     })
                 });
 
                 const result = await response.json();
-                if (response.ok) {
+                if (response.ok && result.success) {
                     if (isDelivery) {
-                        alert('✅ Payment Successful!\nDonation Claimed & Delivery Requested.');
+                        const otpNotice = result.delivery_otp ? `\n\n🔑 Your 4-Digit Delivery OTP: ${result.delivery_otp}\n(Share this 4-digit code with the arriving delivery driver to verify food receipt.)` : '';
+                        alert(`✅ Donation Claimed Successfully!\n\n🚚 Delivery Partner Requested.\nThe delivery order is now live on the Delivery Partner Dashboard.${otpNotice}`);
                     } else {
-                        alert('Donation Claimed Successfully! Please coordinate pickup.');
+                        alert('✅ Donation Claimed Successfully!\n\n🚶‍♂️ Self-Pickup selected.\nPlease coordinate direct collection with the donor.');
                     }
                     closeClaimModal();
                     if (typeof fetchDonations === 'function') fetchDonations('find-food');
+                    if (typeof fetchMyClaims === 'function') fetchMyClaims();
                 } else {
-                    alert('Error: ' + result.message);
+                    alert('Error: ' + (result.message || 'Unable to claim donation.'));
                 }
             } catch (err) {
                 console.error(err);
                 alert('An error occurred while claiming.');
             } finally {
-                const btn = e.target.querySelector('button');
-                if (btn) btn.disabled = false;
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                }
             }
         });
 
@@ -1607,8 +1777,14 @@
             document.querySelectorAll('.sidebar-btn, .tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
 
-            const targetBtns = document.querySelectorAll(`button[onclick="switchTab('${tabId}')"]`);
-            targetBtns.forEach(b => b.classList.add('active'));
+            if (tabId === 'feed') {
+                const isExp = (document.getElementById('expiredFoodSection') && document.getElementById('expiredFoodSection').style.display === 'block');
+                const activeBtn = isExp ? document.getElementById('sidebarExpiredBtn') : document.getElementById('sidebarHumanBtn');
+                if (activeBtn) activeBtn.classList.add('active');
+            } else {
+                const targetBtns = document.querySelectorAll(`button[onclick*="switchTab('${tabId}')"]`);
+                targetBtns.forEach(b => b.classList.add('active'));
+            }
             
             const targetTab = document.getElementById(tabId);
             if (targetTab) targetTab.classList.add('active');
@@ -1695,10 +1871,50 @@
                              <h3>${foodTitle}</h3>
                              <p><strong>Quantity:</strong> ${d.quantity} Servings | <strong>Status:</strong> ${d.status}</p>
                              <p><i class="fa-solid fa-location-dot" style="color:#E85D04;"></i> ${d.pickup_address || d.address || 'Address on file'}</p>
-                             ${d.otp && d.delivery_req ? `<div style="background:#F0FDF4; color:#166534; padding:8px; border-radius:6px; margin-top:8px; font-weight:bold; text-align:center; border: 1px solid #BBF7D0;">Driver OTP: ${d.otp}</div>` : ''}
+                             
+                             ${(['Claimed', 'Pickup Assigned', 'Picked Up'].includes(d.status) && (d.delivery_req == 1 || d.delivery_req === true)) ? `
+                                 <div class="ngo-otp-container" style="background:#EFF6FF; border:1.5px solid #93C5FD; border-radius:10px; padding:12px; margin-top:10px; text-align:center;">
+                                     <div style="font-size:0.8rem; font-weight:700; color:#1E40AF; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">
+                                         <i class="fa-solid fa-shield-halved"></i> Drop-off Delivery Verification OTP
+                                     </div>
+                                     <div style="font-size:1.6rem; font-weight:800; letter-spacing:4px; color:#1D4ED8; font-family:monospace; margin:6px 0;" id="deliveryOtpVal_${d.id}">
+                                         ${d.delivery_otp || '••••••'}
+                                     </div>
+                                     <p style="font-size:0.8rem; color:#1E40AF; margin:0 0 8px 0;">Share this 4-digit code with the delivery partner upon arrival to confirm food receipt.</p>
+                                     <button onclick="regenerateNgoOtp(${d.id})" class="btn-claim" style="background:#1D4ED8; color:white; border:none; border-radius:6px; padding:4px 12px; font-size:0.78rem; cursor:pointer; width:auto; display:inline-flex; align-items:center; gap:6px;">
+                                         <i class="fa-solid fa-arrows-rotate"></i> Regenerate OTP
+                                     </button>
+                                 </div>
+                             ` : ''}
+
+                             ${(d.status === 'Claimed' && (!d.delivery_req || d.delivery_req == 0)) ? `
+                                 <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:8px; padding:10px 12px; margin-top:10px; font-size:0.85rem; color:#475569; display:flex; align-items:center; gap:8px;">
+                                     <i class="fa-solid fa-person-walking" style="color:#2563EB;"></i>
+                                     <span><strong>Self-Pickup:</strong> Please coordinate collection directly with donor.</span>
+                                 </div>
+                             ` : ''}
+
+                             ${d.status === 'Delivered' ? `
+                                 <div style="background:#F0FDF4; border:1px solid #BBF7D0; border-radius:8px; padding:8px 12px; margin-top:10px; font-size:0.85rem; color:#166534; font-weight:600; display:flex; align-items:center; gap:8px;">
+                                     <i class="fa-solid fa-circle-check"></i> Delivery Completed & Verified via OTP
+                                 </div>
+                             ` : ''}
+
                              ${cancelBtn}
                         </div>
                     `;
+
+                    // Asynchronous fallback check for OTP on page reload
+                    if (!d.delivery_otp && ['Claimed', 'Pickup Assigned', 'Picked Up'].includes(d.status) && (d.delivery_req == 1 || d.delivery_req === true)) {
+                        fetch(`${API_BASE_URL}/donations/${d.id}/delivery-otp?user_id=${user.id}`)
+                            .then(r => r.json())
+                            .then(data => {
+                                if (data.success && data.delivery_otp) {
+                                    const el = document.getElementById(`deliveryOtpVal_${d.id}`);
+                                    if (el) el.innerText = data.delivery_otp;
+                                }
+                            }).catch(err => console.warn(err));
+                    }
                 });
 
                 window.myClaims = donations;
@@ -1706,6 +1922,27 @@
             } catch (e) {
                 console.error(e);
                 container.innerHTML = '<div class="empty-state"><i class="fa-solid fa-exclamation-triangle"></i><p>Failed to load collection history.</p></div>';
+            }
+        }
+
+        async function regenerateNgoOtp(donationId) {
+            if (!confirm('Generate a new 4-digit Delivery OTP? The previous OTP will become invalid.')) return;
+            try {
+                const res = await fetch(`${API_BASE_URL}/regenerate-otp`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ donation_id: donationId, otp_type: 'delivery', user_id: user.id })
+                });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    alert('New Delivery OTP: ' + data.delivery_otp);
+                    fetchMyClaims();
+                } else {
+                    alert('Failed to regenerate OTP: ' + (data.message || 'Error'));
+                }
+            } catch(e) {
+                console.error(e);
+                alert('Connection error regenerating OTP.');
             }
         }
 

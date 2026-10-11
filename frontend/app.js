@@ -62,6 +62,26 @@ function setupFilters() {
     });
 }
 
+window.isDonationExpired = function(donation) {
+    if (!donation) return false;
+    if (donation.status === 'Expired') return true;
+    if (!['Available', 'Expired'].includes(donation.status)) return false;
+    if (donation.is_expired) return true;
+    if (donation.expiry_datetime) {
+        const exp = new Date(donation.expiry_datetime);
+        if (!isNaN(exp) && new Date() > exp) return true;
+    }
+    const prep = donation.preparation_time || donation.timestamp;
+    if (prep) {
+        const prepDate = new Date(prep);
+        if (!isNaN(prepDate)) {
+            const diffHrs = (new Date() - prepDate) / (1000 * 60 * 60);
+            if (diffHrs >= 48) return true;
+        }
+    }
+    return false;
+};
+
 function getClass(donation) {
     // 1. Raw/Packaged -> Human (simplify for prototype)
     if (donation.food_type && (donation.food_type.includes('raw') || donation.food_type.includes('pack'))) {
@@ -84,16 +104,297 @@ function getClass(donation) {
 function applyFilter(filter) {
     if (!allDonations.length) return;
 
-    // Always filter for Available first (on Find Food page)
-    let filtered = allDonations.filter(d => d.status === 'Available');
+    // Fresh available food safe for human consumption
+    let freshList = allDonations.filter(d => d.status === 'Available' && !isDonationExpired(d));
 
-    // Category Filter
-    if (filter !== 'all') {
-        filtered = filtered.filter(d => getClass(d) === filter);
+    if (filter === 'veg') {
+        freshList = freshList.filter(d => (d.diet_type || '').toLowerCase() === 'veg');
+    } else if (filter === 'non-veg') {
+        freshList = freshList.filter(d => (d.diet_type || '').toLowerCase() === 'non-veg');
     }
 
-    renderDonations(filtered, donationGrid, false);
+    renderDonations(freshList, donationGrid, false);
 }
+
+window.switchFoodChannel = function(channel) {
+    const humanSec = document.getElementById('humanFoodSection');
+    const expiredSec = document.getElementById('expiredFoodSection');
+    const humanBtn = document.getElementById('channelHumanBtn');
+    const expiredBtn = document.getElementById('channelExpiredBtn');
+    const sideHuman = document.getElementById('sidebarHumanBtn');
+    const sideExpired = document.getElementById('sidebarExpiredBtn');
+
+    if (channel === 'human') {
+        if (humanSec) humanSec.style.display = 'block';
+        if (expiredSec) expiredSec.style.display = 'none';
+
+        if (humanBtn) {
+            humanBtn.classList.add('active');
+            humanBtn.style.background = '#166534';
+            humanBtn.style.color = '#FFFFFF';
+        }
+        if (expiredBtn) {
+            expiredBtn.classList.remove('active');
+            expiredBtn.style.background = 'transparent';
+            expiredBtn.style.color = '#64748B';
+        }
+        if (sideHuman) sideHuman.classList.add('active');
+        if (sideExpired) sideExpired.classList.remove('active');
+    } else {
+        if (humanSec) humanSec.style.display = 'none';
+        if (expiredSec) expiredSec.style.display = 'block';
+
+        if (expiredBtn) {
+            expiredBtn.classList.add('active');
+            expiredBtn.style.background = '#DC2626';
+            expiredBtn.style.color = '#FFFFFF';
+        }
+        if (humanBtn) {
+            humanBtn.classList.remove('active');
+            humanBtn.style.background = 'transparent';
+            humanBtn.style.color = '#64748B';
+        }
+        if (sideExpired) sideExpired.classList.add('active');
+        if (sideHuman) sideHuman.classList.remove('active');
+    }
+};
+
+window.allExpiredDonations = [];
+
+window.renderExpiredShelf = function(expiredList) {
+    const shelf = document.getElementById('expiredFoodShelf');
+    const track = document.getElementById('expiredSlideTrack');
+    const countEl = document.getElementById('expiredSlideCount');
+
+    if (!shelf || !track) return;
+
+    if (!expiredList || expiredList.length === 0) {
+        if (countEl) countEl.innerText = '0 Items Expired';
+        track.innerHTML = `
+            <div style="padding: 24px; color: #15803D; font-weight: 700; background: #F0FDF4; border-radius: 12px; border: 1.5px solid #86EFAC; width: 100%; display: flex; align-items: center; gap: 12px;">
+                <i class="fa-solid fa-circle-check" style="font-size: 1.5rem; color: #16A34A;"></i>
+                <div>
+                    <div>Zero Food Waste Left Unrescued!</div>
+                    <div style="font-size: 0.82rem; color: #15803D; font-weight: 500;">No expired food donations at this moment. All active donations are fresh for human consumption.</div>
+                </div>
+            </div>
+        `;
+        return;
+    }
+
+    if (countEl) {
+        countEl.innerText = `${expiredList.length} ${expiredList.length === 1 ? 'Item' : 'Items'} Expired`;
+    }
+
+    track.innerHTML = '';
+    expiredList.forEach(d => {
+        let imgUrl = d.image_path && d.image_path.trim() !== '' ? 
+            (d.image_path.startsWith('http') || d.image_path.startsWith('/') ? d.image_path : '/' + d.image_path) : 
+            '/hero_food.jpg';
+
+        const title = (d.food_name && d.food_name !== 'undefined') ? d.food_name : (d.food_type || 'Food Item').replace('_', ' ').toUpperCase();
+        const prep = d.preparation_time || d.timestamp;
+        let repurposeCategory = 'Animal Shelters 🐾';
+        let repurposeIcon = 'fa-paw';
+        let repurposeBg = '#FEF3C7';
+        let repurposeColor = '#92400E';
+
+        if (prep) {
+            const diffHrs = (new Date() - new Date(prep)) / (1000 * 60 * 60);
+            if (diffHrs >= 96) {
+                repurposeCategory = 'Bio-Composting 🌿';
+                repurposeIcon = 'fa-leaf';
+                repurposeBg = '#ECFDF5';
+                repurposeColor = '#065F46';
+            }
+        }
+
+        const slideCard = document.createElement('div');
+        slideCard.className = 'expired-slide-card';
+        slideCard.style.cssText = `
+            min-width: 290px;
+            max-width: 290px;
+            background: #FFFFFF;
+            border-radius: 14px;
+            border: 1.5px solid #FDBA74;
+            padding: 14px;
+            box-shadow: 0 4px 14px rgba(234, 88, 12, 0.08);
+            flex-shrink: 0;
+            scroll-snap-align: start;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        `;
+
+        slideCard.innerHTML = `
+            <div>
+                <div style="position: relative; margin-bottom: 10px; border-radius: 10px; overflow: hidden; height: 135px; background: #F1F5F9;">
+                    <img src="${imgUrl}" onerror="this.onerror=null; this.src='/hero_food.jpg';" style="width: 100%; height: 100%; object-fit: cover; filter: saturate(0.85);" alt="${title}">
+                    <span style="position: absolute; top: 8px; right: 8px; background: rgba(220, 38, 38, 0.92); color: white; padding: 3px 8px; border-radius: 6px; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 6px rgba(0,0,0,0.2);">
+                        <i class="fa-solid fa-clock"></i> Expired for Humans
+                    </span>
+                    <span style="position: absolute; bottom: 8px; left: 8px; background: rgba(15, 23, 42, 0.75); color: #F8FAFC; padding: 2px 7px; border-radius: 4px; font-size: 0.72rem;">
+                        #${d.id}
+                    </span>
+                </div>
+
+                <h4 style="margin: 0 0 6px 0; font-size: 1.05rem; font-weight: 800; color: #1C2520; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${title}">
+                    ${title}
+                </h4>
+
+                <div style="font-size: 0.82rem; color: #64748B; margin-bottom: 8px; line-height: 1.4;">
+                    <div><i class="fa-solid fa-weight-hanging" style="color: #EA580C; width: 16px;"></i> <strong>${d.quantity || 'N/A'}</strong> Servings</div>
+                    <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${d.pickup_address || 'Address on file'}">
+                        <i class="fa-solid fa-location-dot" style="color: #EA580C; width: 16px;"></i> ${d.pickup_address || 'Address on file'}
+                    </div>
+                </div>
+
+                <div style="background: ${repurposeBg}; border: 1px solid rgba(0,0,0,0.06); border-radius: 8px; padding: 6px 10px; font-size: 0.78rem; color: ${repurposeColor}; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; font-weight: 600;">
+                    <i class="fa-solid ${repurposeIcon}"></i>
+                    <span>Auto-Diverted: <strong>${repurposeCategory}</strong></span>
+                </div>
+            </div>
+
+            <button onclick="updateStatus(${d.id}, 'Claimed')" class="btn-claim" style="background: linear-gradient(135deg, #EA580C 0%, #C2410C 100%); color: white; border: none; border-radius: 8px; padding: 9px 12px; font-size: 0.82rem; font-weight: 700; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 3px 8px rgba(234, 88, 12, 0.25);">
+                <i class="fa-solid fa-recycle"></i> Rescue for ${repurposeCategory.split(' ')[0]}
+            </button>
+        `;
+
+        track.appendChild(slideCard);
+    });
+};
+
+window.renderExpiredGrid = function(list) {
+    const grid = document.getElementById('expiredFullGrid');
+    if (!grid) return;
+
+    grid.innerHTML = '';
+    if (!list || list.length === 0) {
+        grid.innerHTML = `
+            <div class="empty-state" style="grid-column: 1/-1; text-align: center; padding: 40px; color: #64748B;">
+                <i class="fa-solid fa-recycle" style="font-size: 2.2rem; color: #EA580C; margin-bottom: 10px;"></i>
+                <p>No repurposed food items matching this filter.</p>
+            </div>
+        `;
+        return;
+    }
+
+    list.forEach(d => {
+        let imgUrl = d.image_path && d.image_path.trim() !== '' ? 
+            (d.image_path.startsWith('http') || d.image_path.startsWith('/') ? d.image_path : '/' + d.image_path) : 
+            '/hero_food.jpg';
+
+        const title = (d.food_name && d.food_name !== 'undefined') ? d.food_name : (d.food_type || 'Food Item').replace('_', ' ').toUpperCase();
+        const prep = d.preparation_time || d.timestamp;
+        let repurposeCategory = 'Animal Shelters 🐾';
+        let repurposeIcon = 'fa-paw';
+        let repurposeBg = '#FEF3C7';
+        let repurposeColor = '#92400E';
+
+        if (prep) {
+            const diffHrs = (new Date() - new Date(prep)) / (1000 * 60 * 60);
+            if (diffHrs >= 96) {
+                repurposeCategory = 'Bio-Composting 🌿';
+                repurposeIcon = 'fa-leaf';
+                repurposeBg = '#ECFDF5';
+                repurposeColor = '#065F46';
+            }
+        }
+
+        const card = document.createElement('div');
+        card.className = 'donation-card';
+        card.style.border = '1.5px solid #FDBA74';
+        card.style.background = '#FFFFFF';
+
+        card.innerHTML = `
+            <div style="position: relative; margin-bottom: 12px; border-radius: 8px; overflow: hidden; height: 150px; background: #F1F5F9;">
+                <img src="${imgUrl}" onerror="this.onerror=null; this.src='/hero_food.jpg';" style="width: 100%; height: 100%; object-fit: cover;" alt="${title}">
+                <span style="position: absolute; top: 8px; right: 8px; background: rgba(220, 38, 38, 0.92); color: white; padding: 3px 8px; border-radius: 6px; font-size: 0.72rem; font-weight: 700;">
+                    <i class="fa-solid fa-clock-rotate-left"></i> Expired for Humans
+                </span>
+                <span style="position: absolute; bottom: 8px; left: 8px; background: rgba(15, 23, 42, 0.8); color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.72rem;">
+                    #${d.id}
+                </span>
+            </div>
+
+            <div class="card-header" style="margin-bottom: 8px;">
+                <div class="badges" style="display:flex; gap:6px; flex-wrap:wrap;">
+                    <span class="status-badge" style="background:${repurposeBg}; color:${repurposeColor}; font-weight:700;">
+                        <i class="fa-solid ${repurposeIcon}"></i> For ${repurposeCategory}
+                    </span>
+                    <span class="status-badge" style="background:#FEE2E2; color:#DC2626;">Diverted</span>
+                </div>
+            </div>
+
+            <h3 style="margin-bottom: 6px;">${title}</h3>
+            <span class="donor-name" style="margin-bottom: 10px;">by ${d.pickup_address || d.address || 'Donor on File'}</span>
+
+            <div class="card-details" style="margin-bottom: 14px;">
+                <div class="detail-item">
+                    <i class="fa-solid fa-weight-hanging" style="color: #EA580C;"></i>
+                    <span>${d.quantity || 'N/A'} Servings</span>
+                </div>
+                <div class="detail-item">
+                    <i class="fa-solid fa-fire-burner" style="color: #EA580C;"></i>
+                    <span>Prepared: ${d.preparation_time ? new Date(d.preparation_time).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Earlier'}</span>
+                </div>
+                <div class="detail-item" style="width:100%;">
+                    <i class="fa-solid fa-location-dot" style="color: #EA580C;"></i>
+                    <span>${d.pickup_address || d.address || 'Address on file'}</span>
+                </div>
+            </div>
+
+            <button onclick="updateStatus(${d.id}, 'Claimed')" class="btn-claim" style="background: linear-gradient(135deg, #EA580C 0%, #C2410C 100%); color: white; border: none; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <i class="fa-solid fa-recycle"></i> Rescue for ${repurposeCategory.split(' ')[0]}
+            </button>
+        `;
+
+        grid.appendChild(card);
+    });
+};
+
+window.filterExpiredGrid = function(subType) {
+    const allBtn = document.getElementById('expFilterAll');
+    const animalBtn = document.getElementById('expFilterAnimal');
+    const compostBtn = document.getElementById('expFilterCompost');
+
+    [allBtn, animalBtn, compostBtn].forEach(b => {
+        if (b) b.classList.remove('active');
+    });
+
+    if (subType === 'animal' && animalBtn) animalBtn.classList.add('active');
+    else if (subType === 'compost' && compostBtn) compostBtn.classList.add('active');
+    else if (allBtn) allBtn.classList.add('active');
+
+    const list = window.allExpiredDonations || [];
+    let filtered = list;
+
+    if (subType === 'animal') {
+        filtered = list.filter(d => {
+            const prep = d.preparation_time || d.timestamp;
+            if (!prep) return true;
+            const diffHrs = (new Date() - new Date(prep)) / (1000 * 60 * 60);
+            return diffHrs < 96;
+        });
+    } else if (subType === 'compost') {
+        filtered = list.filter(d => {
+            const prep = d.preparation_time || d.timestamp;
+            if (!prep) return false;
+            const diffHrs = (new Date() - new Date(prep)) / (1000 * 60 * 60);
+            return diffHrs >= 96;
+        });
+    }
+
+    renderExpiredGrid(filtered);
+};
+
+window.slideExpiredShelf = function(direction) {
+    const track = document.getElementById('expiredSlideTrack');
+    if (track) {
+        track.scrollBy({ left: direction * 300, behavior: 'smooth' });
+    }
+};
 
 async function fetchDonations(pageType) {
     const grid = pageType === 'find-food' ? donationGrid : deliveryGrid;
@@ -106,15 +407,40 @@ async function fetchDonations(pageType) {
         allDonations = donations;
 
         if (pageType === 'find-food') {
-            renderDonations(donations.filter(d => d.status === 'Available'), grid, false);
+            const fresh = [];
+            const expired = [];
+
+            donations.forEach(d => {
+                if (isDonationExpired(d)) {
+                    expired.push(d);
+                } else if (d.status === 'Available') {
+                    fresh.push(d);
+                }
+            });
+
+            // Update badge counters
+            const humanCountEl = document.getElementById('humanCountBadge');
+            const expiredCountEl = document.getElementById('expiredCountBadge');
+            if (humanCountEl) humanCountEl.innerText = fresh.length;
+            if (expiredCountEl) expiredCountEl.innerText = expired.length;
+
+            window.allExpiredDonations = expired;
+
+            // 1. Render fresh food strictly in human food section
+            renderDonations(fresh, grid, false);
+
+            // 2. Automatically populate and slide expired food into the shelf and grid!
+            renderExpiredShelf(expired);
+            renderExpiredGrid(expired);
+
         } else {
-            const tasks = donations.filter(d => ['Claimed', 'Picked Up'].includes(d.status));
+            const tasks = donations.filter(d => ['Claimed', 'Pickup Assigned', 'Picked Up'].includes(d.status));
             renderDonations(tasks, grid, true);
         }
 
     } catch (error) {
         console.error('Error fetching donations:', error);
-        grid.innerHTML = '<p style="text-align: center;">Failed to load data.</p>';
+        if (grid) grid.innerHTML = '<p style="text-align: center;">Failed to load data.</p>';
     }
 }
 
@@ -170,33 +496,33 @@ function formatFreshness(timestamp) {
 }
 
 // --- Live Expiry Logic ---
-// --- Live Expiry Logic (Dual Phase) ---
+// --- Live Expiry Logic (Human Food Countdown & Auto-Divert) ---
+let isAutoDiverting = false;
+
 setInterval(() => {
     document.querySelectorAll('.expiry-cnt').forEach(el => {
-        const prepStr = el.getAttribute('data-prep'); // We will use prep time as base
+        const prepStr = el.getAttribute('data-prep');
         if (!prepStr) return;
 
         const now = new Date();
         const start = new Date(prepStr);
+        if (isNaN(start.getTime())) return;
 
-        // Phase 1: Human (48 hours from prep)
+        // Human Safe Expiry (48 hours from preparation)
         const humanExpiry = new Date(start.getTime() + (48 * 60 * 60 * 1000));
-
-        // Phase 2: Animal (Human + 48 hours = 96 hours total)
-        const animalExpiry = new Date(start.getTime() + (96 * 60 * 60 * 1000));
-
         let diffMs = humanExpiry - now;
-        let mode = 'human';
 
         if (diffMs <= 0) {
-            // Human time passed, check Animal time
-            diffMs = animalExpiry - now;
-            mode = 'animal';
-        }
-
-        if (diffMs <= 0) {
-            el.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Fully Expired';
+            el.innerHTML = '<i class="fa-solid fa-arrow-right-arrow-left"></i> Safe Window Ended &bull; Auto-Diverted to Expired Shelf';
             el.className = 'expiry-cnt expired';
+            // Auto-refresh find-food if on the page so expired meals migrate automatically!
+            if (!isAutoDiverting && document.getElementById('donationGrid')) {
+                isAutoDiverting = true;
+                setTimeout(() => {
+                    isAutoDiverting = false;
+                    fetchDonations('find-food');
+                }, 1200);
+            }
             return;
         }
 
@@ -204,15 +530,10 @@ setInterval(() => {
         const mins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
         const secs = Math.floor((diffMs % (1000 * 60)) / 1000);
 
-        if (mode === 'human') {
-            el.innerHTML = `<i class="fa-solid fa-utensils"></i> For Humans: ${hrs}h ${mins}m ${secs}s`;
-            el.className = 'expiry-cnt safe';
-            if (hrs < 6) el.classList.add('warning'); // Getting close to end of human phase
-        } else {
-            el.innerHTML = `<i class="fa-solid fa-paw"></i> For Animals: ${hrs}h ${mins}m ${secs}s`;
-            el.className = 'expiry-cnt animal-mode'; // New class for animal phase
-        }
-
+        el.innerHTML = `<i class="fa-solid fa-utensils"></i> Safe for Humans: ${hrs}h ${mins}m ${secs}s`;
+        el.className = 'expiry-cnt safe';
+        if (hrs < 6) el.classList.add('warning');
+        if (hrs < 1) el.classList.add('urgent');
     });
 }, 1000);
 
@@ -238,7 +559,7 @@ style.innerHTML = `
         color: #f87171; 
         animation: pulse 2s infinite; 
     }
-    .expiry-cnt.expired { background: rgba(255,255,255,0.1); color: #94a3b8; text-decoration: line-through; }
+    .expiry-cnt.expired { background: rgba(239, 68, 68, 0.15); color: #dc2626; font-weight: 700; }
     
     @keyframes pulse {
         0% { opacity: 1; }
@@ -252,11 +573,6 @@ document.head.appendChild(style);
 function renderDonations(data, grid, isDeliveryView) {
     grid.innerHTML = '';
 
-    // Sort logic: Urgent (soonest expiry) first!
-    // But keep claimed/picked up in logical order if needed?
-    // Let's sort filtered list passed to this function.
-    // If it's a "Available" list, sort by urgency.
-
     if (!isDeliveryView) {
         data.sort((a, b) => {
             const dateA = a.expiry_datetime ? new Date(a.expiry_datetime) : new Date('2099-01-01');
@@ -269,13 +585,13 @@ function renderDonations(data, grid, isDeliveryView) {
         grid.innerHTML = `
             <div class="loading-state">
                 <i class="fa-solid ${isDeliveryView ? 'fa-clipboard-check' : 'fa-basket-shopping'}"></i>
-                <p>${isDeliveryView ? 'No active deliveries assigned.' : 'No active donations found nearby.'}</p>
+                <p>${isDeliveryView ? 'No active deliveries assigned.' : 'No fresh food donations matching this criteria.'}</p>
             </div>
         `;
         return;
     }
 
-    data.forEach(donation => { // Removed reverse() to respect sort
+    data.forEach(donation => {
         const card = document.createElement('div');
         card.className = 'donation-card';
         card.setAttribute('data-id', donation.id);
@@ -298,32 +614,11 @@ function renderDonations(data, grid, isDeliveryView) {
                            </span>`;
         }
 
-        function isDonationExpired(donation) {
-            if (donation.expiry_datetime) {
-                const exp = new Date(donation.expiry_datetime);
-                if (!isNaN(exp) && new Date() > exp) return true;
-            }
-            const prep = donation.preparation_time || donation.timestamp;
-            if (prep) {
-                const prepDate = new Date(prep);
-                if (!isNaN(prepDate)) {
-                    const diffHrs = (new Date() - prepDate) / (1000 * 60 * 60);
-                    if (diffHrs >= 96) return true;
-                }
-            }
-            return false;
-        }
-
         let actionButton = '';
         if (!isDeliveryView) {
-            const isExpired = isDonationExpired(donation);
-            const claimBtn = isExpired 
-                ? `<button class="btn-claim" style="flex:1; background: #94a3b8; color: white; cursor: not-allowed;" disabled><i class="fa-solid fa-ban"></i> Expired</button>`
-                : `<button class="btn-claim" style="flex:1;" onclick="updateStatus(${donation.id}, 'Claimed')">Claim</button>`;
-
             actionButton = `
                 <div style="display:flex; gap:10px;">
-                    ${claimBtn}
+                    <button class="btn-claim" style="flex:1;" onclick="updateStatus(${donation.id}, 'Claimed')"><i class="fa-solid fa-hand-holding-heart"></i> Claim Food</button>
                     <button class="btn-claim" style="flex:1; background: #3b82f6;" onclick="if(window.openChat) window.openChat(${donation.id}, 'Donor', ${donation.donor_id}); else alert('Chat available on Dashboard')">
                         <i class="fa-solid fa-comments"></i> Chat
                     </button>
@@ -353,20 +648,17 @@ function renderDonations(data, grid, isDeliveryView) {
         // Expiry Badge
         const prepTime = donation.preparation_time || donation.timestamp;
         const expiryHtml = donation.status === 'Available'
-            ? `<div class="expiry-cnt" data-prep="${prepTime}">Calculating...</div>`
+            ? `<div class="expiry-cnt" data-prep="${prepTime}">Calculating safe window...</div>`
             : '';
 
         let emergencyTag = '';
         const desc = donation.instructions || '';
-        // Check case-insensitive for 'emergency'
         if (desc.toUpperCase().includes('EMERGENCY')) {
             emergencyTag = `<div style="background: #ef4444; color: white; text-align: center; font-weight: bold; font-size: 0.8rem; padding: 6px; border-radius: 4px; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);"><i class="fa-solid fa-triangle-exclamation"></i> EMERGENCY DONATION</div>`;
-        }
-        else if (desc.toUpperCase().includes('BULK')) {
+        } else if (desc.toUpperCase().includes('BULK')) {
             emergencyTag = `<div style="background: #f59e0b; color: #1e293b; text-align: center; font-weight: bold; font-size: 0.8rem; padding: 6px; border-radius: 4px; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);"><i class="fa-solid fa-champagne-glasses"></i> BULK EVENT DONATION</div>`;
         }
 
-        // Use proper title if available
         const title = (donation.food_name && donation.food_name !== 'undefined') ? donation.food_name : (donation.food_type || donation.foodType || 'Food').replace('_', ' ').toUpperCase();
 
         card.innerHTML = `
@@ -376,7 +668,7 @@ function renderDonations(data, grid, isDeliveryView) {
                 <div class="badges">
                     ${dietTypeBadge}
                     <span class="status-badge ${badgeClass}">${donation.status}</span>
-                    <span class="status-badge" style="background:#e0f2fe; color:#0369a1; text-transform:capitalize;">For ${getClass(donation)}</span>
+                    <span class="status-badge" style="background:#DCFCE7; color:#15803D; font-weight:700;"><i class="fa-solid fa-circle-check"></i> For Humans (Safe)</span>
                 </div>
             </div>
             
@@ -392,7 +684,6 @@ function renderDonations(data, grid, isDeliveryView) {
                     <i class="fa-solid fa-weight-hanging"></i>
                     <span>${donation.quantity} Servings</span>
                 </div>
-                <!-- Removed Old Freshness Logic in favor of Timer -->
                 <div class="detail-item">
                     <i class="fa-regular fa-clock"></i>
                     <span>Posted: ${new Date(donation.timestamp).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>

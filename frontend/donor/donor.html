@@ -1239,14 +1239,68 @@
             </div>
         </div>
 
-        <!-- ================= TAB 3: MY DONATIONS ================= -->
+        <!-- ================= TAB 3: MY DONATIONS (DUAL SECTIONS: FRESH VS EXPIRED) ================= -->
         <div id="my-donations" class="tab-content">
-            <div class="dashboard-card">
-                <h2 class="card-heading">My Donations & Tracking</h2>
-                <div id="myDonationsGrid" class="donations-grid">
-                    <div class="state-box">
-                        <i class="fa-solid fa-circle-notch fa-spin"></i>
-                        <p>Loading your donations...</p>
+            <!-- Channel Switcher Buttons for Donor -->
+            <div style="display: flex; gap: 12px; margin-bottom: 24px; background: #FFFFFF; padding: 8px; border-radius: 14px; border: 1px solid var(--border-light); width: fit-content; max-width: 100%; box-shadow: 0 2px 8px rgba(0,0,0,0.04); flex-wrap: wrap;">
+                <button id="donorTabFreshBtn" type="button" onclick="switchDonorSection('fresh')" class="active" style="padding: 10px 20px; border-radius: 10px; border: none; font-weight: 700; font-size: 0.92rem; cursor: pointer; display: flex; align-items: center; gap: 8px; background: #166534; color: white; transition: all 0.2s; white-space: normal; line-height: 1.25;">
+                    <i class="fa-solid fa-utensils"></i> <span>Fresh Food (For Humans)</span> 
+                    <span id="donorFreshBadge" style="background: rgba(255,255,255,0.25); color: white; padding: 2px 8px; border-radius: 50px; font-size: 0.75rem;">0</span>
+                </button>
+                <button id="donorTabExpiredBtn" type="button" onclick="switchDonorSection('expired')" style="padding: 10px 20px; border-radius: 10px; border: none; font-weight: 700; font-size: 0.92rem; cursor: pointer; display: flex; align-items: center; gap: 8px; background: transparent; color: #64748B; transition: all 0.2s; white-space: normal; line-height: 1.25;">
+                    <i class="fa-solid fa-clock-rotate-left"></i> <span>Expired Shelf (Animals & Compost)</span> 
+                    <span id="donorExpiredBadge" style="background: #FEE2E2; color: #DC2626; padding: 2px 8px; border-radius: 50px; font-size: 0.75rem;">0</span>
+                </button>
+            </div>
+
+            <!-- SECTION 1: FRESH & ACTIVE FOOD DONATIONS (FOR HUMANS) -->
+            <div id="donorFreshSection" style="display: block;">
+                <div class="dashboard-card" style="margin-bottom: 24px;">
+                    <div style="background: #F0FDF4; border: 1.5px solid #86EFAC; border-radius: 12px; padding: 14px 18px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="background: #16A34A; color: white; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem;">
+                                <i class="fa-solid fa-check"></i>
+                            </span>
+                            <div>
+                                <h3 style="margin: 0; color: #166534; font-size: 1.05rem; font-weight: 800;">Fresh Meals for Human Consumption</h3>
+                                <p style="margin: 2px 0 0 0; color: #15803D; font-size: 0.85rem;">Active food donations within the safe human preparation window. Available, claimed, and in-transit.</p>
+                            </div>
+                        </div>
+                        <button class="btn-cta-orange" style="padding: 8px 16px; font-size: 0.85rem;" onclick="switchTab('donate-tab')">
+                            <i class="fa-solid fa-plus"></i> Post New Food
+                        </button>
+                    </div>
+
+                    <div id="donorFreshGrid" class="donations-grid">
+                        <div class="state-box">
+                            <i class="fa-solid fa-circle-notch fa-spin"></i>
+                            <p>Loading your active fresh donations...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 2: EXPIRED & DIVERTED FOOD DONATIONS (ANIMALS & COMPOST) -->
+            <div id="donorExpiredSection" style="display: none;">
+                <div class="dashboard-card">
+                    <div style="background: linear-gradient(135deg, #FFF7ED 0%, #FEF2F2 100%); border: 1.5px solid #FDBA74; border-radius: 12px; padding: 16px 20px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <span style="background: #DC2626; color: white; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem;">
+                                <i class="fa-solid fa-clock-rotate-left"></i>
+                            </span>
+                            <div>
+                                <h3 style="margin: 0; color: #9A3412; font-size: 1.1rem; font-weight: 800;">Expired & Auto-Diverted Food Shelf</h3>
+                                <p style="margin: 3px 0 0 0; color: #C2410C; font-size: 0.85rem;">Items that passed the human-safe window. Automatically redirected to animal shelters 🐾 and composting centers 🌿 for zero landfill waste.</p>
+                            </div>
+                        </div>
+                        <span id="donorExpiredNoticeCount" style="font-size: 0.85rem; font-weight: 700; color: #EA580C; background: #FFEDD5; padding: 6px 14px; border-radius: 50px;">0 Items Diverted</span>
+                    </div>
+
+                    <div id="donorExpiredGrid" class="donations-grid">
+                        <div class="state-box">
+                            <i class="fa-solid fa-circle-notch fa-spin"></i>
+                            <p>Loading diverted items...</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1432,6 +1486,8 @@
                     </div>
                 </form>
             </div>
+        </div>
+
         <!-- ================= TAB 8: HELP & COMPLAINTS ================= -->
         <div id="complaints" class="tab-content">
             <div class="dashboard-card">
@@ -1523,12 +1579,13 @@
                     </div>
                 </div>
             </div>
+        </div>
         </main>
     </div>
 
     <!-- Scripts -->
-    <script src="/app.js"></script>
-    <script src="/complaints.js"></script>
+    <script src="/app.js?v=6"></script>
+    <script src="/complaints.js?v=2"></script>
     <script>
         const API_BASE_URL = '/api';
         let userStr = localStorage.getItem('user');
@@ -2287,9 +2344,194 @@
             }
         });
 
-        // --- MY DONATIONS & VISUAL TIMELINE ---
+        // --- MY DONATIONS (DUAL SECTIONS: FRESH VS EXPIRED) ---
+        window.switchDonorSection = function(section) {
+            const freshSec = document.getElementById('donorFreshSection');
+            const expiredSec = document.getElementById('donorExpiredSection');
+            const freshBtn = document.getElementById('donorTabFreshBtn');
+            const expiredBtn = document.getElementById('donorTabExpiredBtn');
+
+            if (section === 'fresh') {
+                if (freshSec) freshSec.style.display = 'block';
+                if (expiredSec) expiredSec.style.display = 'none';
+
+                if (freshBtn) {
+                    freshBtn.classList.add('active');
+                    freshBtn.style.background = '#166534';
+                    freshBtn.style.color = '#FFFFFF';
+                }
+                if (expiredBtn) {
+                    expiredBtn.classList.remove('active');
+                    expiredBtn.style.background = 'transparent';
+                    expiredBtn.style.color = '#64748B';
+                }
+            } else {
+                if (freshSec) freshSec.style.display = 'none';
+                if (expiredSec) expiredSec.style.display = 'block';
+
+                if (expiredBtn) {
+                    expiredBtn.classList.add('active');
+                    expiredBtn.style.background = '#DC2626';
+                    expiredBtn.style.color = '#FFFFFF';
+                }
+                if (freshBtn) {
+                    freshBtn.classList.remove('active');
+                    freshBtn.style.background = 'transparent';
+                    freshBtn.style.color = '#64748B';
+                }
+            }
+        };
+
+        window.openComplaintForDonation = function(donationId, foodName) {
+            switchTab('complaints');
+            const relInput = document.querySelector('#donorComplaintForm input[name="related_donation_id"]');
+            if (relInput) relInput.value = donationId;
+            const subInput = document.querySelector('#donorComplaintForm input[name="subject"]');
+            if (subInput && foodName) subInput.value = `Issue regarding Donation #${donationId}: ${foodName}`;
+            const descInput = document.querySelector('#donorComplaintForm textarea[name="description"]');
+            if (descInput) {
+                descInput.focus();
+                descInput.placeholder = `Describe your complaint or issue regarding donation #${donationId} (${foodName})...`;
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        function renderDonorDonationCard(d, isExpired) {
+            let step1 = 'completed', step2 = '', step3 = '', step4 = '';
+            if (['Claimed', 'Picked Up', 'Delivered'].includes(d.status)) step2 = 'completed';
+            if (['Picked Up', 'Delivered'].includes(d.status)) step3 = 'completed';
+            if (d.status === 'Delivered') step4 = 'completed';
+
+            let imageHtml = '';
+            if (d.image_path && d.image_path.trim() !== '') {
+                const imgUrl = d.image_path.startsWith('http') || d.image_path.startsWith('/') ? d.image_path : '/' + d.image_path;
+                imageHtml = `<img src="${imgUrl}" onerror="this.onerror=null; this.src='/hero_food.jpg';" style="width:100%; height:180px; object-fit:cover; border-radius:10px 10px 0 0; margin-bottom:12px;" alt="${d.food_name || 'Food Photo'}">`;
+            } else {
+                imageHtml = `<div style="width:100%; height:140px; background:linear-gradient(135deg, #FFF8F0 0%, #EAE5DE 100%); display:flex; flex-direction:column; align-items:center; justify-content:center; border-radius:10px 10px 0 0; margin-bottom:12px; color:var(--primary-orange);"><i class="fa-solid fa-utensils" style="font-size:2.2rem; margin-bottom:6px;"></i><span style="font-size:0.85rem; font-weight:600; color:var(--forest-green);">EcoBite Food Rescue</span></div>`;
+            }
+
+            const title = (d.food_name && d.food_name !== 'undefined') ? d.food_name : (d.food_type || 'Food Donation').replace('_', ' ').toUpperCase();
+            const safeTitle = title.replace(/'/g, "\\'");
+
+            let repurposeNotice = '';
+            let repurposeTag = '';
+            if (isExpired) {
+                const prep = d.preparation_time || d.timestamp;
+                let cat = 'Animal Shelters 🐾';
+                if (prep) {
+                    const diffHrs = (new Date() - new Date(prep)) / (1000 * 60 * 60);
+                    if (diffHrs >= 96) cat = 'Bio-Composting 🌿';
+                }
+                repurposeTag = `<span class="safety-indicator" style="background:#FEF3C7; color:#92400E; padding:4px 10px; font-size:0.78rem; font-weight:700; border-radius:50px; margin-left:6px;"><i class="fa-solid fa-recycle"></i> For ${cat}</span>`;
+                repurposeNotice = `
+                    <div style="background:#FFF7ED; border:1px solid #FED7AA; border-radius:8px; padding:10px 12px; margin-bottom:12px; font-size:0.82rem; color:#9A3412; display:flex; align-items:center; gap:8px;">
+                        <i class="fa-solid fa-recycle" style="color:#EA580C; font-size:1.1rem; flex-shrink:0;"></i>
+                        <span><strong>Auto-Diverted to Expired Shelf:</strong> Passed human consumption window. Automatically redirected for ${cat} to guarantee zero food waste.</span>
+                    </div>
+                `;
+            }
+
+            let otpBox = '';
+            if (!isExpired && ['Claimed', 'Pickup Assigned'].includes(d.status) && (d.delivery_req == 1 || d.delivery_req === true)) {
+                otpBox = `
+                    <div class="donor-otp-container" style="background:#F0FDF4; border:1.5px solid #86EFAC; border-radius:10px; padding:12px; margin-top:14px; text-align:center;">
+                        <div style="font-size:0.8rem; font-weight:700; color:#166534; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">
+                            <i class="fa-solid fa-shield-halved"></i> Food Handover Pickup OTP
+                        </div>
+                        <div style="font-size:1.6rem; font-weight:800; letter-spacing:4px; color:#15803D; font-family:monospace; margin:6px 0;" id="pickupOtpVal_${d.id}">
+                            ${d.pickup_otp || '••••'}
+                        </div>
+                        <p style="font-size:0.8rem; color:#166534; margin:0 0 8px 0;">Share this 4-digit code with the arriving delivery partner to confirm food handover.</p>
+                        <button onclick="regenerateDonorOtp(${d.id})" class="btn-claim" style="background:#166534; color:white; border:none; border-radius:6px; padding:4px 12px; font-size:0.78rem; cursor:pointer; width:auto; display:inline-flex; align-items:center; gap:6px;">
+                            <i class="fa-solid fa-arrows-rotate"></i> Regenerate OTP
+                        </button>
+                    </div>
+                `;
+            } else if (!isExpired && d.status === 'Claimed' && (!d.delivery_req || d.delivery_req == 0)) {
+                otpBox = `
+                    <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:8px; padding:8px 12px; margin-top:12px; font-size:0.85rem; color:#475569; font-weight:600; display:flex; align-items:center; gap:8px;">
+                        <i class="fa-solid fa-person-walking"></i> Claimed for direct self-pickup by NGO
+                    </div>
+                `;
+            } else if (!isExpired && ['Picked Up', 'Delivered'].includes(d.status)) {
+                otpBox = `
+                    <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:8px; padding:8px 12px; margin-top:12px; font-size:0.85rem; color:#10B981; font-weight:600; display:flex; align-items:center; gap:8px;">
+                        <i class="fa-solid fa-circle-check"></i> Food handover verified via Pickup OTP
+                    </div>
+                `;
+            }
+
+            return `
+                <div class="dashboard-card" style="margin:0; overflow:hidden; border:${isExpired ? '1.5px solid #FDBA74' : '1px solid var(--border-light)'};">
+                    ${imageHtml}
+                    <div style="padding: 0 4px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:6px;">
+                            <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                                ${isExpired ? `
+                                    <span class="safety-indicator" style="background:#FEE2E2; color:#B91C1C; padding:4px 10px; font-size:0.78rem; margin:0; font-weight:700; border-radius:50px;">
+                                        <i class="fa-solid fa-clock-rotate-left"></i> Expired
+                                    </span>
+                                    ${repurposeTag}
+                                ` : `
+                                    <span class="safety-indicator safety-safe" style="padding:4px 10px; font-size:0.78rem; margin:0;">${d.status}</span>
+                                    <span class="safety-indicator" style="background:#DCFCE7; color:#15803D; padding:4px 10px; font-size:0.78rem; margin:0; font-weight:700; border-radius:50px;">
+                                        <i class="fa-solid fa-circle-check"></i> For Humans (Fresh)
+                                    </span>
+                                `}
+                            </div>
+                            <small style="color:var(--text-muted);">${d.timestamp || 'Recent'}</small>
+                        </div>
+
+                        <h3 style="margin:0 0 6px 0; color:var(--text-dark);">${title}</h3>
+                        <p style="color:var(--text-muted); font-size:0.9rem; margin:0 0 14px 0;">${d.quantity} Servings • ${d.pickup_address}</p>
+
+                        ${repurposeNotice}
+
+                        <!-- Visual Tracking Timeline -->
+                        <div class="tracking-timeline" style="margin-bottom:12px;">
+                            <div class="timeline-step ${step1}">
+                                <div class="timeline-circle"><i class="fa-solid fa-check"></i></div>
+                                <span class="timeline-label">Posted</span>
+                            </div>
+                            <div class="timeline-step ${step2}">
+                                <div class="timeline-circle"><i class="fa-solid fa-hand-holding-heart"></i></div>
+                                <span class="timeline-label">Claimed</span>
+                            </div>
+                            <div class="timeline-step ${step3}">
+                                <div class="timeline-circle"><i class="fa-solid fa-truck-fast"></i></div>
+                                <span class="timeline-label">In Transit</span>
+                            </div>
+                            <div class="timeline-step ${step4}">
+                                <div class="timeline-circle"><i class="fa-solid fa-circle-check"></i></div>
+                                <span class="timeline-label">Delivered</span>
+                            </div>
+                        </div>
+
+                        ${otpBox}
+
+                        <!-- Actions Bar (Chat & Complaint) -->
+                        <div style="display:flex; gap:10px; margin-top:14px; border-top:1px solid var(--border-light); padding-top:12px; flex-wrap:wrap;">
+                            ${(!isExpired && d.claimed_by) ? `
+                                <button onclick="if(window.openChat) window.openChat(${d.id}, 'NGO', ${d.claimed_by}); else alert('Chat is available in Dashboard');" class="btn-claim" style="flex:1; background:#3B82F6; color:white; border:none; border-radius:8px; padding:7px 12px; font-size:0.82rem; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px;">
+                                    <i class="fa-solid fa-comments"></i> Chat with NGO
+                                </button>
+                            ` : ''}
+                            <button onclick="openComplaintForDonation(${d.id}, '${safeTitle}')" class="btn-claim" style="flex:1; background:#FFF1F2; color:#E11D48; border:1px solid #FECDD3; border-radius:8px; padding:7px 12px; font-size:0.82rem; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px;">
+                                <i class="fa-solid fa-headset"></i> Report Issue / Complain
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
         async function fetchMyDonations() {
-            const container = document.getElementById('myDonationsGrid');
+            const freshGrid = document.getElementById('donorFreshGrid');
+            const expiredGrid = document.getElementById('donorExpiredGrid');
+            const freshBadge = document.getElementById('donorFreshBadge');
+            const expBadge = document.getElementById('donorExpiredBadge');
+            const expCountEl = document.getElementById('donorExpiredNoticeCount');
+
             try {
                 let my = [];
                 const res = await fetch(`${API_BASE_URL}/donations/user/${user.id}`);
@@ -2301,62 +2543,87 @@
                     my = all.filter(d => d.donor_id == user.id);
                 }
 
-                if (!Array.isArray(my) || my.length === 0) {
-                    container.innerHTML = '<div class="state-box"><i class="fa-solid fa-box-open"></i><p>You haven\'t created any donations yet.</p></div>';
-                    return;
+                if (!Array.isArray(my)) my = [];
+
+                // Segregate Fresh vs Expired donations
+                const fresh = my.filter(d => !d.is_expired && d.status !== 'Expired');
+                const expired = my.filter(d => d.is_expired || d.status === 'Expired');
+
+                if (freshBadge) freshBadge.innerText = fresh.length;
+                if (expBadge) expBadge.innerText = expired.length;
+                if (expCountEl) expCountEl.innerText = `${expired.length} ${expired.length === 1 ? 'Item' : 'Items'} Diverted`;
+
+                // 1. Render Fresh Food Section
+                if (freshGrid) {
+                    if (fresh.length === 0) {
+                        freshGrid.innerHTML = `
+                            <div class="state-box" style="grid-column: 1/-1; padding: 40px 20px;">
+                                <i class="fa-solid fa-utensils" style="color:var(--primary-orange); font-size:2.5rem; margin-bottom:12px;"></i>
+                                <h3 style="margin:0 0 6px 0; color:var(--text-dark);">No Active Fresh Donations</h3>
+                                <p style="color:var(--text-muted); margin:0 0 16px 0;">Post your fresh food donation to share nourishing meals with local NGOs!</p>
+                                <button class="btn-cta-orange" style="margin:0 auto; padding:10px 24px;" onclick="switchTab('donate-tab')">
+                                    <i class="fa-solid fa-plus"></i> Post New Food Donation
+                                </button>
+                            </div>
+                        `;
+                    } else {
+                        freshGrid.innerHTML = fresh.map(d => renderDonorDonationCard(d, false)).join('');
+                    }
                 }
 
-                container.innerHTML = '';
-                my.forEach(d => {
-                    let step1 = 'completed', step2 = '', step3 = '', step4 = '';
-                    if (['Claimed', 'Picked Up', 'Delivered'].includes(d.status)) step2 = 'completed';
-                    if (['Picked Up', 'Delivered'].includes(d.status)) step3 = 'completed';
-                    if (d.status === 'Delivered') step4 = 'completed';
-
-                    let imageHtml = '';
-                    if (d.image_path && d.image_path.trim() !== '') {
-                        const imgUrl = d.image_path.startsWith('http') || d.image_path.startsWith('/') ? d.image_path : '/' + d.image_path;
-                        imageHtml = `<img src="${imgUrl}" onerror="this.onerror=null; this.src='/hero_food.jpg';" style="width:100%; height:180px; object-fit:cover; border-radius:10px 10px 0 0; margin-bottom:12px;" alt="${d.food_name || 'Food Photo'}">`;
-                    } else {
-                        imageHtml = `<div style="width:100%; height:140px; background:linear-gradient(135deg, #FFF8F0 0%, #EAE5DE 100%); display:flex; flex-direction:column; align-items:center; justify-content:center; border-radius:10px 10px 0 0; margin-bottom:12px; color:var(--primary-orange);"><i class="fa-solid fa-utensils" style="font-size:2.2rem; margin-bottom:6px;"></i><span style="font-size:0.85rem; font-weight:600; color:var(--forest-green);">EcoBite Food Rescue</span></div>`;
-                    }
-
-                    container.innerHTML += `
-                        <div class="dashboard-card" style="margin:0; overflow:hidden;">
-                            ${imageHtml}
-                            <div style="padding: 0 4px;">
-                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                                    <span class="safety-indicator safety-safe" style="padding:4px 12px; font-size:0.8rem; margin:0;">${d.status}</span>
-                                    <small style="color:var(--text-muted);">${d.timestamp || 'Recent'}</small>
-                                </div>
-
-                                <h3 style="margin:0 0 6px 0; color:var(--text-dark);">${d.food_name || d.food_type || 'Food Donation'}</h3>
-                                <p style="color:var(--text-muted); font-size:0.9rem; margin:0 0 16px 0;">${d.quantity} Servings • ${d.pickup_address}</p>
-
-                                <!-- Visual Tracking Timeline -->
-                                <div class="tracking-timeline">
-                                    <div class="timeline-step ${step1}">
-                                        <div class="timeline-circle"><i class="fa-solid fa-check"></i></div>
-                                        <span class="timeline-label">Posted</span>
-                                    </div>
-                                    <div class="timeline-step ${step2}">
-                                        <div class="timeline-circle"><i class="fa-solid fa-hand-holding-heart"></i></div>
-                                        <span class="timeline-label">Claimed</span>
-                                    </div>
-                                    <div class="timeline-step ${step3}">
-                                        <div class="timeline-circle"><i class="fa-solid fa-truck-fast"></i></div>
-                                        <span class="timeline-label">In Transit</span>
-                                    </div>
-                                    <div class="timeline-step ${step4}">
-                                        <div class="timeline-circle"><i class="fa-solid fa-circle-check"></i></div>
-                                        <span class="timeline-label">Delivered</span>
-                                    </div>
-                                </div>
+                // 2. Render Expired Food Section
+                if (expiredGrid) {
+                    if (expired.length === 0) {
+                        expiredGrid.innerHTML = `
+                            <div class="state-box" style="grid-column: 1/-1; padding: 40px 20px;">
+                                <i class="fa-solid fa-circle-check" style="color:#16A34A; font-size:2.5rem; margin-bottom:12px;"></i>
+                                <h3 style="margin:0 0 6px 0; color:var(--text-dark);">Zero Expired Donations!</h3>
+                                <p style="color:var(--text-muted); margin:0;">All your shared meals are fresh, delivered, or claimed. None needed diversion.</p>
                             </div>
-                        </div>
-                    `;
+                        `;
+                    } else {
+                        expiredGrid.innerHTML = expired.map(d => renderDonorDonationCard(d, true)).join('');
+                    }
+                }
+
+                // Fetch OTPs asynchronously for active pickups if needed
+                fresh.forEach(d => {
+                    if (!d.pickup_otp && ['Claimed', 'Pickup Assigned'].includes(d.status) && (d.delivery_req == 1 || d.delivery_req === true)) {
+                        fetch(`${API_BASE_URL}/donations/${d.id}/pickup-otp?user_id=${user.id}`)
+                            .then(r => r.json())
+                            .then(data => {
+                                if (data.success && data.pickup_otp) {
+                                    const el = document.getElementById(`pickupOtpVal_${d.id}`);
+                                    if (el) el.innerText = data.pickup_otp;
+                                }
+                            }).catch(err => console.warn(err));
+                    }
                 });
-            } catch(e) { console.error(e); }
+
+            } catch(e) { 
+                console.error('Error loading donor donations:', e); 
+            }
+        }
+
+        async function regenerateDonorOtp(donationId) {
+            if (!confirm('Generate a new 4-digit Pickup OTP? The previous OTP will become invalid.')) return;
+            try {
+                const res = await fetch(`${API_BASE_URL}/regenerate-otp`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ donation_id: donationId, otp_type: 'pickup', user_id: user.id })
+                });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    alert('New Pickup OTP: ' + data.pickup_otp);
+                    fetchMyDonations();
+                } else {
+                    alert('Failed to regenerate OTP: ' + (data.message || 'Error'));
+                }
+            } catch(e) {
+                console.error(e);
+                alert('Connection error regenerating OTP.');
+            }
         }
 
         // --- SCHEDULED DONATIONS ---
