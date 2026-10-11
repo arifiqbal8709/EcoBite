@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: ecobite
+    runtime: python
+    plan: free
+    region: singapore
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn backend.app:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.12
+      - key: SECRET_KEY
+        generateValue: true
+      - key: OTP_SALT
+        generateValue: true
+      - key: GEMINI_API_KEY
+        sync: false
