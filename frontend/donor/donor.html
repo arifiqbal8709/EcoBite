@@ -1,0 +1,2467 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donor Dashboard | EcoBite</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:ital,wght@0,300..700;1,300..700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/style.css?v=2">
+    <link rel="stylesheet" href="/theme-genz.css?v=1">
+    <link rel="stylesheet" href="/chat.css">
+    <link rel="stylesheet" href="/complaints.css">
+
+    <style>
+        :root {
+            --primary-orange: #E85D04;
+            --primary-orange-hover: #d05203;
+            --forest-green: #1B3022;
+            --bg-cream: #FAF7F2;
+            --card-white: #FFFFFF;
+            --text-dark: #1C2520;
+            --text-muted: #475569;
+            --border-light: #EAE5DE;
+            --navbar-height: 100px;
+            --sidebar-width: 250px;
+        }
+
+        body {
+            background-color: var(--bg-cream);
+            color: var(--text-dark);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding-top: var(--navbar-height);
+            box-sizing: border-box;
+        }
+
+        /* Top Navbar */
+        .navbar {
+            background: #FFFFFF !important;
+            border-bottom: 1px solid var(--border-light) !important;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--navbar-height);
+            padding: 0 !important;
+            margin: 0;
+            z-index: 1000;
+            box-sizing: border-box;
+            box-shadow: 0 2px 10px rgba(28, 37, 32, 0.04) !important;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+            box-sizing: border-box;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            text-decoration: none;
+            color: var(--forest-green);
+        }
+
+        .logo .highlight {
+            color: var(--primary-orange);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--primary-orange);
+        }
+
+        .btn-nav-logout {
+            background: #FFFFFF;
+            border: 1px solid var(--border-light);
+            color: var(--text-dark);
+            padding: 8px 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn-nav-logout:hover {
+            border-color: var(--primary-orange);
+            color: var(--primary-orange);
+        }
+
+        /* Hamburger toggle btn for mobile */
+        .sidebar-toggle-btn {
+            display: none;
+            background: var(--bg-cream);
+            border: 1px solid var(--border-light);
+            color: var(--forest-green);
+            font-size: 1.15rem;
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-toggle-btn:hover {
+            background: var(--border-light);
+            color: var(--primary-orange);
+        }
+
+        /* Layout Wrapper */
+        .donor-layout-wrapper {
+            display: flex;
+            min-height: calc(100vh - var(--navbar-height));
+            position: relative;
+        }
+
+        /* Vertical Left Sidebar */
+        .donor-sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--forest-green);
+            color: #E8F0E8;
+            position: fixed;
+            top: var(--navbar-height);
+            left: 0;
+            bottom: 0;
+            height: calc(100vh - var(--navbar-height));
+            overflow-y: auto;
+            overflow-x: hidden;
+            z-index: 990;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 24px 16px 20px;
+            box-shadow: 4px 0 16px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            scrollbar-width: thin;
+            box-sizing: border-box;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            margin-bottom: 16px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .sidebar-user-info .avatar-icon {
+            font-size: 2.2rem;
+            color: var(--primary-orange);
+            flex-shrink: 0;
+            line-height: 1;
+        }
+
+        .user-details {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .user-name {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #FFFFFF;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.3;
+        }
+
+        .user-badge {
+            font-size: 0.75rem;
+            color: #A3E635;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 3px;
+            white-space: nowrap;
+            line-height: 1.2;
+        }
+
+        .sidebar-close-btn {
+            display: none;
+            background: transparent;
+            border: none;
+            color: #E8F0E8;
+            font-size: 1.25rem;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-close-btn:hover {
+            color: #FFFFFF;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex-grow: 1;
+        }
+
+        /* Sidebar Buttons */
+        .sidebar-btn {
+            background: transparent;
+            border: none;
+            color: #E8F0E8;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 0.93rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            width: 100%;
+            transition: all 0.2s ease;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .sidebar-btn i {
+            font-size: 1.15rem;
+            width: 22px;
+            text-align: center;
+            color: #C2D6C6;
+            transition: color 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .sidebar-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #FFFFFF;
+        }
+
+        .sidebar-btn:hover i {
+            color: var(--primary-orange);
+        }
+
+        .sidebar-btn.active {
+            background: var(--primary-orange) !important;
+            color: #FFFFFF !important;
+            box-shadow: 0 4px 14px rgba(232, 93, 4, 0.35);
+            font-weight: 700;
+        }
+
+        .sidebar-btn.active i {
+            color: #FFFFFF !important;
+        }
+
+        /* Sidebar Footer */
+        .sidebar-footer {
+            padding-top: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
+            margin-top: 16px;
+            flex-shrink: 0;
+        }
+
+        .quick-eco-badge {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            color: #A3E635;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+
+        /* Main Right Content */
+        .donor-main-content {
+            flex-grow: 1;
+            margin-left: var(--sidebar-width);
+            padding: 30px 32px 60px;
+            max-width: 1300px;
+            width: calc(100% - var(--sidebar-width));
+            box-sizing: border-box;
+            transition: margin-left 0.3s ease;
+        }
+
+        /* Mobile Sidebar Backdrop */
+        .sidebar-backdrop {
+            display: none;
+            position: fixed;
+            top: var(--navbar-height);
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(2px);
+            z-index: 985;
+        }
+
+        /* Responsive Media Queries */
+        @media (max-width: 992px) {
+            :root {
+                --navbar-height: 80px;
+            }
+
+            .sidebar-toggle-btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+            .donor-sidebar {
+                transform: translateX(-100%);
+                z-index: 1050;
+            }
+
+            .donor-sidebar.open {
+                transform: translateX(0);
+            }
+
+            .sidebar-close-btn {
+                display: block;
+            }
+
+            .sidebar-backdrop.active {
+                display: block;
+                z-index: 1040;
+            }
+
+            .donor-main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px 16px 40px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            :root {
+                --navbar-height: 70px;
+            }
+
+            .nav-container {
+                padding: 0 16px;
+            }
+
+            .nav-links {
+                gap: 12px;
+            }
+
+            .btn-nav-logout {
+                padding: 6px 14px;
+                font-size: 0.82rem;
+            }
+
+            .donor-sidebar {
+                width: 270px;
+            }
+        }
+
+        /* Header Section */
+        .dashboard-header-card {
+            background: var(--card-white);
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            padding: 24px 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 16px rgba(28, 37, 32, 0.04);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .header-title-text h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.9rem;
+            color: var(--text-dark);
+            margin: 0 0 6px 0;
+        }
+
+        .header-title-text p {
+            color: var(--text-muted);
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .btn-cta-orange {
+            background: var(--primary-orange);
+            color: #FFFFFF;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 14px rgba(232, 93, 4, 0.25);
+        }
+
+        .btn-cta-orange:hover {
+            background: var(--primary-orange-hover);
+            transform: translateY(-1px);
+        }
+
+        /* Tab Content Container */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Card Panels */
+        .dashboard-card {
+            background: var(--card-white);
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 16px rgba(28, 37, 32, 0.04);
+        }
+
+        .card-heading {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            color: var(--text-dark);
+            margin: 0 0 16px 0;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .stat-box {
+            background: var(--card-white);
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(28, 37, 32, 0.03);
+        }
+
+        .stat-box i {
+            font-size: 1.8rem;
+            color: var(--primary-orange);
+            margin-bottom: 8px;
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* AI Scanner Component */
+        .ai-scanner-box {
+            background: var(--bg-cream);
+            border: 2px dashed #D1C7BD;
+            border-radius: 16px;
+            padding: 28px 20px;
+            text-align: center;
+            margin-bottom: 24px;
+            transition: border-color 0.2s ease, background 0.2s ease;
+        }
+
+        .ai-scanner-box.dragover {
+            border-color: var(--primary-orange);
+            background: #FFF8F0;
+        }
+
+        .camera-preview-wrapper {
+            max-width: 520px;
+            margin: 0 auto 16px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #1C2520;
+            min-height: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .camera-preview-wrapper video {
+            width: 100%;
+            max-height: 380px;
+            object-fit: cover;
+        }
+
+        .camera-preview-wrapper img {
+            max-width: 100%;
+            max-height: 380px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .scanner-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 14px;
+        }
+
+        /* AI Result Output Card */
+        .ai-result-card {
+            background: #F4F7F4;
+            border: 1px solid #C8E6C9;
+            border-radius: 12px;
+            padding: 22px;
+            margin-bottom: 24px;
+        }
+
+        .ai-result-title {
+            color: var(--forest-green);
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .dish-chips-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 6px;
+        }
+
+        .food-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background: #E8F5E9;
+            color: var(--forest-green);
+            border: 1px solid #C8E6C9;
+        }
+
+        .allergen-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background: #FEF3C7;
+            color: #92400E;
+            border: 1px solid #FDE68A;
+        }
+
+        .ai-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .ai-item-block {
+            background: #FFFFFF;
+            border: 1px solid var(--border-light);
+            padding: 10px 14px;
+            border-radius: 8px;
+        }
+
+        .ai-item-block label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 700;
+            display: block;
+        }
+
+        .ai-item-block span {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        /* Forms Layout */
+        .form-grid-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid-2col {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            background: var(--bg-cream);
+            border: 1px solid var(--border-light);
+            color: var(--text-dark);
+            padding: 12px 14px;
+            border-radius: 10px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-orange);
+            background: #FFFFFF;
+        }
+
+        /* Safety Indicator Banner */
+        .safety-indicator {
+            padding: 14px 18px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .safety-safe {
+            background: #E8F5E9;
+            color: #1B3022;
+            border: 1px solid #C8E6C9;
+        }
+
+        .safety-review {
+            background: #FEF3C7;
+            color: #B45309;
+            border: 1px solid #FDE68A;
+        }
+
+        .safety-concern {
+            background: #FEE2E2;
+            color: #991B1B;
+            border: 1px solid #FCA5A5;
+        }
+
+        /* Visual Timeline */
+        .tracking-timeline {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .tracking-timeline::before {
+            content: '';
+            position: absolute;
+            top: 18px;
+            left: 20px;
+            right: 20px;
+            height: 3px;
+            background: var(--border-light);
+            z-index: 1;
+        }
+
+        .timeline-step {
+            position: relative;
+            z-index: 2;
+            background: #FFFFFF;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            padding: 0 4px;
+        }
+
+        .timeline-circle {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #EAE5DE;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: 700;
+            border: 2px solid #FFFFFF;
+        }
+
+        .timeline-step.active .timeline-circle {
+            background: var(--primary-orange);
+            color: #FFFFFF;
+            box-shadow: 0 0 0 3px rgba(232, 93, 4, 0.2);
+        }
+
+        .timeline-step.completed .timeline-circle {
+            background: var(--forest-green);
+            color: #FFFFFF;
+        }
+
+        .timeline-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        .timeline-step.active .timeline-label {
+            color: var(--primary-orange);
+        }
+
+        /* Cards List Grid */
+        .donations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        /* Certificate Container */
+        .certificate-preview-box {
+            background: #FFFFFF;
+            border: 4px double var(--forest-green);
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            max-width: 650px;
+            margin: 0 auto 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+            position: relative;
+        }
+
+        .cert-badge-stamp {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--bg-cream);
+            border: 2px solid var(--primary-orange);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            color: var(--primary-orange);
+            font-size: 2.2rem;
+        }
+
+        /* Profile Layout */
+        .profile-wrapper {
+            display: flex;
+            gap: 32px;
+            align-items: flex-start;
+        }
+
+        @media (max-width: 768px) {
+            .profile-wrapper {
+                flex-direction: column;
+            }
+        }
+
+        .profile-avatar-column {
+            text-align: center;
+            min-width: 200px;
+        }
+
+        .profile-avatar-frame {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 16px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid #FFFFFF;
+            box-shadow: 0 4px 14px rgba(28, 37, 32, 0.1);
+        }
+
+        .profile-avatar-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar-edit-badge {
+            position: absolute;
+            bottom: 4px;
+            right: 4px;
+            background: var(--primary-orange);
+            color: #FFFFFF;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 2px solid #FFFFFF;
+        }
+
+        /* Empty / Loading Container */
+        .state-box {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+        }
+
+        .state-box i {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- EcoBite Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div style="display: flex; align-items: center; gap: 14px;">
+                <button class="sidebar-toggle-btn" onclick="toggleDonorSidebar()" aria-label="Toggle Navigation Sidebar">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <a href="/" class="logo">Eco<span class="highlight">Bite</span></a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/donor-home">Home</a></li>
+                <li><a href="/donor" class="active">My Dashboard</a></li>
+                <li><button class="btn-nav-logout" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Mobile Sidebar Backdrop -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeDonorSidebar()"></div>
+
+    <!-- Main Layout Wrapper -->
+    <div class="donor-layout-wrapper">
+
+        <!-- Vertical Left Sidebar -->
+        <aside class="donor-sidebar" id="donorSidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-user-info">
+                    <i class="fa-solid fa-circle-user avatar-icon"></i>
+                    <div class="user-details">
+                        <span class="user-name" id="sidebarUserName">Donor Hero</span>
+                        <span class="user-badge"><i class="fa-solid fa-shield-halved"></i> Verified Donor</span>
+                    </div>
+                </div>
+                <button class="sidebar-close-btn" onclick="closeDonorSidebar()" aria-label="Close Sidebar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <nav class="sidebar-menu">
+                <button class="sidebar-btn tab-btn active" onclick="switchTab('overview')">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>Overview</span>
+                </button>
+                <button class="sidebar-btn tab-btn" onclick="switchTab('donate-tab')">
+                    <i class="fa-solid fa-camera-retro"></i>
+                    <span>AI Scanner & Donate</span>
+                </button>
+                <button class="sidebar-btn tab-btn" onclick="switchTab('my-donations')">
+                    <i class="fa-solid fa-box"></i>
+                    <span>My Donations</span>
+                </button>
+                <button class="sidebar-btn tab-btn" onclick="switchTab('scheduled')">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    <span>Scheduled Donations</span>
+                </button>
+                <button class="sidebar-btn tab-btn" onclick="switchTab('impact')">
+                    <i class="fa-solid fa-award"></i>
+                    <span>Impact & Certificates</span>
+                </button>
+                <button class="sidebar-btn tab-btn" onclick="switchTab('notifications')">
+                    <i class="fa-solid fa-bell"></i>
+                    <span>Notifications</span>
+                </button>
+                <button class="sidebar-btn tab-btn" onclick="switchTab('profile')">
+                    <i class="fa-solid fa-user-gear"></i>
+                    <span>Profile</span>
+                </button>
+                <button class="sidebar-btn tab-btn" onclick="switchTab('complaints')">
+                    <i class="fa-solid fa-headset"></i>
+                    <span>Help & Complaints</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="quick-eco-badge">
+                    <i class="fa-solid fa-seedling"></i>
+                    <span>Zero Waste Champion</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Right Main Dashboard Content -->
+        <main class="donor-main-content">
+
+            <!-- Header Card -->
+            <div class="dashboard-header-card">
+                <div class="header-title-text">
+                    <h1 id="welcomeHeading">Donor Dashboard</h1>
+                    <p>Manage your food donations, AI camera scanner, NGO matching, and environmental impact.</p>
+                </div>
+                <button class="btn-cta-orange" onclick="switchTab('donate-tab')">
+                    <i class="fa-solid fa-plus"></i> Donate Food
+                </button>
+            </div>
+
+        <!-- ================= TAB 1: OVERVIEW ================= -->
+        <div id="overview" class="tab-content active">
+            <!-- Real-Time Statistics -->
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <i class="fa-solid fa-hand-holding-heart"></i>
+                    <div id="statTotal" class="stat-number">0</div>
+                    <div class="stat-label">Total Donations</div>
+                </div>
+                <div class="stat-box">
+                    <i class="fa-solid fa-truck-ramp-box" style="color: #3B82F6;"></i>
+                    <div id="statActive" class="stat-number">0</div>
+                    <div class="stat-label">Active / In-Transit</div>
+                </div>
+                <div class="stat-box">
+                    <i class="fa-solid fa-circle-check" style="color: #10B981;"></i>
+                    <div id="statCompleted" class="stat-number">0</div>
+                    <div class="stat-label">Completed Deliveries</div>
+                </div>
+                <div class="stat-box">
+                    <i class="fa-solid fa-bowl-rice" style="color: var(--primary-orange);"></i>
+                    <div id="statMeals" class="stat-number">0</div>
+                    <div class="stat-label">Meals Saved</div>
+                </div>
+            </div>
+
+            <!-- AI Scanner Promo Banner (Matches User Reference Screenshot) -->
+            <div class="ai-scanner-box">
+                <i class="fa-solid fa-camera" style="font-size: 2.8rem; color: var(--primary-orange); margin-bottom: 12px;"></i>
+                <h2 style="font-family:'Playfair Display', serif; color: var(--text-dark); margin:0 0 6px 0;">AI Food Camera Scanner</h2>
+                <p style="color: var(--text-muted); margin: 0 0 20px 0;">Upload or capture food photo. AI suggests category, diet type, servings, and safety checks for your review.</p>
+                <button class="btn-cta-orange" style="width: 100%; max-width: 420px; justify-content: center; font-size: 1.05rem;" onclick="switchTab('donate-tab')">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Open AI Scanner & Form
+                </button>
+            </div>
+
+            <!-- Recent Donations -->
+            <div class="dashboard-card">
+                <h2 class="card-heading">Recent Donations</h2>
+                <div id="overviewRecentList">
+                    <div class="state-box">
+                        <i class="fa-solid fa-circle-notch fa-spin"></i>
+                        <p>Loading recent activity...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 2: AI SCANNER & DONATE ================= -->
+        <div id="donate-tab" class="tab-content">
+            <!-- AI Scanner Module -->
+            <div class="dashboard-card">
+                <h2 class="card-heading"><i class="fa-solid fa-wand-magic-sparkles" style="color:var(--primary-orange);"></i> AI Food Camera Scanner</h2>
+                
+                <div id="aiDropZone" class="ai-scanner-box">
+                    <div id="cameraPreviewBox" class="camera-preview-wrapper">
+                        <video id="cameraVideo" autoplay playsinline style="display:none;"></video>
+                        <img id="aiScanPreview" alt="Scan Preview" style="object-fit:contain;max-width:100%;max-height:380px;width:auto;height:auto;display:none;">
+                        <div id="scannerEmptyPlaceholder" style="padding:40px 20px; color:#A8A29E;">
+                            <i class="fa-solid fa-cloud-arrow-up" style="font-size:2.8rem; color:var(--primary-orange); margin-bottom:10px; display:block;"></i>
+                            <strong style="color:var(--text-dark); font-size:1rem; display:block; margin-bottom:4px;">Drag & Drop Food Photo Here</strong>
+                            <span style="font-size:0.85rem; color:var(--text-muted);">Supports JPG, PNG, and WebP (up to 10 MB)</span>
+                        </div>
+                        <canvas id="cameraCanvas" style="display:none;"></canvas>
+                    </div>
+
+                    <div class="scanner-actions">
+                        <label for="aiScanInput" class="btn-cta-orange" style="background:#FFFFFF; color:var(--text-dark); border:1px solid var(--border-light); cursor:pointer;">
+                            <i class="fa-solid fa-upload"></i> Upload Image
+                        </label>
+                        <input type="file" id="aiScanInput" accept="image/jpeg,image/png,image/webp" hidden>
+
+                        <button id="btnStartCamera" class="btn-cta-orange" style="background:#1B3022;" onclick="toggleCamera()">
+                            <i class="fa-solid fa-video"></i> Use Camera
+                        </button>
+                        <button id="btnCapturePhoto" class="btn-cta-orange" style="background:#3B82F6; display:none;" onclick="captureCameraPhoto()">
+                            <i class="fa-solid fa-camera"></i> Take Snap
+                        </button>
+                        <button id="btnRemovePhoto" class="btn-cta-orange" style="background:#64748B; display:none;" onclick="removeScanPhoto()">
+                            <i class="fa-solid fa-trash-can"></i> Remove Photo
+                        </button>
+                        <button id="btnRetryScan" class="btn-cta-orange" style="background:#0F766E; display:none;" onclick="runAIScan()">
+                            <i class="fa-solid fa-arrow-rotate-right"></i> Retry Analysis
+                        </button>
+                    </div>
+
+                    <!-- AI Progress / Loading State -->
+                    <div id="aiScanProgress" style="display:none; margin:18px auto 0; max-width:440px; padding:16px; background:#FFFFFF; border:1px solid #FED7AA; border-radius:12px; text-align:center; box-shadow:0 4px 12px rgba(0,0,0,0.04);">
+                        <i class="fa-solid fa-circle-notch fa-spin" style="font-size:2rem; color:var(--primary-orange); margin-bottom:8px; display:inline-block;"></i>
+                        <strong style="display:block; color:var(--text-dark); font-size:0.95rem;">Analyzing Food Pixels with AI...</strong>
+                        <p style="margin:4px 0 0; font-size:0.82rem; color:var(--text-muted);">Identifying Indian & international dishes, ingredients, and potential allergens.</p>
+                    </div>
+
+                    <div id="aiScanErrorInline" style="display:none; padding:12px 16px; margin:16px auto 0; max-width:520px; border-radius:12px; background:#FFF3E9; color:#713F12; border:1px solid #FED7AA; text-align:left; font-size:0.9rem;"></div>
+
+                    <button id="btnRunAIScan" class="btn-cta-orange" style="width:100%; max-width:400px; margin-top:18px; justify-content:center;" onclick="runAIScan()">
+                        <i class="fa-solid fa-bolt"></i> Analyze Food with AI
+                    </button>
+                </div>
+
+                <!-- AI Output Results -->
+                <div id="aiResultContainer" style="display:none;" class="ai-result-card">
+                    <div class="ai-result-title">
+                        <div>
+                            <i class="fa-solid fa-robot"></i> <span id="resHeaderTitle">AI Analysis Result</span>
+                        </div>
+                        <span id="resConfidenceBadge" style="font-size:0.75rem; background:#E8F5E9; color:var(--forest-green); padding:4px 10px; border-radius:16px; font-weight:700;">Confidence: High</span>
+                    </div>
+
+                    <div style="background:#FFFFFF; border:1px solid var(--border-light); border-radius:10px; padding:16px; margin-bottom:14px;">
+                        <label style="font-size:0.75rem; text-transform:uppercase; color:var(--text-muted); font-weight:700; display:block;">Recognized Primary Dish</label>
+                        <h3 id="resFoodName" style="margin:4px 0 8px 0; color:var(--text-dark); font-size:1.35rem; font-family:'Playfair Display', serif;">--</h3>
+                        
+                        <div id="resDetectedDishesWrapper" style="display:none; margin-top:8px;">
+                            <label style="font-size:0.72rem; text-transform:uppercase; color:var(--text-muted); font-weight:700; display:block; margin-bottom:4px;">Multiple Detected Dishes / Items:</label>
+                            <div id="resDetectedChips" class="dish-chips-container"></div>
+                        </div>
+                    </div>
+
+                    <div class="ai-grid">
+                        <div class="ai-item-block">
+                            <label>Food Category</label>
+                            <span id="resCategory">--</span>
+                        </div>
+                        <div class="ai-item-block">
+                            <label>Diet Type (Confirm Below)</label>
+                            <span id="resDietType">--</span>
+                        </div>
+                        <div class="ai-item-block">
+                            <label>Observed Portion Description</label>
+                            <span id="resPortionDesc" style="font-size:0.88rem; font-weight:500;">--</span>
+                        </div>
+                        <div class="ai-item-block">
+                            <label>Visible Ingredients</label>
+                            <div id="resIngredientsChips" class="dish-chips-container" style="margin-top:4px;">
+                                <span style="color:var(--text-muted); font-size:0.85rem;">None identified</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Allergen Warning Block -->
+                    <div id="resAllergenBlock" style="background:#FEF3C7; border:1px solid #FDE68A; border-radius:8px; padding:12px 14px; margin-bottom:14px; display:none;">
+                        <strong style="color:#92400E; font-size:0.85rem; display:block; margin-bottom:4px;">
+                            <i class="fa-solid fa-triangle-exclamation"></i> Potential Allergen Warnings (Visual Estimate — Donor Must Confirm):
+                        </strong>
+                        <div id="resAllergensChips" class="dish-chips-container"></div>
+                    </div>
+
+                    <p style="color:var(--text-muted); font-size:0.85rem; margin:0 0 14px 0; line-height:1.4;" id="resQualityNotes"></p>
+
+                    <div style="background:#EFF6FF; border:1px solid #BFDBFE; border-radius:8px; padding:10px 14px; margin-bottom:14px; font-size:0.82rem; color:#1E40AF;">
+                        <i class="fa-solid fa-circle-info"></i> <strong>Donor Verification Required:</strong> AI suggests food type and items from visual pixels only. Actual freshness, exact quantity, number of servings, and preparation time must be confirmed in the donation form below.
+                    </div>
+
+                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                        <button class="btn-cta-orange" style="background:var(--forest-green); flex:1;" onclick="applyAISuggestions()">
+                            <i class="fa-solid fa-arrow-down"></i> Apply Suggestions to Form
+                        </button>
+                        <button class="btn-cta-orange" style="background:#475569; flex:1;" onclick="promptAICorrection()">
+                            <i class="fa-solid fa-pen-to-square"></i> Correct AI Prediction
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Safety Information Check -->
+                <h3 style="font-family:'Playfair Display', serif; color:var(--text-dark); margin: 24px 0 12px 0;">Food Safety & Quality Check</h3>
+                <div id="safetyBadge" class="safety-indicator safety-safe">
+                    <i class="fa-solid fa-shield-check"></i>
+                    <span id="safetyText">Food safety not verified. Please confirm preparation and storage details.</span>
+                </div>
+
+                <!-- AI Review Banner -->
+                <div id="aiReviewNotice" style="display:none; background:#FFF8E1; border:1px solid #FFE082; padding:14px 18px; border-radius:12px; margin-bottom:20px; color:#8D6E63;">
+                    <strong style="color:#B45309;"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Analysis Complete — Please Review & Confirm Details Below</strong>
+                    <p style="margin:4px 0 0 0; font-size:0.88rem; color:#616161;">Fields marked with <span style="color:#E85D04; font-weight:700;">✨ AI Suggested</span> were populated automatically. Please confirm or edit before publishing.</p>
+                </div>
+
+                <!-- Advanced Donation Form -->
+                <form id="donationForm">
+                    <div class="form-grid-2col">
+                        <div class="form-group">
+                            <label>Food Title / Name <span id="badgeFoodName" style="color:#E85D04; font-size:0.75rem; font-weight:700; display:none;">✨ AI Suggested</span></label>
+                            <input type="text" id="inputFoodName" name="food_name" placeholder="e.g. Mixed Veg Curry & Rice" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Diet Type <span id="badgeDietType" style="color:#E85D04; font-size:0.75rem; font-weight:700; display:none;">✨ AI Suggested</span></label>
+                            <select id="inputDietType" name="diet_type">
+                                <option value="Veg">Vegetarian</option>
+                                <option value="Non-Veg">Non-Vegetarian</option>
+                                <option value="Vegan">Vegan</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Category Target <span id="badgeCategory" style="color:#E85D04; font-size:0.75rem; font-weight:700; display:none;">✨ AI Suggested</span></label>
+                            <select id="inputCategory" name="food_category">
+                                <option value="For Humans">For Humans (Cooked Meal)</option>
+                                <option value="Raw Ingredients">Raw Ingredients / Packaged</option>
+                                <option value="For Animals">For Animals / Cattle Feed</option>
+                                <option value="Compost">Compost / Biomass</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Quantity & Servings <span id="badgeQuantity" style="color:#3B82F6; font-size:0.75rem; font-weight:700;">✍️ Requires Confirmation</span></label>
+                            <input type="text" id="inputQuantity" name="quantity" placeholder="e.g. 15 Servings (5 kg)" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Preparation Date & Time</label>
+                            <input type="datetime-local" id="inputPrepTime" name="preparation_time">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Storage Condition</label>
+                            <select id="inputStorage" name="storage_condition" onchange="checkFoodSafety()">
+                                <option value="Room Temperature">Room Temperature</option>
+                                <option value="Refrigerated">Refrigerated (< 5°C)</option>
+                                <option value="Insulated Container">Insulated Thermal Container</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Pickup Location / Address</label>
+                            <input type="text" id="inputAddress" name="pickup_address" placeholder="Full address for pickup driver" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Contact Phone</label>
+                            <input type="tel" id="inputPhone" placeholder="Your phone number" required>
+                        </div>
+
+                        <div class="form-group full-width" style="grid-column: 1 / -1;">
+                            <label>Food Photo <span style="font-size:0.8rem; color:var(--text-muted);">(Upload a photo or use AI Scanner above)</span></label>
+                            <input type="file" id="inputFoodPhoto" name="image" accept="image/*" style="padding: 8px; border: 1px dashed var(--primary-orange); border-radius: 8px; width: 100%; background: #FFF8F0;" onchange="handleFoodPhotoSelect(this)">
+                            <div id="photoPreviewContainer" style="margin-top: 10px; display: none;">
+                                <img id="photoPreviewImg" src="" style="width: 100%; max-height: 180px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-light);" alt="Food Photo Preview">
+                            </div>
+                        </div>
+
+                        <div class="form-group full-width" style="grid-column: 1 / -1;">
+                            <label>Handling Instructions & Allergen Notes</label>
+                            <textarea id="inputInstructions" name="instructions" rows="3" placeholder="e.g. Contains dairy. Please bring insulated container for pickup."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Smart NGO Matching Panel -->
+                    <div style="background:var(--bg-cream); border:1px solid var(--border-light); border-radius:12px; padding:18px; margin: 20px 0;">
+                        <h4 style="margin:0 0 10px 0; color:var(--forest-green);"><i class="fa-solid fa-building-ngo"></i> Smart NGO Match Suggestions</h4>
+                        <div id="ngoMatchResults">
+                            <p style="color:var(--text-muted); font-size:0.9rem; margin:0;">Suggestions update automatically when food details are entered.</p>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-cta-orange" style="width:100%; justify-content:center; padding:14px; font-size:1.05rem;">
+                        <i class="fa-solid fa-paper-plane"></i> Publish Food Donation
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- ================= TAB 3: MY DONATIONS ================= -->
+        <div id="my-donations" class="tab-content">
+            <div class="dashboard-card">
+                <h2 class="card-heading">My Donations & Tracking</h2>
+                <div id="myDonationsGrid" class="donations-grid">
+                    <div class="state-box">
+                        <i class="fa-solid fa-circle-notch fa-spin"></i>
+                        <p>Loading your donations...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 4: SCHEDULED DONATIONS ================= -->
+        <div id="scheduled" class="tab-content">
+            <div class="dashboard-card">
+                <h2 class="card-heading"><i class="fa-solid fa-calendar-plus" style="color:var(--primary-orange);"></i> Schedule Future Donation</h2>
+                <form id="scheduleForm">
+                    <div class="form-grid-2col">
+                        <div class="form-group">
+                            <label>Food Item Title</label>
+                            <input type="text" id="schedFoodName" placeholder="e.g. Daily Hotel Surplus Dinner" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Schedule Type</label>
+                            <select id="schedType">
+                                <option value="one-time">One-Time Future Pickup</option>
+                                <option value="daily">Recurring Daily (Restaurants/Hotels)</option>
+                                <option value="weekly">Recurring Weekly</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Scheduled Date</label>
+                            <input type="date" id="schedDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Scheduled Time Window</label>
+                            <input type="time" id="schedTime" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Quantity / Meals</label>
+                            <input type="text" id="schedQty" placeholder="e.g. 20 Meals" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Pickup Location</label>
+                            <input type="text" id="schedAddress" placeholder="Pickup location" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-cta-orange" style="margin-top:16px;">
+                        <i class="fa-solid fa-clock"></i> Save Donation Schedule
+                    </button>
+                </form>
+
+                <h3 style="font-family:'Playfair Display', serif; color:var(--text-dark); margin: 32px 0 16px 0;">Active Schedules</h3>
+                <div id="scheduledList">
+                    <div class="state-box">
+                        <i class="fa-solid fa-circle-notch fa-spin"></i>
+                        <p>Loading schedules...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 5: IMPACT & CERTIFICATES ================= -->
+        <div id="impact" class="tab-content">
+            <div class="dashboard-card">
+                <h2 class="card-heading"><i class="fa-solid fa-award" style="color:var(--primary-orange);"></i> Environmental Impact & Verified Certificate</h2>
+                
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <i class="fa-solid fa-leaf" style="color:#10B981;"></i>
+                        <div id="co2Val" class="stat-number">0 kg</div>
+                        <div class="stat-label">CO2 Reduction</div>
+                    </div>
+                    <div class="stat-box">
+                        <i class="fa-solid fa-dumpster" style="color:var(--primary-orange);"></i>
+                        <div id="wasteVal" class="stat-number">0 kg</div>
+                        <div class="stat-label">Landfill Waste Saved</div>
+                    </div>
+                    <div class="stat-box">
+                        <i class="fa-solid fa-people-roof" style="color:#3B82F6;"></i>
+                        <div id="peopleFedVal" class="stat-number">0</div>
+                        <div class="stat-label">People Nourished</div>
+                    </div>
+                </div>
+
+                <!-- Printable Certificate -->
+                <div class="certificate-preview-box" id="certificateNode">
+                    <div class="cert-badge-stamp">
+                        <i class="fa-solid fa-award"></i>
+                    </div>
+                    <h2 style="font-family:'Playfair Display', serif; color:var(--forest-green); margin:0 0 8px 0; font-size:2rem;">Certificate of Appreciation</h2>
+                    <p style="color:var(--primary-orange); font-weight:700; letter-spacing:1px; text-transform:uppercase; font-size:0.85rem; margin-bottom:20px;">EcoBite Zero Waste Food Hero</p>
+                    
+                    <p style="color:var(--text-muted); font-size:1rem; margin:0 0 16px 0;">This certificate is proudly awarded to</p>
+                    <h3 id="certName" style="font-family:'Playfair Display', serif; font-size:1.8rem; color:var(--text-dark); margin:0 0 16px 0;">Donor Name</h3>
+                    
+                    <p style="color:var(--text-muted); font-size:0.95rem; line-height:1.6; max-width:500px; margin:0 auto 24px;">
+                        In recognition of outstanding contribution to food waste prevention and community nourishment through EcoBite Food Management Platform.
+                    </p>
+
+                    <div style="display:flex; justify-content:space-around; border-top:1px solid var(--border-light); padding-top:16px;">
+                        <div>
+                            <small style="color:var(--text-muted); display:block;">Certificate ID</small>
+                            <span id="certCode" style="font-weight:700; color:var(--forest-green); font-size:0.9rem;">ECO-CERT-2026-00001</span>
+                        </div>
+                        <div>
+                            <small style="color:var(--text-muted); display:block;">Verified Date</small>
+                            <span id="certDate" style="font-weight:700; color:var(--text-dark); font-size:0.9rem;">2026-10-09</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align:center;">
+                    <button class="btn-cta-orange" onclick="printCertificate()">
+                        <i class="fa-solid fa-file-pdf"></i> Download PDF Certificate
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 6: NOTIFICATIONS ================= -->
+        <div id="notifications" class="tab-content">
+            <div class="dashboard-card">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                    <h2 class="card-heading" style="margin:0;"><i class="fa-solid fa-bell" style="color:var(--primary-orange);"></i> System Notifications</h2>
+                </div>
+                <div id="notifList">
+                    <div class="state-box">
+                        <i class="fa-solid fa-bell-slash"></i>
+                        <p>No new notifications right now.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 7: PROFILE ================= -->
+        <div id="profile" class="tab-content">
+            <div class="dashboard-card">
+                <h2 class="card-heading">Donor Account Profile</h2>
+                <form id="profileForm" enctype="multipart/form-data">
+                    <div class="profile-wrapper">
+                        <div class="profile-avatar-column">
+                            <div class="profile-avatar-frame">
+                                <img id="avatarPreview" src="/hero_food.jpg" alt="Profile Avatar">
+                                <label for="profilePicInput" class="avatar-edit-badge" title="Upload Photo">
+                                    <i class="fa-solid fa-camera"></i>
+                                </label>
+                                <input type="file" id="profilePicInput" name="profile_pic" accept="image/*" hidden>
+                            </div>
+                            <h3 id="profileNameDisplay" style="margin:0; color:var(--text-dark);">Donor Name</h3>
+                            <span style="background:#E8F5E9; color:var(--forest-green); padding:4px 14px; border-radius:50px; font-size:0.8rem; font-weight:600; display:inline-block; margin-top:6px;">Verified Donor</span>
+                        </div>
+
+                        <div style="flex:1;">
+                            <div class="form-grid-2col">
+                                <div class="form-group">
+                                    <label>Full Name / Organization</label>
+                                    <input type="text" id="profileName" name="name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Email Address</label>
+                                    <input type="email" id="profileEmail" disabled style="opacity:0.7;">
+                                </div>
+                                <div class="form-group">
+                                    <label>Phone Number</label>
+                                    <input type="tel" id="profilePhone" name="phone" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Donor Type</label>
+                                    <select id="profileDonorType" name="donor_type">
+                                        <option value="Individual">Individual Donor</option>
+                                        <option value="Restaurant">Restaurant / Cafe</option>
+                                        <option value="Hotel">Hotel / Resort</option>
+                                        <option value="Catering">Catering / Event Manager</option>
+                                    </select>
+                                </div>
+                                <div class="form-group full-width" style="grid-column: 1 / -1;">
+                                    <label>Default Pickup Address</label>
+                                    <input type="text" id="profileAddress" name="address">
+                                </div>
+                                <div class="form-group full-width" style="grid-column: 1 / -1;">
+                                    <label>Bio / Mission Statement</label>
+                                    <textarea id="profileBio" name="bio" rows="3"></textarea>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn-cta-orange" style="margin-top:16px;">
+                                <i class="fa-solid fa-floppy-disk"></i> Save Profile Details
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        <!-- ================= TAB 8: HELP & COMPLAINTS ================= -->
+        <div id="complaints" class="tab-content">
+            <div class="dashboard-card">
+                <h2 class="card-heading"><i class="fa-solid fa-headset" style="color:var(--primary-orange);"></i> Help & Complaint Center</h2>
+                <p style="color:var(--text-muted); margin-bottom:20px;">Submit complaints or track responses from EcoBite Admin Support team.</p>
+
+                <!-- Complaint Submission Form -->
+                <div class="cmp-form-card">
+                    <h3 style="margin:0 0 16px 0; color:var(--forest-green);"><i class="fa-solid fa-pen-to-square"></i> Submit a Complaint or Issue</h3>
+                    <form id="donorComplaintForm" onsubmit="EcoBiteComplaints.submitComplaintForm(event, 'donorComplaintForm', 'Donor')">
+                        <input type="hidden" name="user_role" value="Donor">
+                        <div class="cmp-form-grid">
+                            <div class="cmp-form-group">
+                                <label>Full Name</label>
+                                <input type="text" name="full_name" id="donorCmpName" placeholder="Your Name" required>
+                            </div>
+                            <div class="cmp-form-group">
+                                <label>Email Address</label>
+                                <input type="email" name="email" id="donorCmpEmail" placeholder="Your Email" required>
+                            </div>
+                            <div class="cmp-form-group">
+                                <label>Contact Phone (Optional)</label>
+                                <input type="tel" name="phone" id="donorCmpPhone" placeholder="Phone Number">
+                            </div>
+                            <div class="cmp-form-group">
+                                <label>Complaint Category</label>
+                                <select name="category" id="donorCmpCategory" required>
+                                    <option value="">-- Select Category --</option>
+                                    <option value="Food Donation Problem">Food Donation Problem</option>
+                                    <option value="NGO Claim Issue">NGO Claim Issue</option>
+                                    <option value="Food Safety Complaint">Food Safety Complaint ⚠️ (Critical)</option>
+                                    <option value="Delivery Delay">Delivery Delay</option>
+                                    <option value="Pickup Problem">Pickup Problem</option>
+                                    <option value="OTP Verification Problem">OTP Verification Problem</option>
+                                    <option value="Incorrect Donation Information">Incorrect Donation Information</option>
+                                    <option value="Account/Login Issue">Account/Login Issue</option>
+                                    <option value="AI Food Scanner Problem">AI Food Scanner Problem</option>
+                                    <option value="Technical Issue">Technical Issue</option>
+                                    <option value="Fraud or Suspicious Activity">Fraud or Suspicious Activity 🚨 (Critical)</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="cmp-form-group">
+                                <label>Priority Level</label>
+                                <select name="priority" id="donorCmpPriority">
+                                    <option value="LOW">LOW</option>
+                                    <option value="MEDIUM" selected>MEDIUM</option>
+                                    <option value="HIGH">HIGH</option>
+                                    <option value="CRITICAL">CRITICAL</option>
+                                </select>
+                            </div>
+                            <div class="cmp-form-group">
+                                <label>Related Donation ID (Optional)</label>
+                                <input type="text" name="related_donation_id" placeholder="e.g. 12 or ECO-12">
+                            </div>
+                        </div>
+
+                        <div class="cmp-form-group" style="margin-bottom:16px;">
+                            <label>Complaint Subject</label>
+                            <input type="text" name="subject" placeholder="Brief summary of the issue" required>
+                        </div>
+
+                        <div class="cmp-form-group" style="margin-bottom:16px;">
+                            <label>Detailed Description</label>
+                            <textarea name="description" rows="4" placeholder="Describe the issue in detail..." required></textarea>
+                        </div>
+
+                        <div class="cmp-form-group" style="margin-bottom:20px;">
+                            <label>Screenshot or Image Attachment (Optional)</label>
+                            <input type="file" name="attachment" accept="image/*">
+                        </div>
+
+                        <button type="submit" class="btn-cmp-submit">
+                            <i class="fa-solid fa-paper-plane"></i> Submit Complaint Ticket
+                        </button>
+                    </form>
+                </div>
+
+                <!-- My Complaints History List -->
+                <div style="margin-top:32px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                        <h3 style="margin:0; color:var(--forest-green);"><i class="fa-solid fa-clock-rotate-left"></i> My Complaint Tickets</h3>
+                        <button class="btn-cmp-view" onclick="EcoBiteComplaints.loadUserComplaints('donorComplaintsContainer')">
+                            <i class="fa-solid fa-arrows-rotate"></i> Refresh
+                        </button>
+                    </div>
+                    <div id="donorComplaintsContainer">
+                        <!-- Populated via JS -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/app.js"></script>
+    <script src="/complaints.js"></script>
+    <script>
+        const API_BASE_URL = '/api';
+        let userStr = localStorage.getItem('user');
+        let user = userStr ? JSON.parse(userStr) : null;
+
+        // Session check
+        if (!user || (user.role && user.role.toLowerCase() !== 'donor')) {
+            window.location.href = '/login';
+        } else {
+            if (document.getElementById('welcomeHeading')) {
+                document.getElementById('welcomeHeading').innerText = `Welcome, ${user.name || 'Donor'}`;
+            }
+            if (document.getElementById('sidebarUserName')) {
+                document.getElementById('sidebarUserName').innerText = user.name || 'Donor Hero';
+            }
+        }
+
+        // Sync session
+        fetch('/api/me').then(r=>r.json()).then(d=>{
+            if (d.authenticated && d.user) {
+                user = d.user;
+                localStorage.setItem('user', JSON.stringify(user));
+                if (document.getElementById('welcomeHeading')) {
+                    document.getElementById('welcomeHeading').innerText = `Welcome, ${user.name}`;
+                }
+                if (document.getElementById('sidebarUserName')) {
+                    document.getElementById('sidebarUserName').innerText = user.name;
+                }
+            }
+        }).catch(e=>console.warn(e));
+
+        // --- SIDEBAR TOGGLE (MOBILE) ---
+        function toggleDonorSidebar() {
+            const sidebar = document.getElementById('donorSidebar');
+            const backdrop = document.getElementById('sidebarBackdrop');
+            if (sidebar) sidebar.classList.toggle('open');
+            if (backdrop) backdrop.classList.toggle('active');
+        }
+
+        function closeDonorSidebar() {
+            const sidebar = document.getElementById('donorSidebar');
+            const backdrop = document.getElementById('sidebarBackdrop');
+            if (sidebar) sidebar.classList.remove('open');
+            if (backdrop) backdrop.classList.remove('active');
+        }
+
+        // --- TAB SWITCHER ---
+        function switchTab(tabId) {
+            document.querySelectorAll('.sidebar-btn, .tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+            const btns = document.querySelectorAll(`button[onclick="switchTab('${tabId}')"]`);
+            btns.forEach(b => b.classList.add('active'));
+
+            const tab = document.getElementById(tabId);
+            if (tab) tab.classList.add('active');
+
+            // Close mobile sidebar drawer on selection
+            closeDonorSidebar();
+
+            if (tabId === 'overview') fetchOverviewStats();
+            if (tabId === 'my-donations') fetchMyDonations();
+            if (tabId === 'scheduled') fetchScheduledDonations();
+            if (tabId === 'impact') fetchImpactData();
+            if (tabId === 'notifications') fetchNotifications();
+            if (tabId === 'profile') fetchProfile();
+            if (tabId === 'complaints') {
+                if (user) {
+                    if (document.getElementById('donorCmpName')) document.getElementById('donorCmpName').value = user.name || '';
+                    if (document.getElementById('donorCmpEmail')) document.getElementById('donorCmpEmail').value = user.email || '';
+                    if (document.getElementById('donorCmpPhone')) document.getElementById('donorCmpPhone').value = user.phone || '';
+                }
+                EcoBiteComplaints.loadUserComplaints('donorComplaintsContainer');
+                EcoBiteComplaints.handleCategoryChange('donorCmpCategory', 'donorCmpPriority');
+                EcoBiteComplaints.startPolling('user');
+            }
+        }
+
+        // --- OVERVIEW STATS & RECENT ---
+        async function fetchOverviewStats() {
+            try {
+                const res = await fetch(`${API_BASE_URL}/donations`);
+                const all = await res.json();
+                const myDonations = all.filter(d => d.donor_id == user.id);
+
+                const total = myDonations.length;
+                const active = myDonations.filter(d => ['Available', 'Claimed', 'Picked Up'].includes(d.status)).length;
+                const completed = myDonations.filter(d => d.status === 'Delivered').length;
+
+                let meals = 0;
+                myDonations.forEach(d => {
+                    meals += parseInt(d.quantity) || 10;
+                });
+
+                document.getElementById('statTotal').innerText = total;
+                document.getElementById('statActive').innerText = active;
+                document.getElementById('statCompleted').innerText = completed;
+                document.getElementById('statMeals').innerText = meals;
+
+                const recentContainer = document.getElementById('overviewRecentList');
+                if (myDonations.length === 0) {
+                    recentContainer.innerHTML = '<div class="state-box"><p>No recent donations found. Click "Donate Food" to start!</p></div>';
+                    return;
+                }
+
+                recentContainer.innerHTML = '';
+                myDonations.slice(0, 4).forEach(d => {
+                    recentContainer.innerHTML += `
+                        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-light); padding:12px 0;">
+                            <div>
+                                <h4 style="margin:0; color:var(--text-dark);">${d.food_name || d.food_type || 'Food Donation'}</h4>
+                                <small style="color:var(--text-muted);">${d.quantity} Servings • Posted ${d.timestamp || 'Recently'}</small>
+                            </div>
+                            <span class="safety-indicator safety-safe" style="padding:4px 12px; margin:0; font-size:0.8rem;">
+                                ${d.status}
+                            </span>
+                        </div>
+                    `;
+                });
+            } catch(e) { console.error(e); }
+        }
+
+        // --- AI CAMERA SCANNER & CAMERA CAPTURE ---
+        let cameraStream = null;
+        window.selectedScanFile = null;
+
+        function toggleCamera() {
+            const video = document.getElementById('cameraVideo');
+            const preview = document.getElementById('aiScanPreview');
+            const placeholder = document.getElementById('scannerEmptyPlaceholder');
+            const captureBtn = document.getElementById('btnCapturePhoto');
+            const startBtn = document.getElementById('btnStartCamera');
+
+            if (cameraStream) {
+                // Stop camera
+                cameraStream.getTracks().forEach(t => t.stop());
+                cameraStream = null;
+                video.style.display = 'none';
+                if (window.selectedScanFile) {
+                    preview.style.display = 'block';
+                    if (placeholder) placeholder.style.display = 'none';
+                } else {
+                    if (placeholder) placeholder.style.display = 'block';
+                    preview.style.display = 'none';
+                }
+                captureBtn.style.display = 'none';
+                startBtn.innerHTML = '<i class="fa-solid fa-video"></i> Use Camera';
+                startBtn.style.background = '#1B3022';
+            } else {
+                navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } } })
+                    .then(stream => {
+                        cameraStream = stream;
+                        video.srcObject = stream;
+                        video.style.display = 'block';
+                        preview.style.display = 'none';
+                        if (placeholder) placeholder.style.display = 'none';
+                        captureBtn.style.display = 'inline-flex';
+                        startBtn.innerHTML = '<i class="fa-solid fa-stop"></i> Stop Camera';
+                        startBtn.style.background = '#DC2626';
+                    })
+                    .catch(err => {
+                        console.error('Camera access error:', err);
+                        showAIScanError('CAMERA_ERROR', 'Camera access denied or unavailable: ' + err.message + '. You can still upload a photo using the Upload button.');
+                    });
+            }
+        }
+
+        function captureCameraPhoto() {
+            const video = document.getElementById('cameraVideo');
+            const canvas = document.getElementById('cameraCanvas');
+
+            canvas.width = video.videoWidth || 640;
+            canvas.height = video.videoHeight || 480;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            canvas.toBlob(blob => {
+                if (blob) {
+                    const snapFile = new File([blob], `camera_snap_${Date.now()}.jpg`, { type: 'image/jpeg' });
+                    setScanFile(snapFile);
+                }
+                toggleCamera(); // turn camera off after capture
+            }, 'image/jpeg', 0.92);
+        }
+
+        function setScanFile(file) {
+            if (!file) return;
+
+            // Validate format
+            const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
+            const validExts = ['.jpg', '.jpeg', '.png', '.webp'];
+            const nameLower = file.name.toLowerCase();
+            const isValid = validTypes.includes(file.type) || validExts.some(ext => nameLower.endsWith(ext));
+
+            if (!isValid) {
+                showAIScanError('INVALID_IMAGE', 'Unsupported file type. Please upload a JPG, PNG, or WebP food photograph.');
+                return;
+            }
+
+            if (file.size > 10 * 1024 * 1024) {
+                showAIScanError('INVALID_IMAGE', 'Image size exceeds the 10 MB limit. Please select a smaller photo.');
+                return;
+            }
+
+            window.selectedScanFile = file;
+            window.currentAIAnalysis = null;
+
+            const preview = document.getElementById('aiScanPreview');
+            const placeholder = document.getElementById('scannerEmptyPlaceholder');
+            const btnRemove = document.getElementById('btnRemovePhoto');
+            const btnRetry = document.getElementById('btnRetryScan');
+            const errBanner = document.getElementById('aiScanErrorInline');
+            const resultCard = document.getElementById('aiResultContainer');
+
+            if (errBanner) errBanner.style.display = 'none';
+            if (resultCard) resultCard.style.display = 'none';
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                preview.src = evt.target.result;
+                preview.style.display = 'block';
+                if (placeholder) placeholder.style.display = 'none';
+                if (btnRemove) btnRemove.style.display = 'inline-flex';
+                if (btnRetry) btnRetry.style.display = 'inline-flex';
+
+                // Also preview in the donation form below
+                const formPreviewContainer = document.getElementById('photoPreviewContainer');
+                const formPreviewImg = document.getElementById('photoPreviewImg');
+                if (formPreviewContainer && formPreviewImg) {
+                    formPreviewImg.src = evt.target.result;
+                    formPreviewContainer.style.display = 'block';
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeScanPhoto() {
+            window.selectedScanFile = null;
+            window.currentAIAnalysis = null;
+
+            const input = document.getElementById('aiScanInput');
+            if (input) input.value = '';
+
+            const preview = document.getElementById('aiScanPreview');
+            if (preview) {
+                preview.src = '';
+                preview.style.display = 'none';
+            }
+
+            const placeholder = document.getElementById('scannerEmptyPlaceholder');
+            if (placeholder) placeholder.style.display = 'block';
+
+            const btnRemove = document.getElementById('btnRemovePhoto');
+            if (btnRemove) btnRemove.style.display = 'none';
+
+            const btnRetry = document.getElementById('btnRetryScan');
+            if (btnRetry) btnRetry.style.display = 'none';
+
+            const errBanner = document.getElementById('aiScanErrorInline');
+            if (errBanner) errBanner.style.display = 'none';
+
+            const resultCard = document.getElementById('aiResultContainer');
+            if (resultCard) resultCard.style.display = 'none';
+
+            const formPreviewContainer = document.getElementById('photoPreviewContainer');
+            if (formPreviewContainer) formPreviewContainer.style.display = 'none';
+        }
+
+        // Setup File Input Change
+        document.getElementById('aiScanInput').addEventListener('change', function(e) {
+            if (e.target.files && e.target.files[0]) {
+                setScanFile(e.target.files[0]);
+            }
+        });
+
+        // Setup Drag & Drop
+        (function initDragAndDrop() {
+            const dropZone = document.getElementById('aiDropZone');
+            if (!dropZone) return;
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropZone.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dropZone.classList.add('dragover');
+                }, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dropZone.classList.remove('dragover');
+                }, false);
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                const dt = e.dataTransfer;
+                if (dt && dt.files && dt.files.length > 0) {
+                    setScanFile(dt.files[0]);
+                }
+            }, false);
+        })();
+
+        function showAIScanError(status, message) {
+            let banner = document.getElementById('aiScanErrorInline');
+            if (!banner) return;
+
+            let icon = '<i class="fa-solid fa-circle-exclamation"></i>';
+            let bg = '#FFF3E9';
+            let color = '#713F12';
+            let border = '#FED7AA';
+
+            if (status === 'NO_FOOD_DETECTED') {
+                icon = '<i class="fa-solid fa-ban" style="color:#DC2626;"></i>';
+                bg = '#FEF2F2';
+                color = '#991B1B';
+                border = '#FECACA';
+            } else if (status === 'UNCERTAIN') {
+                icon = '<i class="fa-solid fa-circle-question" style="color:#D97706;"></i>';
+                bg = '#FFFBEB';
+                color = '#92400E';
+                border = '#FDE68A';
+            } else if (status === 'RATE_LIMITED') {
+                icon = '<i class="fa-solid fa-hourglass-half" style="color:#2563EB;"></i>';
+                bg = '#EFF6FF';
+                color = '#1E40AF';
+                border = '#BFDBFE';
+            } else if (status === 'SERVICE_UNAVAILABLE' || status === 'API_KEY_INVALID') {
+                icon = '<i class="fa-solid fa-triangle-exclamation" style="color:#B45309;"></i>';
+                bg = '#FFF8E1';
+                color = '#78350F';
+                border = '#FCD34D';
+            }
+
+            banner.style.background = bg;
+            banner.style.color = color;
+            banner.style.borderColor = border;
+            banner.innerHTML = `<strong>${icon} ${message}</strong>`;
+            banner.style.display = 'block';
+        }
+
+        async function runAIScan() {
+            const errBanner = document.getElementById('aiScanErrorInline');
+            if (errBanner) errBanner.style.display = 'none';
+
+            const container = document.getElementById('aiResultContainer');
+            if (container) container.style.display = 'none';
+
+            const progress = document.getElementById('aiScanProgress');
+            const runBtn = document.getElementById('btnRunAIScan');
+
+            if (!window.selectedScanFile) {
+                showAIScanError('NO_FILE', 'Please capture or upload a food photo first.');
+                return;
+            }
+
+            if (progress) progress.style.display = 'block';
+            if (runBtn) {
+                runBtn.disabled = true;
+                runBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Analyzing Image Pixels...';
+            }
+
+            try {
+                const formData = new FormData();
+                formData.append('image', window.selectedScanFile);
+
+                const res = await fetch('/api/ai-scan-food', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+
+                if (res.ok && data.success && data.status === 'FOOD_DETECTED') {
+                    // Populate Result UI
+                    container.style.display = 'block';
+                    document.getElementById('resFoodName').innerText = data.food_name || 'Food Identified';
+                    
+                    // Confidence
+                    const confBadge = document.getElementById('resConfidenceBadge');
+                    if (confBadge) {
+                        confBadge.innerText = `Confidence: ${data.confidence || 'Medium'}`;
+                    }
+
+                    // Multiple detected dishes
+                    const detectedWrapper = document.getElementById('resDetectedDishesWrapper');
+                    const detectedChips = document.getElementById('resDetectedChips');
+                    if (detectedChips && data.food_items && data.food_items.length > 0) {
+                        detectedChips.innerHTML = data.food_items.map(item => `<span class="food-chip"><i class="fa-solid fa-utensils" style="margin-right:4px;"></i>${item}</span>`).join('');
+                        detectedWrapper.style.display = 'block';
+                    } else if (detectedWrapper) {
+                        detectedWrapper.style.display = 'none';
+                    }
+
+                    // Category
+                    const catMap = {
+                        'cooked_meal': 'Cooked Meal / Prepared Dish',
+                        'raw_ingredients': 'Raw Ingredients / Grains',
+                        'packaged_snacks': 'Packaged Food / Snacks',
+                        'fruits_vegetables': 'Fresh Fruits & Vegetables',
+                        'sweets_desserts': 'Sweets & Desserts'
+                    };
+                    document.getElementById('resCategory').innerText = catMap[data.food_category] || data.food_category || 'Cooked Meal';
+                    document.getElementById('resDietType').innerText = data.diet_type || 'Requires Confirmation';
+
+                    // Portion Description
+                    document.getElementById('resPortionDesc').innerText = data.visible_portion_description || 'Visual portion observed';
+
+                    // Ingredients
+                    const ingChips = document.getElementById('resIngredientsChips');
+                    if (ingChips) {
+                        if (data.visible_ingredients && data.visible_ingredients.length > 0) {
+                            ingChips.innerHTML = data.visible_ingredients.map(ing => `<span class="food-chip" style="background:#F1F5F9; color:#334155; border-color:#CBD5E1;">${ing}</span>`).join('');
+                        } else {
+                            ingChips.innerHTML = '<span style="color:var(--text-muted); font-size:0.85rem;">None distinctly visible</span>';
+                        }
+                    }
+
+                    // Allergens
+                    const allergenBlock = document.getElementById('resAllergenBlock');
+                    const allergenChips = document.getElementById('resAllergensChips');
+                    if (allergenBlock && allergenChips) {
+                        if (data.allergens && data.allergens.length > 0) {
+                            allergenChips.innerHTML = data.allergens.map(alg => `<span class="allergen-chip"><i class="fa-solid fa-triangle-exclamation" style="margin-right:4px;"></i>${alg}</span>`).join('');
+                            allergenBlock.style.display = 'block';
+                        } else {
+                            allergenBlock.style.display = 'none';
+                        }
+                    }
+
+                    // Quality notes
+                    const qualityText = data.quality_notes ? `Photo Quality: ${data.quality_notes}` : '';
+                    const uncertaintyText = data.uncertainty_notes ? ` • Note: ${data.uncertainty_notes}` : '';
+                    document.getElementById('resQualityNotes').innerText = qualityText + uncertaintyText;
+
+                    window.currentAIAnalysis = data;
+
+                    // Automatically apply suggestions into donation form
+                    applyAISuggestions();
+                } else {
+                    container.style.display = 'none';
+                    const msg = data.error || 'Could not analyze photo. Please enter details manually below.';
+                    showAIScanError(data.status, msg);
+                }
+            } catch(e) {
+                console.error('AI Scan exception:', e);
+                container.style.display = 'none';
+                showAIScanError('SERVICE_UNAVAILABLE', 'Could not connect to AI service. Please verify network or enter details manually below.');
+            } finally {
+                if (progress) progress.style.display = 'none';
+                if (runBtn) {
+                    runBtn.disabled = false;
+                    runBtn.innerHTML = '<i class="fa-solid fa-bolt"></i> Analyze Food with AI';
+                }
+            }
+        }
+
+        async function promptAICorrection() {
+            if (!window.currentAIAnalysis) {
+                alert('Please scan a food image first.');
+                return;
+            }
+            const currentName = window.currentAIAnalysis.food_name || '';
+            const corrected = prompt(`Correct AI Prediction\nAI Predicted: "${currentName}"\n\nEnter corrected dish name:`, currentName);
+            if (corrected && corrected.trim() !== '' && corrected !== currentName) {
+                const payload = {
+                    image_path: window.currentAIAnalysis.image_path || '',
+                    ai_predicted: currentName,
+                    donor_corrected: corrected.trim(),
+                    diet_type: window.currentAIAnalysis.diet_type || 'Veg',
+                    food_category: window.currentAIAnalysis.food_category || 'For Humans',
+                    model_version: window.currentAIAnalysis.source || 'EcoBite Vision System'
+                };
+
+                try {
+                    const res = await fetch('/api/ai-feedback', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(payload)
+                    });
+                    const data = await res.json();
+                    alert(data.message || 'Feedback saved! AI prediction updated.');
+                    
+                    window.currentAIAnalysis.food_name = corrected.trim();
+                    document.getElementById('resFoodName').innerText = corrected.trim();
+                    document.getElementById('inputFoodName').value = corrected.trim();
+                    document.getElementById('inputFoodName').dispatchEvent(new Event('change', { bubbles: true }));
+                } catch(e) {
+                    console.error('Feedback submission error:', e);
+                    alert('Failed to submit feedback.');
+                }
+            }
+        }
+
+        function applyAISuggestions() {
+            if (window.currentAIAnalysis) {
+                const d = window.currentAIAnalysis;
+                
+                // 1. Food name
+                const elName = document.getElementById('inputFoodName');
+                if (d.food_name) {
+                    elName.value = d.food_name;
+                    elName.setAttribute('data-ai-suggested', 'true');
+                    const bName = document.getElementById('badgeFoodName');
+                    if (bName) bName.style.display = 'inline';
+                }
+
+                // 2. Diet type
+                if (['Veg', 'Non-Veg', 'Vegan'].includes(d.diet_type)) {
+                    document.getElementById('inputDietType').value = d.diet_type;
+                    const bDiet = document.getElementById('badgeDietType');
+                    if (bDiet) bDiet.style.display = 'inline';
+                }
+
+                // 3. Category target
+                if (d.food_category) {
+                    const catSelect = document.getElementById('inputCategory');
+                    if (d.food_category === 'raw_ingredients' || d.food_category.includes('Raw')) {
+                        catSelect.value = 'Raw Ingredients';
+                    } else if (d.food_category.includes('Animal')) {
+                        catSelect.value = 'For Animals';
+                    } else if (d.food_category.includes('Compost')) {
+                        catSelect.value = 'Compost';
+                    } else {
+                        catSelect.value = 'For Humans';
+                    }
+                    const bCat = document.getElementById('badgeCategory');
+                    if (bCat) bCat.style.display = 'inline';
+                }
+
+                // 4. Quantity / Servings: keep empty for donor confirmation, but pre-populate helper placeholder
+                const elQty = document.getElementById('inputQuantity');
+                if (elQty && !elQty.value) {
+                    if (d.visible_portion_description) {
+                        elQty.placeholder = `e.g. 10 Servings (${d.visible_portion_description})`;
+                    }
+                }
+
+                // 5. Handling instructions with ingredients & allergens
+                const elInst = document.getElementById('inputInstructions');
+                if (elInst) {
+                    let extraNotes = [];
+                    if (d.food_items && d.food_items.length > 1) {
+                        extraNotes.push('Included Items: ' + d.food_items.join(', '));
+                    }
+                    if (d.visible_ingredients && d.visible_ingredients.length) {
+                        extraNotes.push('Ingredients: ' + d.visible_ingredients.join(', '));
+                    }
+                    if (d.allergens && d.allergens.length) {
+                        extraNotes.push('Potential Allergens (Visual Check): ' + d.allergens.join(', '));
+                    }
+                    if (extraNotes.length) {
+                        elInst.value = extraNotes.join(' | ');
+                    }
+                }
+
+                // 6. Show review notice
+                const notice = document.getElementById('aiReviewNotice');
+                if (notice) notice.style.display = 'block';
+
+                // 7. Dispatch events to trigger NGO matching
+                ['inputFoodName', 'inputCategory', 'inputDietType', 'inputQuantity', 'inputInstructions'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.dispatchEvent(new Event('change', { bubbles: true }));
+                });
+
+                triggerNGOMatch();
+            }
+        }
+
+        function checkFoodSafety() {
+            const storage = document.getElementById('inputStorage').value;
+            const badge = document.getElementById('safetyBadge');
+            const text = document.getElementById('safetyText');
+
+            if (storage === 'Room Temperature') {
+                badge.className = 'safety-indicator safety-review';
+                text.innerText = 'Needs Review: Room temperature food must be picked up within 4 hours.';
+            } else {
+                badge.className = 'safety-indicator safety-review';
+                text.innerText = 'Storage condition noted. Food safety still requires verification.';
+            }
+        }
+
+        async function triggerNGOMatch() {
+            const foodType = document.getElementById('inputDietType').value;
+            const container = document.getElementById('ngoMatchResults');
+
+            try {
+                const res = await fetch('/api/match-ngos', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ food_type: foodType })
+                });
+                const data = await res.json();
+
+                if (data.success && data.ngos.length > 0) {
+                    container.innerHTML = '';
+                    data.ngos.forEach(ngo => {
+                        container.innerHTML += `
+                            <div style="display:flex; justify-content:space-between; align-items:center; background:#FFFFFF; border:1px solid var(--border-light); padding:10px 14px; border-radius:8px; margin-top:8px;">
+                                <div>
+                                    <strong style="color:var(--text-dark);">${ngo.name}</strong>
+                                    <small style="display:block; color:var(--text-muted);">${ngo.distance_km} km away • ${ngo.compatibility}</small>
+                                </div>
+                                <span style="font-size:0.8rem; background:#E8F5E9; color:var(--forest-green); padding:4px 10px; border-radius:20px; font-weight:600;">Match Suggested</span>
+                            </div>
+                        `;
+                    });
+                }
+            } catch(e) { console.error(e); }
+        }
+
+        function handleFoodPhotoSelect(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const container = document.getElementById('photoPreviewContainer');
+                    const img = document.getElementById('photoPreviewImg');
+                    if (container && img) {
+                        img.src = e.target.result;
+                        container.style.display = 'block';
+                    }
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Submit Donation
+        document.getElementById('donationForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const foodName = document.getElementById('inputFoodName').value.trim();
+            const dietType = document.getElementById('inputDietType').value;
+            const category = document.getElementById('inputCategory').value;
+            const quantity = document.getElementById('inputQuantity').value.trim();
+            const address = document.getElementById('inputAddress').value.trim();
+            const instructions = document.getElementById('inputInstructions').value.trim();
+            const prepTime = document.getElementById('inputPrepTime').value;
+            const storage = document.getElementById('inputStorage').value;
+
+            if (!foodName || !quantity || !address) {
+                alert('Please fill in all required fields: Food Title, Quantity, and Pickup Address.');
+                return;
+            }
+
+            if (!user || !user.id) {
+                alert('User session error. Please log in again.');
+                return;
+            }
+
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const origText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Publishing Donation...';
+            submitBtn.disabled = true;
+
+            try {
+                const formData = new FormData();
+                const photoInput = document.getElementById('inputFoodPhoto');
+                if (photoInput && photoInput.files && photoInput.files[0]) {
+                    formData.append('image', photoInput.files[0]);
+                } else if (window.selectedScanFile) {
+                    formData.append('image', window.selectedScanFile);
+                }
+
+                if (window.currentAIAnalysis && window.currentAIAnalysis.image_path) {
+                    formData.append('image_path', window.currentAIAnalysis.image_path);
+                }
+
+                formData.append('donor_id', user.id);
+                formData.append('food_name', foodName);
+                formData.append('diet_type', dietType);
+                formData.append('food_type', dietType);
+                formData.append('food_category', category);
+                formData.append('quantity', quantity);
+                formData.append('pickup_address', address);
+                formData.append('instructions', instructions);
+                formData.append('preparation_time', prepTime);
+                formData.append('storage_condition', storage);
+
+                const res = await fetch('/api/donate', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await res.json();
+                if (res.ok && (result.success || result.id)) {
+                    alert('Donation Published Successfully!');
+                    e.target.reset();
+                    window.currentAIAnalysis = null;
+                    const container = document.getElementById('photoPreviewContainer');
+                    if (container) container.style.display = 'none';
+                    const notice = document.getElementById('aiReviewNotice');
+                    if (notice) notice.style.display = 'none';
+
+                    // Refresh data
+                    await fetchMyDonations();
+                    await fetchOverviewStats();
+                    switchTab('my-donations');
+                } else {
+                    alert('Error publishing donation: ' + (result.message || result.error || 'Unknown server error'));
+                }
+            } catch(err) {
+                console.error('Donation submission error:', err);
+                alert('Error publishing donation. Please check your network connection and try again.');
+            } finally {
+                submitBtn.innerHTML = origText;
+                submitBtn.disabled = false;
+            }
+        });
+
+        // --- MY DONATIONS & VISUAL TIMELINE ---
+        async function fetchMyDonations() {
+            const container = document.getElementById('myDonationsGrid');
+            try {
+                let my = [];
+                const res = await fetch(`${API_BASE_URL}/donations/user/${user.id}`);
+                if (res.ok) {
+                    my = await res.json();
+                } else {
+                    const resAll = await fetch(`${API_BASE_URL}/donations`);
+                    const all = await resAll.json();
+                    my = all.filter(d => d.donor_id == user.id);
+                }
+
+                if (!Array.isArray(my) || my.length === 0) {
+                    container.innerHTML = '<div class="state-box"><i class="fa-solid fa-box-open"></i><p>You haven\'t created any donations yet.</p></div>';
+                    return;
+                }
+
+                container.innerHTML = '';
+                my.forEach(d => {
+                    let step1 = 'completed', step2 = '', step3 = '', step4 = '';
+                    if (['Claimed', 'Picked Up', 'Delivered'].includes(d.status)) step2 = 'completed';
+                    if (['Picked Up', 'Delivered'].includes(d.status)) step3 = 'completed';
+                    if (d.status === 'Delivered') step4 = 'completed';
+
+                    let imageHtml = '';
+                    if (d.image_path && d.image_path.trim() !== '') {
+                        const imgUrl = d.image_path.startsWith('http') || d.image_path.startsWith('/') ? d.image_path : '/' + d.image_path;
+                        imageHtml = `<img src="${imgUrl}" onerror="this.onerror=null; this.src='/hero_food.jpg';" style="width:100%; height:180px; object-fit:cover; border-radius:10px 10px 0 0; margin-bottom:12px;" alt="${d.food_name || 'Food Photo'}">`;
+                    } else {
+                        imageHtml = `<div style="width:100%; height:140px; background:linear-gradient(135deg, #FFF8F0 0%, #EAE5DE 100%); display:flex; flex-direction:column; align-items:center; justify-content:center; border-radius:10px 10px 0 0; margin-bottom:12px; color:var(--primary-orange);"><i class="fa-solid fa-utensils" style="font-size:2.2rem; margin-bottom:6px;"></i><span style="font-size:0.85rem; font-weight:600; color:var(--forest-green);">EcoBite Food Rescue</span></div>`;
+                    }
+
+                    container.innerHTML += `
+                        <div class="dashboard-card" style="margin:0; overflow:hidden;">
+                            ${imageHtml}
+                            <div style="padding: 0 4px;">
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                                    <span class="safety-indicator safety-safe" style="padding:4px 12px; font-size:0.8rem; margin:0;">${d.status}</span>
+                                    <small style="color:var(--text-muted);">${d.timestamp || 'Recent'}</small>
+                                </div>
+
+                                <h3 style="margin:0 0 6px 0; color:var(--text-dark);">${d.food_name || d.food_type || 'Food Donation'}</h3>
+                                <p style="color:var(--text-muted); font-size:0.9rem; margin:0 0 16px 0;">${d.quantity} Servings • ${d.pickup_address}</p>
+
+                                <!-- Visual Tracking Timeline -->
+                                <div class="tracking-timeline">
+                                    <div class="timeline-step ${step1}">
+                                        <div class="timeline-circle"><i class="fa-solid fa-check"></i></div>
+                                        <span class="timeline-label">Posted</span>
+                                    </div>
+                                    <div class="timeline-step ${step2}">
+                                        <div class="timeline-circle"><i class="fa-solid fa-hand-holding-heart"></i></div>
+                                        <span class="timeline-label">Claimed</span>
+                                    </div>
+                                    <div class="timeline-step ${step3}">
+                                        <div class="timeline-circle"><i class="fa-solid fa-truck-fast"></i></div>
+                                        <span class="timeline-label">In Transit</span>
+                                    </div>
+                                    <div class="timeline-step ${step4}">
+                                        <div class="timeline-circle"><i class="fa-solid fa-circle-check"></i></div>
+                                        <span class="timeline-label">Delivered</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            } catch(e) { console.error(e); }
+        }
+
+        // --- SCHEDULED DONATIONS ---
+        async function fetchScheduledDonations() {
+            const container = document.getElementById('scheduledList');
+            try {
+                const res = await fetch(`${API_BASE_URL}/scheduled-donations/${user.id}`);
+                const data = await res.json();
+
+                if (!Array.isArray(data) || data.length === 0) {
+                    container.innerHTML = '<div class="state-box"><p>No active donation schedules.</p></div>';
+                    return;
+                }
+
+                container.innerHTML = '';
+                data.forEach(s => {
+                    container.innerHTML += `
+                        <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-cream); border:1px solid var(--border-light); padding:16px; border-radius:12px; margin-bottom:12px;">
+                            <div>
+                                <h4 style="margin:0; color:var(--text-dark);">${s.food_name}</h4>
+                                <small style="color:var(--text-muted);">${s.schedule_type.toUpperCase()} • ${s.scheduled_date} at ${s.scheduled_time} • ${s.quantity}</small>
+                            </div>
+                            <button class="btn-cta-orange" style="background:#EF4444; padding:6px 14px; font-size:0.85rem;" onclick="cancelSchedule(${s.id})">Cancel</button>
+                        </div>
+                    `;
+                });
+            } catch(e) { console.error(e); }
+        }
+
+        document.getElementById('scheduleForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                const res = await fetch('/api/schedule-donation', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        donor_id: user.id,
+                        food_name: document.getElementById('schedFoodName').value,
+                        schedule_type: document.getElementById('schedType').value,
+                        scheduled_date: document.getElementById('schedDate').value,
+                        scheduled_time: document.getElementById('schedTime').value,
+                        quantity: document.getElementById('schedQty').value,
+                        pickup_address: document.getElementById('schedAddress').value
+                    })
+                });
+                if (res.ok) {
+                    alert('Donation Schedule Saved!');
+                    e.target.reset();
+                    fetchScheduledDonations();
+                }
+            } catch(e) { console.error(e); }
+        });
+
+        async function cancelSchedule(id) {
+            if (confirm('Cancel this scheduled donation?')) {
+                await fetch('/api/cancel-scheduled-donation', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ id, donor_id: user.id })
+                });
+                fetchScheduledDonations();
+            }
+        }
+
+        // --- IMPACT & CERTIFICATE ---
+        async function fetchImpactData() {
+            document.getElementById('certName').innerText = user.name || 'Donor Hero';
+            document.getElementById('certDate').innerText = new Date().toISOString().split('T')[0];
+            try {
+                const res = await fetch(`${API_BASE_URL}/donations`);
+                const all = await res.json();
+                const myDelivered = all.filter(d => d.donor_id == user.id && d.status === 'Delivered');
+
+                let meals = 0;
+                myDelivered.forEach(d => { meals += parseInt(d.quantity) || 10; });
+
+                document.getElementById('co2Val').innerText = (meals * 1.5).toFixed(1) + ' kg';
+                document.getElementById('wasteVal').innerText = (meals * 0.4).toFixed(1) + ' kg';
+                document.getElementById('peopleFedVal').innerText = meals;
+            } catch(e) { console.error(e); }
+        }
+
+        function printCertificate() {
+            window.print();
+        }
+
+        // --- NOTIFICATIONS ---
+        async function fetchNotifications() {
+            const container = document.getElementById('notifList');
+            container.innerHTML = `
+                <div style="background:var(--bg-cream); border:1px solid var(--border-light); padding:14px; border-radius:12px; margin-bottom:10px;">
+                    <strong style="color:var(--forest-green);">NGO Assignment Update</strong>
+                    <p style="margin:4px 0 0 0; color:var(--text-muted); font-size:0.9rem;">WeCare Foundation matched & ready to claim your surplus food.</p>
+                </div>
+                <div style="background:var(--bg-cream); border:1px solid var(--border-light); padding:14px; border-radius:12px;">
+                    <strong style="color:var(--primary-orange);">Safety Guidance Reminder</strong>
+                    <p style="margin:4px 0 0 0; color:var(--text-muted); font-size:0.9rem;">Always use food-grade insulated packaging for warm meals.</p>
+                </div>
+            `;
+        }
+
+        // --- PROFILE ---
+        async function fetchProfile() {
+            try {
+                const res = await fetch(`${API_BASE_URL}/user/${user.id}`);
+                const data = await res.json();
+                if (data.error) return;
+
+                document.getElementById('profileName').value = data.name || '';
+                document.getElementById('profileEmail').value = data.email || '';
+                document.getElementById('profilePhone').value = data.phone || '';
+                document.getElementById('profileAddress').value = data.address || '';
+                document.getElementById('profileBio').value = data.bio || '';
+                if (document.getElementById('profileNameDisplay')) {
+                    document.getElementById('profileNameDisplay').innerText = data.name || 'Donor Hero';
+                }
+                if (data.profile_pic) {
+                    document.getElementById('avatarPreview').src = data.profile_pic;
+                }
+            } catch(e) { console.error(e); }
+        }
+
+        document.getElementById('profileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            formData.append('id', user.id);
+
+            try {
+                const res = await fetch(`${API_BASE_URL}/user/update`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await res.json();
+                if (result.success) {
+                    alert('Profile Details Saved!');
+                    user.name = formData.get('name');
+                    localStorage.setItem('user', JSON.stringify(user));
+                }
+            } catch(e) { console.error(e); }
+        });
+
+        // --- LOGOUT ---
+        async function logout() {
+            try { await fetch('/api/logout', { method: 'POST' }); } catch(e) {}
+            localStorage.removeItem('user');
+            sessionStorage.clear();
+            window.location.href = '/login';
+        }
+
+        // Initial tab load
+        fetchOverviewStats();
+    </script>
+</body>
+
+</html>

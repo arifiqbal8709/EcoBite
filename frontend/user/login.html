@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | EcoBite</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:ital,wght@0,300..700;1,300..700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/style.css?v=2">
+    <link rel="stylesheet" href="/theme-genz.css?v=1">
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="/" class="logo">Eco<span class="highlight">Bite</span></a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/#about">About Us</a></li>
+                <li><a href="/contact">Contact Us</a></li>
+                <li><a href="/login" class="active btn-login">Login</a></li>
+            </ul>
+            <div class="mobile-toggle">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Section -->
+    <section class="form-section">
+        <div class="form-wrapper">
+            <div class="form-header">
+                <h2>Welcome Back</h2>
+                <p>Login to continue</p>
+            </div>
+
+            <div class="role-selector">
+                <div class="role-option active" data-role="donor">
+                    <i class="fa-solid fa-hand-holding-heart"></i>
+                    Donor
+                </div>
+                <div class="role-option" data-role="ngo">
+                    <i class="fa-solid fa-users"></i>
+                    NGO
+                </div>
+                <div class="role-option" data-role="delivery">
+                    <i class="fa-solid fa-truck-fast"></i>
+                    Delivery
+                </div>
+                <div class="role-option" data-role="admin">
+                    <i class="fa-solid fa-user-shield"></i>
+                    Admin
+                </div>
+            </div>
+
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <div class="input-icon">
+                        <i class="fa-solid fa-envelope"></i>
+                        <input type="email" id="email" placeholder="e.g. user@ecobite.com" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-icon">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="password" placeholder="Enter your password" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">Login</button>
+            </form>
+            <div style="text-align: center; margin-top: 15px; color: var(--text-secondary);">
+                <p>Don't have an account? <a href="/signup" style="color: var(--primary-color);">Sign up</a></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <i class="fa-solid fa-circle-check"></i>
+        <div class="toast-message">Login Successful!</div>
+    </div>
+
+    <script>
+        // Role Selection Logic
+        const roleOptions = document.querySelectorAll('.role-option');
+        roleOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                roleOptions.forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+            });
+        });
+
+        document.getElementById('login-form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            const roleElement = document.querySelector('.role-option.active');
+            const role = roleElement ? roleElement.getAttribute('data-role') : null;
+
+            if (!role) {
+                alert('Please select a role');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password, role })
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    const userObj = data.user || { id: data.id, name: data.name, role: data.role, email: data.email, phone: data.phone, address: data.address };
+                    localStorage.setItem('user', JSON.stringify(userObj));
+                    const toast = document.getElementById('toast');
+                    toast.classList.add('show');
+
+                    setTimeout(() => {
+                        toast.classList.remove('show');
+                        const role = data.role.toLowerCase();
+                        const urlParams = new URLSearchParams(window.location.search);
+                        const redirectUrl = urlParams.get('redirect');
+                        const hasDraft = sessionStorage.getItem('ecobite_donation_draft');
+
+                        if (role === 'donor' && (hasDraft || redirectUrl === '/donate')) {
+                            window.location.href = '/donate';
+                        } else if (role === 'admin') window.location.href = '/admin';
+                        else if (role === 'donor') window.location.href = '/donor-home';
+                        else if (role === 'ngo') window.location.href = '/find-food';
+                        else if (role === 'delivery') window.location.href = '/delivery/dashboard';
+                        else window.location.href = '/';
+                    }, 1000);
+                } else {
+                    alert(data.message);
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Login failed');
+            }
+        });
+    </script>
+</body>
+
+</html>

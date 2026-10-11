@@ -1,0 +1,534 @@
+{
+  "0": {
+    "slug": "pizza",
+    "info": {
+      "name": "Pizza",
+      "diet": "Requires Confirmation",
+      "category": "cooked_meal",
+      "ingredients": [
+        "Cheese",
+        "Vegetables",
+        "Olives",
+        "Tomato Sauce",
+        "Pizza Crust"
+      ]
+    }
+  },
+  "1": {
+    "slug": "burger",
+    "info": {
+      "name": "Veg / Meat Burger",
+      "diet": "Requires Confirmation",
+      "category": "cooked_meal",
+      "ingredients": [
+        "Bun",
+        "Patty",
+        "Lettuce",
+        "Cheese",
+        "Sauce"
+      ]
+    }
+  },
+  "2": {
+    "slug": "pasta",
+    "info": {
+      "name": "Italian Pasta",
+      "diet": "Veg",
+      "category": "cooked_meal",
+      "ingredients": [
+        "Pasta",
+        "Tomato / Cream Sauce",
+        "Herbs",
+        "Cheese"
+      ]
+    }
+  },
+  "3": {
+    "slug": "noodles",
+    "info": {
+      "name": "Stir-fried Noodles",
+      "diet": "Veg",
+      "category": "cooked_meal",
+      "ingredients": [
+        "Noodles",
+        "Cabbage",
+        "Capsicum",
+        "Soy Sauce"
+      ]
+    }
+  },
+  "4": {
+    "slug": "rice_plain",
+    "info": {
+      "name": "Plain Steamed Rice",
+      "diet": "Vegan",
+      "category": "cooked_meal",
+      "ingredients": [
+        "Rice"
+      ]
+    }
+  },
+  "5": {
+    "slug": "rice_jeera",
+    "info": {
+      "name": "Jeera Rice",
+      "diet": "Veg",
+      "category": "cooked_meal",
+      "ingredients": [
+        "Rice",
+        "Cumin Seeds",
+        "Ghee"
+      ]
+    }
+  },
+  "6": {
+    "slug": "pulao_veg",
+    "info": {
+      "name": "Vegetable Pulao",
+      "diet": "Veg",
+      "category": "cooked_meal",
+      "ingredients": [
+        "Basmati Rice",
+        "Peas",
+        "Carrots",
+        "Spices"
+      ]
+    }
+  },
+  "7": {
+    "slug": "biryani_veg",
+    "info": {
+      "name": "Vegetable Biryani",
+      "diet": "Veg",
+      "category": "cooked_meal",
+      "ingredients": [
+        "Basmati Rice",
+        "Paneer",
+        "Vegetables",
+        "Spices"
+      ]
+    }
+  },
+  "8": {
+    "slug": "biryani_chicken",
+    "info": {
+      "name": "Chicken Biryani",
+      "diet": "Non-Veg",
+      "category": "cooked_meal",
+      "ingredients": [
+        "Basmati Rice",
+        "Chicken",
+        "Whole Spices",
+        "Saffron"
+      ]
+    }
+  },
+  "9": {
+    "slug": "fried_rice",
+    "info": {
+      "name": "Veg Fried Rice",
+      "diet": "Veg",
+      "category": "cooked_meal",
+      "ingredients": [
+        "Rice",
+        "Spring Onion",
+        "Soy Sauce",
+        "Veggies"
+      ]
+    }
+  },
+  "10": {
+    "slug": "khichdi",
+    "info": {
+      "name": "Dal Khichdi",
+      "diet": "Veg",
+      "category": "cooked_meal",
+      "ingredients": [
+        "Rice",
+        "Moong Dal",
+        "Turmeric",
+        "Ghee"
+      ]
+    }
+  },
+  "11": {
+    "slug": "roti_chapati",
+    "info": {
+      "name": "Roti / Chapati",
+      "diet": "Vegan",
+      "category": "cooked_meal",
+      "ingredients": [
+        "Whole Wheat Flour"
+      ]
+    }
+  },
+  "12": {
+    "slug": "naan",
+    "info": {
+      "name": "Butter Naan",
+      "diet": "Veg",
+      "category": "cooked_meal",
+      "ingredients": [
+        "Refined Flour",
+        "Butter",
+        "Yeast"
+      ]
+    }
+  },
+  "13": {
+    "slug": "paratha",
+    "info": {
+      "name": "Aloo Paratha",
+      "diet": "Veg",
+      "category": "cooked_meal",
+      "ingredients": [
+        "Wheat Flour",
+        "Mashed Potatoes",
+        "Spices"
+      ]
+    }
+  },
+  "14": {
+    "slug": "poori",
+    "info": {
+      "name": "Golden Poori",
+      "diet": "Veg",
+      "category": "cooked_meal",
+      "ingredients": [
+        "Wheat Flour",
+        "Oil"
+      ]
+    }
+  },
+  "15": {
+    "slug": "dal_tadka",
+    "info": {
+      "name": "Dal Tadka",
+      "diet": "Veg",
+      "category": "cooked_meal",
+      "ingredients": [
+        "Yellow Lentils",
+        "Garlic",
+        "Cumin",
+        "Ghee"
+      ]
+    }
+  },
+  "16": {
+    "slug": "rajma",
+    "info": {
+      "name": "Rajma Masala",
+      "diet": "Veg",
+      "category": "cooked_meal",
+      "ingredients": [
+        "Kidney Beans",
+        "Tomato Onion Gravy",
+        "Spices"
+      ]
+    }
+  },
+  "17": {
+    "slug": "chole",
+    "info": {
+      "name": "Amritsari Chole",
+      "diet": "Veg",
+      "category": "cooked_meal",
+      "ingredients": [
+        "Chickpeas",
+        "Spiced Gravy"
+      ]
+    }
+  },
+  "18": {
+    "slug": "paneer_butter_masala",
+    "info": {
+      "name": "Paneer Butter Masala",
+      "diet": "Veg",
+      "category": "cooked_meal",
+      "ingredients": [
+        "Cottage Cheese",
+        "Tomato Cream Gravy",
+        "Butter"
+      ]
+    }
+  },
+  "19": {
+    "slug": "shahi_paneer",
+    "info": {
+      "name": "Shahi Paneer",
+      "diet": "Veg",
+      "category": "cooked_meal",
+      "ingredients": [
+        "Paneer",
+        "Cashew Gravy",
+        "Cream"
+      ]
+    }
+  },
+  "20": {
+    "slug": "curry_mixed_veg",
+    "info": {
+      "name": "Mixed Vegetable Curry",
+      "diet": "Veg",
+      "category": "cooked_meal",
+      "ingredients": [
+        "Carrots",
+        "Beans",
+        "Peas",
+        "Spiced Gravy"
+      ]
+    }
+  },
+  "21": {
+    "slug": "curry_chicken",
+    "info": {
+      "name": "Chicken Curry",
+      "diet": "Non-Veg",
+      "category": "cooked_meal",
+      "ingredients": [
+        "Chicken Pieces",
+        "Onion Tomato Gravy"
+      ]
+    }
+  },
+  "22": {
+    "slug": "curry_egg",
+    "info": {
+      "name": "Egg Curry",
+      "diet": "Non-Veg",
+      "category": "cooked_meal",
+      "ingredients": [
+        "Boiled Eggs",
+        "Spiced Gravy"
+      ]
+    }
+  },
+  "23": {
+    "slug": "samosa",
+    "info": {
+      "name": "Crispy Potato Samosa",
+      "diet": "Veg",
+      "category": "packaged_snacks",
+      "ingredients": [
+        "Flour Crust",
+        "Spiced Potato Filling"
+      ]
+    }
+  },
+  "24": {
+    "slug": "kachori",
+    "info": {
+      "name": "Khasta Kachori",
+      "diet": "Veg",
+      "category": "packaged_snacks",
+      "ingredients": [
+        "Flour Shell",
+        "Spiced Lentil Filling"
+      ]
+    }
+  },
+  "25": {
+    "slug": "pakora",
+    "info": {
+      "name": "Vegetable Pakora",
+      "diet": "Veg",
+      "category": "packaged_snacks",
+      "ingredients": [
+        "Gram Flour (Besan)",
+        "Onions",
+        "Potatoes"
+      ]
+    }
+  },
+  "26": {
+    "slug": "sandwich",
+    "info": {
+      "name": "Veg / Cheese Sandwich",
+      "diet": "Veg",
+      "category": "cooked_meal",
+      "ingredients": [
+        "Bread Slice",
+        "Cucumber",
+        "Tomato",
+        "Cheese"
+      ]
+    }
+  },
+  "27": {
+    "slug": "bread_pakora",
+    "info": {
+      "name": "Bread Pakora",
+      "diet": "Veg",
+      "category": "packaged_snacks",
+      "ingredients": [
+        "Bread Slice",
+        "Besan Batter",
+        "Potato Filling"
+      ]
+    }
+  },
+  "28": {
+    "slug": "idli",
+    "info": {
+      "name": "Steamed Idli",
+      "diet": "Vegan",
+      "category": "cooked_meal",
+      "ingredients": [
+        "Fermented Rice & Urad Dal Batter"
+      ]
+    }
+  },
+  "29": {
+    "slug": "dosa",
+    "info": {
+      "name": "Masala Dosa",
+      "diet": "Veg",
+      "category": "cooked_meal",
+      "ingredients": [
+        "Fermented Crepe",
+        "Potato Masala Filling"
+      ]
+    }
+  },
+  "30": {
+    "slug": "uttapam",
+    "info": {
+      "name": "Onion Tomato Uttapam",
+      "diet": "Veg",
+      "category": "cooked_meal",
+      "ingredients": [
+        "Thick Batter",
+        "Onions",
+        "Tomatoes"
+      ]
+    }
+  },
+  "31": {
+    "slug": "vada",
+    "info": {
+      "name": "Medu Vada",
+      "diet": "Vegan",
+      "category": "cooked_meal",
+      "ingredients": [
+        "Lentil Fritter",
+        "Spices"
+      ]
+    }
+  },
+  "32": {
+    "slug": "sambar",
+    "info": {
+      "name": "South Indian Sambar",
+      "diet": "Vegan",
+      "category": "cooked_meal",
+      "ingredients": [
+        "Lentils",
+        "Drumsticks",
+        "Tamarind",
+        "Sambar Powder"
+      ]
+    }
+  },
+  "33": {
+    "slug": "upma",
+    "info": {
+      "name": "Rava Upma",
+      "diet": "Veg",
+      "category": "cooked_meal",
+      "ingredients": [
+        "Semolina",
+        "Mustard Seeds",
+        "Curry Leaves"
+      ]
+    }
+  },
+  "34": {
+    "slug": "indian_thali",
+    "info": {
+      "name": "Grand Indian Thali",
+      "diet": "Veg",
+      "category": "cooked_meal",
+      "ingredients": [
+        "Roti",
+        "Rice",
+        "Dal",
+        "Paneer",
+        "Sweet",
+        "Curd"
+      ]
+    }
+  },
+  "35": {
+    "slug": "fruits",
+    "info": {
+      "name": "Fresh Mixed Fruits",
+      "diet": "Vegan",
+      "category": "raw_ingredients",
+      "ingredients": [
+        "Apples",
+        "Bananas",
+        "Oranges"
+      ]
+    }
+  },
+  "36": {
+    "slug": "vegetables",
+    "info": {
+      "name": "Fresh Farm Vegetables",
+      "diet": "Vegan",
+      "category": "raw_ingredients",
+      "ingredients": [
+        "Tomatoes",
+        "Potatoes",
+        "Spinach"
+      ]
+    }
+  },
+  "37": {
+    "slug": "salads",
+    "info": {
+      "name": "Green Salad",
+      "diet": "Vegan",
+      "category": "cooked_meal",
+      "ingredients": [
+        "Cucumber",
+        "Carrot",
+        "Onion",
+        "Lemon"
+      ]
+    }
+  },
+  "38": {
+    "slug": "sweets_desserts",
+    "info": {
+      "name": "Gulab Jamun & Sweets",
+      "diet": "Veg",
+      "category": "packaged_snacks",
+      "ingredients": [
+        "Milk Solids",
+        "Sugar Syrup",
+        "Cardamom"
+      ]
+    }
+  },
+  "39": {
+    "slug": "packaged_meals",
+    "info": {
+      "name": "Sealed Packaged Food",
+      "diet": "Veg",
+      "category": "packaged_snacks",
+      "ingredients": [
+        "Packaged Meal / Biscuits / Grocery"
+      ]
+    }
+  },
+  "40": {
+    "slug": "unknown_food",
+    "info": {
+      "name": "Uncertain Food Item",
+      "diet": "uncertain",
+      "category": "cooked_meal",
+      "ingredients": []
+    }
+  }
+}

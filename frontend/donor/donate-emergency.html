@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donate Food - Emergency | EcoBite</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:ital,wght@0,300..700;1,300..700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/style.css?v=2">
+    <style>
+        /* Emergency Theme Overrides */
+        :root {
+            --primary-color: #ef4444 !important;
+        }
+
+        .form-section {
+            background: #FFF5F5 !important;
+        }
+
+        .navbar .active {
+            color: #ef4444 !important;
+        }
+
+        .btn-primary {
+            background-color: #ef4444 !important;
+            border-color: #ef4444 !important;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4) !important;
+        }
+
+        .btn-primary:hover {
+            background-color: #dc2626 !important;
+        }
+
+        h2 {
+            color: #ef4444;
+        }
+    </style>
+
+    <link rel="stylesheet" href="/theme-genz.css?v=1">
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="/" class="logo">Eco<span class="highlight">Bite</span></a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/donate" class="active">Donate</a></li>
+                <li><a href="/find-food">Find Food</a></li>
+                <li><a href="/login" class="btn-login">Login</a></li>
+            </ul>
+            <div class="mobile-toggle">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Donation Section -->
+    <section class="form-section">
+        <div class="container">
+            <div class="form-wrapper" style="border: 1px solid #ef4444;">
+                <div class="form-header">
+                    <h2><i class="fa-solid fa-triangle-exclamation"></i> Emergency Donation</h2>
+                    <p style="color: #fca5a5;">Priority Listing for Urgent Needs</p>
+                </div>
+
+                <form id="donationForm">
+
+                    <!-- Hidden field to tag as emergency if needed later -->
+                    <input type="hidden" id="isEmergency" value="true">
+
+                    <!-- Donor Details -->
+                    <div class="form-group">
+                        <label>Organization / Donor Name</label>
+                        <div class="input-icon">
+                            <i class="fa-solid fa-building"></i>
+                            <input type="text" id="donorName" placeholder="Ex: Hotel City Inn or John Doe" required>
+                        </div>
+                    </div>
+
+                    <!-- Food Name -->
+                    <div class="form-group">
+                        <label>Name of the Food</label>
+                        <div class="input-icon">
+                            <i class="fa-solid fa-bowl-food"></i>
+                            <input type="text" id="foodName" placeholder="Ex: Vegetable Biryani" required>
+                        </div>
+                    </div>
+
+                    <!-- Food Details -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Diet Type</label>
+                            <div class="radio-group" style="display: flex; gap: 15px; margin-top: 5px;">
+                                <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                                    <input type="radio" name="dietType" value="Veg" checked> Veg
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                                    <input type="radio" name="dietType" value="Non-Veg"> Non-Veg
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Food Category</label>
+                            <div class="input-icon">
+                                <i class="fa-solid fa-utensils"></i>
+                                <select id="foodType" required>
+                                    <option value="" disabled selected>Select Category</option>
+                                    <option value="cooked_meal">Cooked Meal (Human)</option>
+                                    <option value="raw_ingredients">Raw Ingredients</option>
+                                    <option value="packaged_snacks">Packaged/Snacks</option>
+                                    <!-- Removed spoilt options for emergency flow usually -->
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Quantity (Servings/Kg)</label>
+                            <div class="input-icon">
+                                <i class="fa-solid fa-weight-hanging"></i>
+                                <input type="number" id="quantity" placeholder="Ex: 50" required>
+                            </div>
+                        </div>
+                        <!-- Food Image - Simplified for speed -->
+                        <div class="form-group full-width">
+                            <label>Food Image (Optional for Speed)</label>
+                            <div
+                                style="background: rgba(15, 23, 42, 0.6); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
+                                <input type="file" id="foodImage" accept="image/*" onchange="previewSimple(event)"
+                                    style="width: 100%;">
+
+                                <div id="imagePreviewContainer"
+                                    style="margin-top: 15px; display: none; text-align: center;">
+                                    <img id="imagePreview" src="" alt="Preview"
+                                        style="max-height: 200px; max-width: 100%; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2);">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Preparation Time -->
+                    <div class="form-group">
+                        <label>When was the food prepared?</label>
+                        <div class="input-icon">
+                            <i class="fa-solid fa-clock"></i>
+                            <input type="datetime-local" id="preparationTime" required>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="form-group">
+                        <label>Description / Note for Relief Team</label>
+                        <textarea id="description" rows="3"
+                            placeholder="Ex: 50 packets ready for pickup immediately."></textarea>
+                    </div>
+
+                    <!-- Contact & Location -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Mobile Number</label>
+                            <div class="input-icon">
+                                <i class="fa-solid fa-phone"></i>
+                                <input type="tel" id="mobile" placeholder="Contact Number" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Pickup Location</label>
+                            <div class="input-icon">
+                                <i class="fa-solid fa-location-dot"></i>
+                                <input type="text" id="address" placeholder="Address" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <i class="fa-solid fa-truck-medical"></i> Post Emergency Relief
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Notification Toast (Hidden by default) -->
+    <div id="toast" class="toast">
+        <i class="fa-solid fa-check-circle"></i>
+        <span>Emergency Donation Posted!</span>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const userStr = localStorage.getItem('user');
+            if (userStr) {
+                // Update Logo Link
+                const logo = document.querySelector('.logo');
+                if (logo) logo.href = '/donor-home';
+
+                // Update Nav Links
+                const navLinks = document.querySelectorAll('.nav-links a');
+                navLinks.forEach(link => {
+                    const text = link.textContent.trim();
+                    if (text === 'Home') link.href = '/donor-home';
+                });
+            }
+        });
+
+        function previewSimple(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const img = document.getElementById('imagePreview');
+                    img.src = e.target.result;
+                    document.getElementById('imagePreviewContainer').style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+    <script src="/app.js?v=4"></script>
+    <script>
+        document.getElementById('donationForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            // Auth Check
+            const userStr = localStorage.getItem('user');
+            if (!userStr) {
+                alert('Please login to post a donation.');
+                window.location.href = '/login';
+                return;
+            }
+            const user = JSON.parse(userStr);
+
+            const formData = new FormData();
+            try {
+                // Helper to get value safely
+                const val = (id) => document.getElementById(id).value;
+
+                formData.append('donorName', val('donorName'));
+                formData.append('foodName', val('foodName'));
+                formData.append('foodType', val('foodType'));
+                formData.append('quantity', val('quantity'));
+                formData.append('description', "EMERGENCY: " + val('description')); // Tag description
+                formData.append('mobile', val('mobile'));
+                formData.append('address', val('address'));
+                formData.append('donorId', user.id);
+                formData.append('preparationTime', val('preparationTime'));
+
+                // Radio
+                const diet = document.querySelector('input[name="dietType"]:checked');
+                if (diet) formData.append('dietType', diet.value);
+
+                // File
+                const fileInput = document.getElementById('foodImage');
+                if (fileInput && fileInput.files[0]) {
+                    formData.append('image', fileInput.files[0]);
+                }
+
+                // API Call - Reusing same endpoint as it handles standard ingestion
+                const res = await fetch('/api/donate', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    // Show success
+                    const toast = document.getElementById('toast');
+                    toast.classList.add('show');
+                    setTimeout(() => {
+                        toast.classList.remove('show');
+                        window.location.href = '/donor-home'; // Return to home
+                    }, 2000);
+                } else {
+                    alert('Failed to post: ' + (data.message || 'Unknown error'));
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Error submitting form: ' + err.message);
+            }
+        });
+    </script>
+</body>
+
+</html>

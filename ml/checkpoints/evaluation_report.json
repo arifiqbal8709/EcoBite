@@ -1,0 +1,10 @@
+{
+  "dataset_size": 123,
+  "num_classes": 41,
+  "top1_accuracy": 0.8211,
+  "top3_accuracy": 0.9675,
+  "macro_precision": 0.8382,
+  "macro_recall": 0.8211,
+  "macro_f1": 0.8072,
+  "unknown_food_rejection_rate": 0.8711
+}

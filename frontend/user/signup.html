@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | EcoBite</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:ital,wght@0,300..700;1,300..700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/style.css?v=2">
+    <link rel="stylesheet" href="/theme-genz.css?v=1">
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="/" class="logo">Eco<span class="highlight">Bite</span></a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/#about">About Us</a></li>
+                <li><a href="/contact">Contact Us</a></li>
+                <li><a href="/login" class="btn-login">Login</a></li>
+            </ul>
+            <div class="mobile-toggle">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Signup Section -->
+    <section class="form-section">
+        <div class="form-wrapper">
+            <div class="form-header">
+                <h2>Create Account</h2>
+                <p>Join the movement to end hunger</p>
+            </div>
+
+            <div class="role-selector">
+                <div class="role-option active" data-role="donor">
+                    <i class="fa-solid fa-hand-holding-heart"></i>
+                    Donor
+                </div>
+                <div class="role-option" data-role="ngo">
+                    <i class="fa-solid fa-users"></i>
+                    NGO
+                </div>
+                <div class="role-option" data-role="delivery">
+                    <i class="fa-solid fa-truck-fast"></i>
+                    Delivery
+                </div>
+                <div class="role-option" data-role="admin">
+                    <i class="fa-solid fa-user-shield"></i>
+                    Admin
+                </div>
+            </div>
+
+            <form id="signup-form">
+                <div class="form-group">
+                    <label for="name">Full Name / Organization</label>
+                    <div class="input-icon">
+                        <i class="fa-solid fa-user"></i>
+                        <input type="text" id="name" placeholder="John Doe or City Hotel" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <div class="input-icon">
+                        <i class="fa-solid fa-envelope"></i>
+                        <input type="email" id="email" placeholder="e.g. user@ecobite.com" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <div class="input-icon">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" id="password" placeholder="******" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm-password">Confirm Password</label>
+                        <div class="input-icon">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" id="confirm-password" placeholder="******" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <div class="input-icon">
+                        <i class="fa-solid fa-phone"></i>
+                        <input type="tel" id="phone" placeholder="+91 98765 43210" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
+            </form>
+            <div style="text-align: center; margin-top: 15px; color: var(--text-secondary);">
+                <p>Already have an account? <a href="/login" style="color: var(--primary-color);">Login here</a></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <i class="fa-solid fa-circle-check"></i>
+        <div class="toast-message">Account Created Successfully!</div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const redirectParam = urlParams.get('redirect');
+
+        // Update login link with redirect if present
+        const loginLink = document.querySelector('a[href="/login"]');
+        if (loginLink && redirectParam) {
+            loginLink.href = `/login?redirect=${encodeURIComponent(redirectParam)}`;
+        }
+
+        const roleOptions = document.querySelectorAll('.role-option');
+        let selectedRole = 'donor'; // Default
+
+        roleOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                roleOptions.forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+                selectedRole = option.dataset.role;
+            });
+        });
+
+        document.getElementById('signup-form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+
+            if (password !== confirmPassword) {
+                alert("Passwords do not match!");
+                return;
+            }
+
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                password: password,
+                phone: document.getElementById('phone').value,
+                role: selectedRole
+            };
+
+            try {
+                const response = await fetch('/api/signup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    if (result.user) {
+                        localStorage.setItem('user', JSON.stringify(result.user));
+                    }
+                    const toast = document.getElementById('toast');
+                    toast.classList.add('show');
+                    setTimeout(() => {
+                        toast.classList.remove('show');
+                        const targetRedirect = redirectParam || (sessionStorage.getItem('ecobite_donation_draft') ? '/donate' : '');
+                        if (targetRedirect) {
+                            window.location.href = `/login?redirect=${encodeURIComponent(targetRedirect)}`;
+                        } else {
+                            window.location.href = '/login';
+                        }
+                    }, 1500);
+                } else {
+                    alert(result.message);
+                }
+            } catch (error) {
+                console.error(error);
+                alert("Signup failed");
+            }
+        });
+    </script>
+</body>
+
+</html>

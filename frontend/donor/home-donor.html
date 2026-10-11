@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donor Home | EcoBite</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:ital,wght@0,300..700;1,300..700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/style.css?v=2">
+    <link rel="stylesheet" href="/theme-genz.css?v=1">
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="#" class="logo">Eco<span class="highlight">Bite</span></a>
+            <ul class="nav-links">
+                <li><a href="#" class="active">Home</a></li>
+                <li><a href="/donor">My Dashboard</a></li>
+                <li><a href="#recent-activity">Recent Activity</a></li>
+                <li><a href="/donor" id="profileLink">Profile</a></li>
+                <li><a href="#" onclick="logout()" class="btn-login">Logout</a></li>
+            </ul>
+            <div class="mobile-toggle">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ACTIVE EMERGENCY ALERT SECTION -->
+    <div id="emergency-alert-section" class="container"
+        style="display:none; margin-top: 100px; margin-bottom: -60px; position:relative; z-index:5;">
+        <div
+            style="background: #FFF5F5; border: 2px solid #EF4444; border-radius: 12px; padding: 20px; color: #1C2520;">
+            <div style="display:flex; justify-content:space-between; align-items:start;">
+                <div>
+                    <h2 id="embTitle" style="color: #EF4444; margin-bottom:10px;"><i
+                            class="fa-solid fa-triangle-exclamation"></i> Emergency Alert</h2>
+                    <p id="embDesc" style="font-size: 1.1rem; margin-bottom: 20px; color: #1C2520;">Loading...</p>
+
+                    <div style="display:flex; gap:20px; flex-wrap:wrap;">
+                        <span
+                            style="background:#FEE2E2; padding:5px 12px; border-radius:6px; color:#991B1B; font-weight:600;">
+                            <i class="fa-solid fa-location-dot"></i> <strong id="embArea">Area</strong>
+                        </span>
+                        <span
+                            style="background:#FEE2E2; padding:5px 12px; border-radius:6px; color:#991B1B; font-weight:600;">
+                            <i class="fa-solid fa-phone"></i> <strong id="embContact">Contact</strong>
+                        </span>
+                    </div>
+                </div>
+                <a href="/donate-emergency" class="btn"
+                    style="background: #EF4444; color: white; border:none; white-space:nowrap;">
+                    <i class="fa-solid fa-hand-holding-medical"></i> Donate Now
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="container hero-container">
+            <div class="hero-content">
+                <div class="badge">Welcome back, <span id="donorNameDisplay">Donor</span></div>
+                <h1>Ready to Share <br><span class="gradient-text">More Meals?</span></h1>
+                <p>Your contributions have already helped many. Continue to bridge the gap between surplus and hunger.
+                </p>
+                <div class="hero-buttons">
+                    <a href="/donate" class="btn btn-primary"><i class="fa-solid fa-hand-holding-heart"></i> Donate
+                        Food</a>
+                    <a href="/donor" class="btn btn-secondary">View My History</a>
+                </div>
+                <div class="stats">
+                    <div class="stat-item">
+                        <span class="stat-number" id="statsMeals">0</span>
+                        <span class="stat-label">Meals Donated</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">Active</span>
+                        <span class="stat-label">Donor Status</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="glowing-circle"></div>
+                <div class="card-float donor-card">
+                    <i class="fa-solid fa-heart"></i>
+                    <div>
+                        <strong>You are amazing!</strong>
+                        <small>Keep up the good work</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Recent Activity Section -->
+    <section id="recent-activity" class="features">
+        <div class="container">
+            <h2 class="section-title">Community Impact</h2>
+            <div id="activityGrid" class="features-grid"
+                style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));">
+                <div class="loading-state">
+                    <p>Loading recent community activity...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Profile Script -->
+    <script>
+        let userStr = localStorage.getItem('user');
+        let user = userStr ? JSON.parse(userStr) : null;
+        if (!user) {
+            window.location.href = '/login';
+        } else if (document.getElementById('donorNameDisplay')) {
+            document.getElementById('donorNameDisplay').innerText = user.name || 'Donor';
+        }
+
+        // Asynchronously sync session with backend
+        fetch('/api/me').then(res => res.json()).then(data => {
+            if (data.authenticated && data.user) {
+                user = data.user;
+                localStorage.setItem('user', JSON.stringify(user));
+                if (document.getElementById('donorNameDisplay')) {
+                    document.getElementById('donorNameDisplay').innerText = user.name;
+                }
+            }
+        }).catch(err => console.warn('Session check skipped:', err));
+
+        async function logout() {
+            try { await fetch('/api/logout', { method: 'POST' }); } catch (e) {}
+            localStorage.removeItem('user');
+            sessionStorage.clear();
+            window.location.href = '/';
+        }
+
+        async function fetchRecentActivity() {
+            try {
+                const response = await fetch('/api/donations');
+                const donations = await response.json();
+                const container = document.getElementById('activityGrid');
+                container.innerHTML = '';
+
+                const recent = donations.slice(0, 3);
+
+                if (recent.length === 0) {
+                    container.innerHTML = '<p>No recent activity.</p>';
+                    return;
+                }
+
+                recent.forEach(d => {
+                    const card = document.createElement('div');
+                    card.className = 'feature-card';
+                    card.style.textAlign = 'left';
+                    card.innerHTML = `
+                        <div class="icon-box"><i class="fa-solid fa-utensils"></i></div>
+                        <h3>${d.food_type.replace('_', ' ')}</h3>
+                        <p>${d.quantity} servings donated by ${d.pickup_address}</p>
+                        <small style="color: var(--primary-color); font-weight:bold;">${d.status}</small>
+                    `;
+                    container.appendChild(card);
+                });
+
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        fetchRecentActivity();
+        fetchStats();
+        fetchEmergencyForPage();
+
+        async function fetchEmergencyForPage() {
+            try {
+                const res = await fetch('/api/broadcast/active');
+                const data = await res.json();
+
+                if (data && data.status === 'Active') {
+                    const section = document.getElementById('emergency-alert-section');
+                    section.style.display = 'block';
+
+                    document.getElementById('embTitle').innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ${data.title}`;
+                    document.getElementById('embDesc').innerText = data.description;
+                    document.getElementById('embArea').innerText = data.area;
+                    document.getElementById('embContact').innerText = data.contact_details;
+
+                    document.querySelector('.hero').style.paddingTop = '60px';
+                }
+            } catch (e) { console.error('Error fetching emergency for page:', e); }
+        }
+
+        async function fetchStats() {
+            try {
+                const res = await fetch(`/api/user/stats/${user.id}`);
+                if (res.ok) {
+                    const stats = await res.json();
+                    const mealDisplay = document.getElementById('statsMeals');
+                    if (mealDisplay) mealDisplay.innerText = stats.meals_donated;
+                }
+            } catch (e) { console.error('Error fetching stats:', e); }
+        }
+    </script>
+    <script src="/app.js?v=5"></script>
+</body>
+
+</html>

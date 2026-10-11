@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulk Event Donation | EcoBite</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:ital,wght@0,300..700;1,300..700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/style.css?v=2">
+    <style>
+        :root {
+            --primary-color: #E85D04;
+        }
+
+        .form-section {
+            background: #FAF7F2;
+        }
+
+        .navbar .active {
+            color: #E85D04 !important;
+        }
+
+        .btn-primary {
+            background-color: #E85D04 !important;
+            border-color: #E85D04 !important;
+            color: #FFFFFF !important;
+            font-weight: 600;
+        }
+
+        .btn-primary:hover {
+            background-color: #C94D00 !important;
+        }
+
+        h2 {
+            color: #1C2520;
+        }
+    </style>
+
+    <link rel="stylesheet" href="/theme-genz.css?v=1">
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="/" class="logo">Eco<span class="highlight">Bite</span></a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/donate" class="active">Donate</a></li>
+                <li><a href="/find-food">Find Food</a></li>
+                <li><a href="/login" class="btn-login">Login</a></li>
+            </ul>
+            <div class="mobile-toggle">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Donation Section -->
+    <section class="form-section">
+        <div class="container">
+            <div class="form-wrapper" style="border: 1px solid #f59e0b;">
+                <div class="form-header">
+                    <h2><i class="fa-solid fa-champagne-glasses"></i> Bulk Event Donation</h2>
+                    <p style="color: #cbd5e1;">Minimize food waste from large gatherings.</p>
+                </div>
+
+                <form id="donationForm">
+
+                    <!-- Event Details -->
+                    <div class="form-group">
+                        <label>Event Type</label>
+                        <div class="input-icon">
+                            <i class="fa-solid fa-calendar-check"></i>
+                            <select id="eventType" required
+                                style="background: rgba(15, 23, 42, 0.6); color: white; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 10px; width: 100%;">
+                                <option value="" disabled selected>Select Event Type</option>
+                                <option value="Wedding">Wedding</option>
+                                <option value="Corporate Event">Corporate Event</option>
+                                <option value="Birthday Party">Birthday Party</option>
+                                <option value="Hotel Buffet">Hotel Buffet Surplus</option>
+                                <option value="Other">Other Gathering</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Donor/Host Details -->
+                    <div class="form-group">
+                        <label>Host / Organizer Name</label>
+                        <div class="input-icon">
+                            <i class="fa-solid fa-building"></i>
+                            <input type="text" id="donorName" placeholder="Ex: Sharma Wedding or TechCorp Annual Meet"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <!-- Food Category -->
+                        <div class="form-group">
+                            <label>Dominant Diet Type</label>
+                            <div class="radio-group" style="display: flex; gap: 15px; margin-top: 5px;">
+                                <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                                    <input type="radio" name="dietType" value="Veg" checked> Veg
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                                    <input type="radio" name="dietType" value="Non-Veg"> Non-Veg
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                                    <input type="radio" name="dietType" value="Mixed"> Mixed
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Approx. Food Quantity</label>
+                            <div class="input-icon">
+                                <i class="fa-solid fa-scale-balanced"></i>
+                                <input type="text" id="quantity" placeholder="Ex: For 200 people / 50kg" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Preparation Time -->
+                    <div class="form-group">
+                        <label>When was the food prepared/served?</label>
+                        <div class="input-icon">
+                            <i class="fa-solid fa-clock"></i>
+                            <input type="datetime-local" id="preparationTime" required>
+                        </div>
+                    </div>
+
+                    <!-- Food Items Description -->
+                    <div class="form-group">
+                        <label>List Main Food Items</label>
+                        <textarea id="description" rows="3"
+                            placeholder="Ex: Paneer Butter Masala, Dal Makhani, Naan, Rice (Approx 5 large containers)"></textarea>
+                    </div>
+
+                    <!-- Logistics -->
+                    <div class="form-group">
+                        <label>Pickup Logistics / Container Info</label>
+                        <textarea id="logistics" rows="2"
+                            placeholder="Ex: Please bring your own large vessels. We have disposables but prefer transfer."></textarea>
+                    </div>
+
+                    <!-- Contact & Location -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Event Coordinator Contact</label>
+                            <div class="input-icon">
+                                <i class="fa-solid fa-phone"></i>
+                                <input type="tel" id="mobile" placeholder="Mobile Number" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Venue / Address</label>
+                            <div class="input-icon">
+                                <i class="fa-solid fa-location-dot"></i>
+                                <input type="text" id="address" placeholder="Venue Address" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <i class="fa-solid fa-truck-ramp-box"></i> Post Bulk Donation
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Notification Toast (Hidden by default) -->
+    <div id="toast" class="toast">
+        <i class="fa-solid fa-check-circle"></i>
+        <span>Bulk Donation Posted!</span>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const userStr = localStorage.getItem('user');
+            if (userStr) {
+                const user = JSON.parse(userStr);
+                // Update Logo Link
+                const logo = document.querySelector('.logo');
+                if (logo) logo.href = '/donor-home';
+
+                // Auto-fill available details
+                if (user.phone) document.getElementById('mobile').value = user.phone;
+            }
+        });
+    </script>
+    <script src="/app.js?v=4"></script>
+    <script>
+        document.getElementById('donationForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            // Auth Check
+            const userStr = localStorage.getItem('user');
+            if (!userStr) {
+                alert('Please login to post a donation.');
+                window.location.href = '/login';
+                return;
+            }
+            const user = JSON.parse(userStr);
+
+            const formData = new FormData();
+            try {
+                // Helper to get value safely
+                const val = (id) => document.getElementById(id).value;
+                const eventType = val('eventType');
+                const logistics = val('logistics');
+                const desc = val('description');
+
+                // Construct a composite description
+                const finalDesc = `BULK: ${eventType} - ${desc}. LOGISTICS: ${logistics}`;
+                const title = `Bulk ${eventType} Surplus`;
+
+                formData.append('donorName', val('donorName'));
+                formData.append('foodName', title); // Use event type as food name for card title
+                formData.append('foodType', 'cooked_meal'); // Default for events usually
+                formData.append('quantity', val('quantity'));
+                formData.append('description', finalDesc);
+                formData.append('mobile', val('mobile'));
+                formData.append('address', val('address'));
+                formData.append('donorId', user.id);
+                formData.append('preparationTime', val('preparationTime'));
+
+                // Radio
+                const diet = document.querySelector('input[name="dietType"]:checked');
+                if (diet) formData.append('dietType', diet.value);
+
+                // No image upload in this rapid bulk form for simplicity, but can be added if needed
+                // If backend expects it, we might need a placeholder or optional check
+
+                // API Call
+                const res = await fetch('/api/donate', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    const toast = document.getElementById('toast');
+                    toast.classList.add('show');
+                    setTimeout(() => {
+                        toast.classList.remove('show');
+                        window.location.href = '/donor-home';
+                    }, 2000);
+                } else {
+                    alert('Failed to post: ' + (data.message || 'Unknown error'));
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Error submitting form: ' + err.message);
+            }
+        });
+    </script>
+</body>
+
+</html>

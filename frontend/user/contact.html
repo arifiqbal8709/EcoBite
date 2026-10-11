@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us | EcoBite</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:ital,wght@0,300..700;1,300..700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/style.css?v=2">
+    <link rel="stylesheet" href="/theme-genz.css?v=1">
+
+    <style>
+        .contact-page {
+            padding-top: 100px;
+        }
+
+        .section-tag {
+            display: inline-block;
+            padding: 6px 18px;
+            background: #FAF7F2;
+            color: #E85D04;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            border: 1px solid #EAE5DE;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .contact-info-card {
+            background: #FFFFFF;
+            border: 1px solid #EAE5DE;
+            border-radius: 20px;
+            padding: 36px 28px;
+            text-align: center;
+            box-shadow: 0 4px 16px rgba(28, 37, 32, 0.04);
+            transition: all 0.3s ease;
+        }
+
+        .contact-info-card:hover {
+            transform: translateY(-4px);
+            border-color: #E85D04;
+            box-shadow: 0 10px 28px rgba(232, 93, 4, 0.1);
+        }
+
+        .faq-accordion {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .faq-item {
+            background: #FFFFFF;
+            border: 1px solid #EAE5DE;
+            border-radius: 14px;
+            overflow: hidden;
+            transition: all 0.25s ease;
+        }
+
+        .faq-question {
+            padding: 22px 28px;
+            font-weight: 600;
+            font-size: 1.05rem;
+            color: #1C2520;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+
+        .faq-question i {
+            color: #E85D04;
+            transition: transform 0.3s ease;
+        }
+
+        .faq-answer {
+            padding: 0 28px 22px 28px;
+            color: #475569;
+            line-height: 1.7;
+            display: none;
+            border-top: 1px solid #FAF7F2;
+        }
+
+        .faq-item.active .faq-answer {
+            display: block;
+        }
+
+        .faq-item.active .faq-question i {
+            transform: rotate(180deg);
+        }
+
+        .cta-partner-card {
+            background: #FAF7F2;
+            border: 1px solid #EAE5DE;
+            border-radius: 24px;
+            padding: 60px 40px;
+            text-align: center;
+            margin: 80px 0 40px;
+        }
+    </style>
+</head>
+
+<body class="contact-page">
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="/" class="logo">Eco<span class="highlight">Bite</span></a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/#about">About Us</a></li>
+                <li><a href="/contact" class="active">Contact Us</a></li>
+                <li><a href="/signup" class="btn-signup">Sign Up</a></li>
+                <li><a href="/login" class="btn-login">Login</a></li>
+            </ul>
+            <div class="mobile-toggle">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 1. CONTACT HERO -->
+    <section class="hero" style="min-height: auto; padding-top: 40px; padding-bottom: 60px; text-align: center;">
+        <div class="container" style="max-width: 800px; margin: 0 auto;">
+            <div class="section-tag">Get In Touch</div>
+            <h1>Let's Make a <br><span class="gradient-text">Difference Together.</span></h1>
+            <p style="margin: 0 auto 30px;">Have a question, partnership idea, or suggestion? We'd love to hear from you. Reach out and help us build a future where good food never goes to waste.</p>
+        </div>
+    </section>
+
+    <!-- 2. CONTACT INFORMATION CARDS -->
+    <section style="padding: 40px 0 80px; background: #FFFFFF;">
+        <div class="container">
+            <div class="features-grid">
+                <div class="contact-info-card">
+                    <div class="icon-box" style="margin: 0 auto 20px;"><i class="fa-solid fa-envelope"></i></div>
+                    <h3>Email Us</h3>
+                    <p style="font-weight: 500; color: #1C2520;">support@ecobite.com</p>
+                    <small style="color: #64748B;">Available for general inquiries & support</small>
+                </div>
+                <div class="contact-info-card">
+                    <div class="icon-box" style="margin: 0 auto 20px;"><i class="fa-solid fa-phone"></i></div>
+                    <h3>Call Us</h3>
+                    <p style="font-weight: 500; color: #1C2520;">+91 7004042572</p>
+                    <small style="color: #64748B;">Mon - Sat from 9:00 AM to 6:00 PM</small>
+                </div>
+                <div class="contact-info-card">
+                    <div class="icon-box" style="margin: 0 auto 20px;"><i class="fa-solid fa-location-dot"></i></div>
+                    <h3>Location</h3>
+                    <p style="font-weight: 500; color: #1C2520;">Ranchi, Jharkhand, India</p>
+                    <small style="color: #64748B;">Serving regional communities & NGOs</small>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. MODERN CONTACT FORM -->
+    <section style="padding: 90px 0; background: #FAF7F2; border-top: 1px solid #EAE5DE; border-bottom: 1px solid #EAE5DE;">
+        <div class="container">
+            <div class="form-wrapper" style="max-width: 680px; margin: 0 auto;">
+                <div class="form-header">
+                    <h2>Send Us a Message</h2>
+                    <p>Fill out the form below and our team will respond promptly.</p>
+                </div>
+
+                <form id="contactForm">
+                    <div class="form-row" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px;">
+                        <div class="form-group">
+                            <label for="contactName">Full Name *</label>
+                            <div class="input-icon">
+                                <i class="fa-solid fa-user"></i>
+                                <input type="text" id="contactName" placeholder="e.g. Sarah Jenkins" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="contactEmail">Email Address *</label>
+                            <div class="input-icon">
+                                <i class="fa-solid fa-envelope"></i>
+                                <input type="email" id="contactEmail" placeholder="e.g. sarah@example.com" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px;">
+                        <div class="form-group">
+                            <label for="contactPhone">Phone Number (Optional)</label>
+                            <div class="input-icon">
+                                <i class="fa-solid fa-phone"></i>
+                                <input type="tel" id="contactPhone" placeholder="+91 98765 43210">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="contactSubject">Subject *</label>
+                            <div class="input-icon">
+                                <i class="fa-solid fa-list-check"></i>
+                                <select id="contactSubject" required style="appearance: auto; padding-right: 16px;">
+                                    <option value="" disabled selected>Select a subject...</option>
+                                    <option value="General Inquiry">General Inquiry</option>
+                                    <option value="Food Donation Support">Food Donation Support</option>
+                                    <option value="NGO Registration">NGO Registration</option>
+                                    <option value="Partnership Opportunity">Partnership Opportunity</option>
+                                    <option value="Technical Support">Technical Support</option>
+                                    <option value="Feedback & Suggestions">Feedback & Suggestions</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contactMessage">Your Message *</label>
+                        <div class="input-icon" style="align-items: flex-start;">
+                            <i class="fa-solid fa-comment" style="top: 16px;"></i>
+                            <textarea id="contactMessage" rows="5" placeholder="How can we help you today?" required style="padding-left: 44px; padding-top: 12px;"></textarea>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="submitBtn" class="btn btn-primary btn-block" style="padding: 14px 28px;">
+                        <i class="fa-solid fa-paper-plane"></i> Send Message
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. PARTNERSHIP SECTION -->
+    <div class="container">
+        <div class="cta-partner-card">
+            <div class="section-tag">Collaboration</div>
+            <h2>Partner With EcoBite</h2>
+            <p style="max-width: 600px; margin: 0 auto 30px; color: #475569;">Are you a restaurant, hotel, NGO, event organizer, or community organization? Join our network and help turn surplus food into meaningful support.</p>
+            <a href="/signup" class="btn btn-primary" style="padding: 14px 32px;"><i class="fa-solid fa-handshake"></i> Become a Partner</a>
+        </div>
+    </div>
+
+    <!-- 5. FAQ SECTION -->
+    <section style="padding: 90px 0; background: #FFFFFF; border-top: 1px solid #EAE5DE;">
+        <div class="container">
+            <div style="text-align: center; max-width: 650px; margin: 0 auto 50px;">
+                <div class="section-tag">Frequently Asked Questions</div>
+                <h2 class="section-title" style="margin-bottom: 16px;">Got Questions? We Have Answers.</h2>
+            </div>
+            <div class="faq-accordion">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>1. What is EcoBite?</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        EcoBite is a community-driven web platform that connects restaurants, hotels, and event hosts with local NGOs and delivery volunteers to redistribute edible surplus food quickly and safely.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>2. How can I donate surplus food?</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Simply sign up as a Donor, navigate to "Donate Food", select your food category and quantity, specify your pickup address, and submit. Nearby NGOs will receive real-time alerts.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>3. Can NGOs register on EcoBite?</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Yes! Verified NGOs and community shelters can register as an NGO account to browse real-time available food listings in their area and claim donations instantly.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>4. Is EcoBite free to use?</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Yes, EcoBite is completely free for food donors and charitable organizations to connect and redistribute surplus food.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>5. How are food pickups coordinated?</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Once an NGO claims a donation, pickup arrangements can be managed directly or assigned to registered delivery partners for timely transport.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>6. How can I become a delivery partner?</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Select "Delivery" during sign up to join as a delivery volunteer or partner driver to assist in transporting claimed meals safely.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>7. How can I report a problem?</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        You can send us a message directly using the contact form on this page or email our support team at support@ecobite.com.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <i class="fa-solid fa-circle-check"></i>
+        <div id="toastMsg" class="toast-message">Message Sent Successfully!</div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 40px; margin-bottom: 40px;">
+                <div>
+                    <a href="/" class="logo" style="color: #FFFFFF !important; display: inline-block; margin-bottom: 16px;">Eco<span class="highlight">Bite</span></a>
+                    <p style="color: #E2E8E0; font-size: 0.95rem; line-height: 1.6;">Bridging the gap between food surplus and hunger by connecting donors, NGOs, and volunteers.</p>
+                </div>
+                <div>
+                    <h4 style="color: #FFFFFF !important; font-family: var(--font-body); margin-bottom: 16px; font-weight: 600;">Quick Links</h4>
+                    <ul style="display: flex; flex-direction: column; gap: 10px;">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/#about">About Us</a></li>
+                        <li><a href="/contact">Contact Us</a></li>
+                        <li><a href="/donate">Donate Food</a></li>
+                        <li><a href="/find-food">Find Food</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="color: #FFFFFF !important; font-family: var(--font-body); margin-bottom: 16px; font-weight: 600;">Contact Info</h4>
+                    <p style="color: #F1F5F0; margin-bottom: 8px;"><i class="fa-solid fa-envelope" style="color: #E85D04; margin-right: 8px;"></i> support@ecobite.com</p>
+                    <p style="color: #F1F5F0; margin-bottom: 8px;"><i class="fa-solid fa-phone" style="color: #E85D04; margin-right: 8px;"></i> +91 7004042572</p>
+                    <p style="color: #F1F5F0;"><i class="fa-solid fa-location-dot" style="color: #E85D04; margin-right: 8px;"></i> Ranchi, Jharkhand, India</p>
+                </div>
+            </div>
+            <div style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 24px; text-align: center; color: #CBD5CF; font-size: 0.9rem;">
+                © 2026 EcoBite. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // FAQ Accordion Toggle
+        const faqItems = document.querySelectorAll('.faq-item');
+        faqItems.forEach(item => {
+            const question = item.querySelector('.faq-question');
+            question.addEventListener('click', () => {
+                const isActive = item.classList.contains('active');
+                faqItems.forEach(i => i.classList.remove('active'));
+                if (!isActive) {
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // Contact Form Submission Handler
+        document.getElementById('contactForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const submitBtn = document.getElementById('submitBtn');
+            const originalBtnText = submitBtn.innerHTML;
+
+            const name = document.getElementById('contactName').value.trim();
+            const email = document.getElementById('contactEmail').value.trim();
+            const phone = document.getElementById('contactPhone').value.trim();
+            const subject = document.getElementById('contactSubject').value;
+            const message = document.getElementById('contactMessage').value.trim();
+
+            if (!name || !email || !message) {
+                alert('Please fill out all required fields.');
+                return;
+            }
+
+            try {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending...';
+
+                const response = await fetch('/api/contact', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, phone, subject, message })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    const toast = document.getElementById('toast');
+                    document.getElementById('toastMsg').innerText = data.message;
+                    toast.classList.add('show');
+                    document.getElementById('contactForm').reset();
+
+                    setTimeout(() => {
+                        toast.classList.remove('show');
+                    }, 4000);
+                } else {
+                    alert(data.message || 'Error submitting message.');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Connection error. Please try again.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,11 @@
+.env
+__pycache__/
+*.pyc
+.venv/
+node_modules/
+.DS_Store
+frontend/uploads/scan_*
+frontend/uploads/1791*
+scratch/current_donor.png
+scratch/sample_biryani_test.jpg
+*.db

@@ -1,0 +1,499 @@
+/* ==============================================================================
+   ECOBITE CENTRALIZED COMPLAINT MANAGEMENT STYLESHEET
+   Theme: Background #FAF7F2 | Primary #E85D04 | Forest Green #1B3022 | Text #1C2520
+   ============================================================================== */
+
+:root {
+    --cmp-bg: #FAF7F2;
+    --cmp-card-bg: #FFFFFF;
+    --cmp-orange: #E85D04;
+    --cmp-orange-hover: #D05203;
+    --cmp-green: #1B3022;
+    --cmp-text: #1C2520;
+    --cmp-muted: #475569;
+    --cmp-border: #EAE5DE;
+}
+
+/* --- Summary Stats Cards --- */
+.cmp-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.cmp-stat-card {
+    background: var(--cmp-card-bg);
+    border: 1px solid var(--cmp-border);
+    border-radius: 14px;
+    padding: 18px 20px;
+    box-shadow: 0 4px 14px rgba(28, 37, 32, 0.04);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: all 0.25s ease;
+    cursor: pointer;
+}
+
+.cmp-stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(28, 37, 32, 0.08);
+    border-color: var(--cmp-orange);
+}
+
+.cmp-stat-card .stat-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--cmp-text);
+    margin-bottom: 4px;
+}
+
+.cmp-stat-card .stat-label {
+    font-size: 0.85rem;
+    color: var(--cmp-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* --- Status Badges --- */
+.cmp-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+}
+
+.cmp-badge-open {
+    background: #FFF3E0;
+    color: #E85D04;
+    border: 1px solid #FFE0B2;
+}
+
+.cmp-badge-in_progress {
+    background: #E0F2FE;
+    color: #0284C7;
+    border: 1px solid #BAE6FD;
+}
+
+.cmp-badge-waiting_for_user {
+    background: #FEF3C7;
+    color: #D97706;
+    border: 1px solid #FDE68A;
+}
+
+.cmp-badge-resolved {
+    background: #DCFCE7;
+    color: #15803D;
+    border: 1px solid #BBF7D0;
+}
+
+.cmp-badge-closed {
+    background: #F1F5F9;
+    color: #475569;
+    border: 1px solid #CBD5E1;
+}
+
+.cmp-badge-reopened {
+    background: #FEE2E2;
+    color: #DC2626;
+    border: 1px solid #FCA5A5;
+}
+
+/* --- Priority Badges --- */
+.cmp-priority {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 6px;
+    text-transform: uppercase;
+}
+
+.cmp-priority-critical {
+    background: #FEE2E2;
+    color: #991B1B;
+    border: 1px solid #FCA5A5;
+    animation: cmpPulse 2s infinite;
+}
+
+.cmp-priority-high {
+    background: #FFEDD5;
+    color: #C2410C;
+    border: 1px solid #FED7AA;
+}
+
+.cmp-priority-medium {
+    background: #FEF3C7;
+    color: #B45309;
+}
+
+.cmp-priority-low {
+    background: #F1F5F9;
+    color: #475569;
+}
+
+@keyframes cmpPulse {
+    0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+    70% { box-shadow: 0 0 0 6px rgba(220, 38, 38, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+}
+
+/* --- Complaint Cards List (Matching reference design) --- */
+.cmp-ticket-card {
+    background: var(--cmp-card-bg);
+    border: 1px solid var(--cmp-border);
+    border-radius: 16px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 14px rgba(28, 37, 32, 0.04);
+    transition: all 0.2s ease;
+}
+
+.cmp-ticket-card:hover {
+    border-color: var(--cmp-orange);
+    box-shadow: 0 6px 20px rgba(28, 37, 32, 0.08);
+}
+
+.cmp-ticket-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.cmp-ticket-meta {
+    font-size: 0.88rem;
+    color: var(--cmp-muted);
+    font-weight: 600;
+}
+
+.cmp-ticket-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--cmp-text);
+    margin: 0 0 10px 0;
+}
+
+.cmp-ticket-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 10px;
+    border-top: 1px dashed var(--cmp-border);
+    font-size: 0.85rem;
+    color: var(--cmp-muted);
+}
+
+.btn-cmp-view {
+    background: transparent;
+    border: none;
+    color: var(--cmp-text);
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.2s;
+    font-size: 0.9rem;
+}
+
+.btn-cmp-view:hover {
+    color: var(--cmp-orange);
+}
+
+/* --- Complaint Form --- */
+.cmp-form-card {
+    background: var(--cmp-card-bg);
+    border: 1px solid var(--cmp-border);
+    border-radius: 18px;
+    padding: 30px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 18px rgba(28, 37, 32, 0.04);
+}
+
+.cmp-form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 18px;
+    margin-bottom: 18px;
+}
+
+.cmp-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.cmp-form-group label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--cmp-text);
+}
+
+.cmp-form-group input,
+.cmp-form-group select,
+.cmp-form-group textarea {
+    background: #FAF7F2;
+    border: 1px solid var(--cmp-border);
+    border-radius: 10px;
+    padding: 11px 14px;
+    font-size: 0.95rem;
+    color: var(--cmp-text);
+    font-family: 'Inter', sans-serif;
+    transition: all 0.2s ease;
+}
+
+.cmp-form-group input:focus,
+.cmp-form-group select:focus,
+.cmp-form-group textarea:focus {
+    outline: none;
+    border-color: var(--cmp-orange);
+    background: #FFFFFF;
+    box-shadow: 0 0 0 3px rgba(232, 93, 4, 0.1);
+}
+
+.btn-cmp-submit {
+    background: var(--cmp-orange);
+    color: #FFFFFF;
+    border: none;
+    padding: 12px 26px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 14px rgba(232, 93, 4, 0.25);
+}
+
+.btn-cmp-submit:hover {
+    background: var(--cmp-orange-hover);
+    transform: translateY(-1px);
+}
+
+/* --- Support Ticket Modal / Drawer --- */
+.cmp-modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(27, 48, 34, 0.6);
+    backdrop-filter: blur(5px);
+    z-index: 99999;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.cmp-modal-overlay.active {
+    display: flex !important;
+}
+
+.cmp-modal-box {
+    background: #FFFFFF;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 860px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.cmp-modal-header {
+    padding: 22px 28px;
+    border-bottom: 1px solid var(--cmp-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #FAF7F2;
+    border-radius: 20px 20px 0 0;
+}
+
+.cmp-modal-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    margin: 0;
+    color: var(--cmp-green);
+}
+
+.cmp-modal-close {
+    background: #FFFFFF;
+    border: 1px solid var(--cmp-border);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--cmp-muted);
+    font-size: 1.1rem;
+    transition: all 0.2s;
+}
+
+.cmp-modal-close:hover {
+    background: var(--cmp-orange);
+    color: #FFFFFF;
+    border-color: var(--cmp-orange);
+}
+
+.cmp-modal-body {
+    padding: 26px 28px;
+}
+
+/* --- Timeline Tracker --- */
+.cmp-timeline-wrapper {
+    margin-bottom: 24px;
+    padding: 16px;
+    background: #FAF7F2;
+    border-radius: 14px;
+    border: 1px solid var(--cmp-border);
+}
+
+.cmp-timeline-steps {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+}
+
+.cmp-timeline-steps::before {
+    content: '';
+    position: absolute;
+    top: 14px;
+    left: 10%;
+    right: 10%;
+    height: 3px;
+    background: #E2E8F0;
+    z-index: 1;
+}
+
+.cmp-timeline-step {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+    text-align: center;
+}
+
+.cmp-timeline-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #FFFFFF;
+    border: 2px solid #CBD5E1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    color: #64748B;
+}
+
+.cmp-timeline-step.completed .cmp-timeline-icon {
+    background: var(--cmp-green);
+    border-color: var(--cmp-green);
+    color: #FFFFFF;
+}
+
+.cmp-timeline-step.active .cmp-timeline-icon {
+    background: var(--cmp-orange);
+    border-color: var(--cmp-orange);
+    color: #FFFFFF;
+    box-shadow: 0 0 0 4px rgba(232, 93, 4, 0.2);
+}
+
+.cmp-timeline-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--cmp-muted);
+}
+
+/* --- Chat Conversation Thread --- */
+.cmp-chat-thread {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 24px;
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 6px;
+}
+
+.cmp-chat-msg {
+    max-width: 82%;
+    border-radius: 14px;
+    padding: 14px 18px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    position: relative;
+}
+
+.cmp-msg-user {
+    align-self: flex-end;
+    background: #E85D04;
+    color: #FFFFFF;
+    border-bottom-right-radius: 4px;
+}
+
+.cmp-msg-admin {
+    align-self: flex-start;
+    background: #F0F4F1;
+    border: 1px solid #C2D4C6;
+    color: #1C2520;
+    border-bottom-left-radius: 4px;
+}
+
+.cmp-msg-internal {
+    align-self: center;
+    width: 96%;
+    background: #FFFBEB;
+    border: 1px solid #FCD34D;
+    color: #92400E;
+    font-size: 0.88rem;
+    border-radius: 10px;
+}
+
+.cmp-msg-meta {
+    font-size: 0.75rem;
+    opacity: 0.8;
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+/* --- Filters Bar --- */
+.cmp-filter-bar {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.cmp-filter-bar input,
+.cmp-filter-bar select {
+    background: #FFFFFF;
+    border: 1px solid var(--cmp-border);
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+}

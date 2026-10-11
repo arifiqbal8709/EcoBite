@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | EcoBite</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:ital,wght@0,300..700;1,300..700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/complaints.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/complaints.js"></script>
+    <style>
+        :root {
+            --primary-orange: #E85D04;
+            --forest-green: #1B3022;
+            --bg-cream: #FAF7F2;
+            --card-white: #FFFFFF;
+            --text-dark: #1C2520;
+            --text-muted: #475569;
+            --border-light: #EAE5DE;
+            --navbar-height: 100px;
+            --sidebar-width: 250px;
+        }
+
+        body {
+            overflow-x: hidden;
+            background-color: var(--bg-cream);
+            margin: 0;
+            padding-top: var(--navbar-height);
+            box-sizing: border-box;
+        }
+
+        /* Top Navbar */
+        .navbar {
+            background: #FFFFFF !important;
+            border-bottom: 1px solid var(--border-light) !important;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--navbar-height);
+            padding: 0 !important;
+            margin: 0;
+            z-index: 1000;
+            box-sizing: border-box;
+            box-shadow: 0 2px 10px rgba(28, 37, 32, 0.04) !important;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+            box-sizing: border-box;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            text-decoration: none;
+            color: var(--forest-green);
+        }
+
+        .logo .highlight {
+            color: var(--primary-orange);
+        }
+
+        .sidebar-toggle-btn {
+            display: none;
+            background: var(--bg-cream);
+            border: 1px solid var(--border-light);
+            color: var(--forest-green);
+            font-size: 1.15rem;
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-toggle-btn:hover {
+            background: var(--border-light);
+            color: var(--primary-orange);
+        }
+
+        /* Layout Wrapper */
+        .donor-layout-wrapper {
+            display: flex;
+            min-height: calc(100vh - var(--navbar-height));
+            position: relative;
+        }
+
+        /* Vertical Left Sidebar */
+        .donor-sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--forest-green);
+            color: #E8F0E8;
+            position: fixed;
+            top: var(--navbar-height);
+            left: 0;
+            bottom: 0;
+            height: calc(100vh - var(--navbar-height));
+            overflow-y: auto;
+            overflow-x: hidden;
+            z-index: 990;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 24px 16px 20px;
+            box-shadow: 4px 0 16px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            scrollbar-width: thin;
+            box-sizing: border-box;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            margin-bottom: 16px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .sidebar-user-info .avatar-icon {
+            font-size: 2.2rem;
+            color: var(--primary-orange);
+            flex-shrink: 0;
+            line-height: 1;
+        }
+
+        .user-details {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .user-name {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #FFFFFF;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.3;
+        }
+
+        .user-badge {
+            font-size: 0.75rem;
+            color: #A3E635;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 3px;
+            white-space: nowrap;
+            line-height: 1.2;
+        }
+
+        .sidebar-close-btn {
+            display: none;
+            background: transparent;
+            border: none;
+            color: #E8F0E8;
+            font-size: 1.25rem;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-close-btn:hover {
+            color: #FFFFFF;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex-grow: 1;
+            padding: 0;
+            list-style: none;
+        }
+
+        .sidebar-link {
+            background: transparent;
+            border: none;
+            color: #E8F0E8;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 0.93rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            width: 100%;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .sidebar-link i {
+            font-size: 1.15rem;
+            width: 22px;
+            text-align: center;
+            color: #C2D6C6;
+            transition: color 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .sidebar-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #FFFFFF;
+        }
+
+        .sidebar-link:hover i {
+            color: var(--primary-orange);
+        }
+
+        .sidebar-link:focus-visible {
+            outline: 2px solid var(--primary-orange);
+            outline-offset: 2px;
+        }
+
+        .sidebar-link.active {
+            background: var(--primary-orange) !important;
+            color: #FFFFFF !important;
+            box-shadow: 0 4px 14px rgba(232, 93, 4, 0.35);
+            font-weight: 700;
+        }
+
+        .sidebar-link.active i {
+            color: #FFFFFF !important;
+        }
+
+        .sidebar-footer {
+            padding-top: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
+            margin-top: 16px;
+            flex-shrink: 0;
+        }
+
+        .quick-eco-badge {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            color: #A3E635;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+
+        /* Main Right Content */
+        .main-content {
+            flex-grow: 1;
+            margin-left: var(--sidebar-width);
+            padding: 30px 32px 60px;
+            max-width: 1300px;
+            width: calc(100% - var(--sidebar-width));
+            box-sizing: border-box;
+            transition: margin-left 0.3s ease;
+        }
+
+        /* Mobile Sidebar Backdrop */
+        .sidebar-backdrop {
+            display: none;
+            position: fixed;
+            top: var(--navbar-height);
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(2px);
+            z-index: 985;
+        }
+
+        @media (max-width: 992px) {
+            :root {
+                --navbar-height: 80px;
+            }
+
+            .sidebar-toggle-btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+            .donor-sidebar {
+                transform: translateX(-100%);
+                z-index: 1050;
+            }
+
+            .donor-sidebar.open {
+                transform: translateX(0);
+            }
+
+            .sidebar-close-btn {
+                display: block;
+            }
+
+            .sidebar-backdrop.active {
+                display: block;
+                z-index: 1040;
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px 16px 40px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            :root {
+                --navbar-height: 70px;
+            }
+
+            .nav-container {
+                padding: 0 16px;
+            }
+
+            .donor-sidebar {
+                width: 270px;
+            }
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: var(--surface-color);
+            padding: 25px;
+            border-radius: 12px;
+            border: var(--glass-border);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-color);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .stat-info h3 {
+            font-size: 2rem;
+            font-family: var(--font-heading);
+            margin-bottom: 5px;
+        }
+
+        .stat-info p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Users Table section */
+        .content-section {
+            background: var(--surface-color);
+            border-radius: 16px;
+            border: var(--glass-border);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .section-header h2 {
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+        }
+
+        /* Table Styles */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            color: var(--text-secondary);
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        th {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        tbody tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .role-badge {
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            text-transform: capitalize;
+        }
+
+        .role-donor {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--primary-color);
+        }
+
+        .role-ngo {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--accent-color);
+        }
+
+        .role-delivery {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+        }
+
+        .role-admin {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        /* Toggle Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #334155;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: var(--primary-color);
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(24px);
+        }
+    </style>
+    <link rel="stylesheet" href="/theme-genz.css?v=1">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div style="display: flex; align-items: center; gap: 14px;">
+                <button class="sidebar-toggle-btn" onclick="toggleAdminSidebar()" aria-label="Toggle Navigation Sidebar">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <a href="/" class="logo">Eco<span class="highlight">Bite</span></a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="#" class="active">Dashboard</a></li>
+                <li><a href="/" class="btn-login" onclick="logout()">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Mobile Sidebar Backdrop -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeAdminSidebar()"></div>
+
+    <!-- Main Layout Wrapper -->
+    <div class="donor-layout-wrapper">
+
+        <!-- Vertical Left Sidebar -->
+        <aside class="donor-sidebar" id="adminSidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-user-info">
+                    <i class="fa-solid fa-user-shield avatar-icon"></i>
+                    <div class="user-details">
+                        <span class="user-name" id="sidebarUserName">System Admin</span>
+                        <span class="user-badge"><i class="fa-solid fa-shield-halved"></i> Root Control</span>
+                    </div>
+                </div>
+                <button class="sidebar-close-btn" onclick="closeAdminSidebar()" aria-label="Close Sidebar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li>
+                    <button class="sidebar-link active" onclick="showSection('overview')">
+                        <i class="fa-solid fa-chart-pie"></i> <span>Overview</span>
+                    </button>
+                </li>
+                <li>
+                    <button class="sidebar-link" onclick="showSection('users')">
+                        <i class="fa-solid fa-users"></i> <span>User Management</span>
+                    </button>
+                </li>
+                <li>
+                    <button class="sidebar-link" onclick="showSection('donations')">
+                        <i class="fa-solid fa-hand-holding-heart"></i> <span>Donation Analytics</span>
+                    </button>
+                </li>
+                <li>
+                    <button class="sidebar-link" onclick="showSection('complaints')">
+                        <i class="fa-solid fa-headset"></i> <span>Complaint Management</span>
+                    </button>
+                </li>
+                <li>
+                    <button class="sidebar-link" onclick="showSection('settings')">
+                        <i class="fa-solid fa-gear"></i> <span>Settings</span>
+                    </button>
+                </li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <div class="quick-eco-badge">
+                    <i class="fa-solid fa-seedling"></i>
+                    <span>EcoBite Control Center</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+
+            <!-- Overview Section -->
+            <div id="overview-section">
+                <h1 style="font-family: var(--font-heading); margin-bottom: 30px;">Dashboard Overview</h1>
+
+                <div class="stats-grid">
+                    <div class="stat-card" onclick="filterUsers('all')">
+                        <div class="stat-icon"
+                            style="background: rgba(16, 185, 129, 0.1); color: var(--primary-color);">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="total-users">0</h3>
+                            <p>Total Users</p>
+                        </div>
+                    </div>
+                    <div class="stat-card" onclick="filterUsers('donor')">
+                        <div class="stat-icon" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6;">
+                            <i class="fa-solid fa-hand-holding-heart"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="total-donors">0</h3>
+                            <p>Active Donors</p>
+                        </div>
+                    </div>
+                    <div class="stat-card" onclick="filterUsers('ngo')">
+                        <div class="stat-icon" style="background: rgba(245, 158, 11, 0.1); color: var(--accent-color);">
+                            <i class="fa-solid fa-building-ngo"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="total-ngos">0</h3>
+                            <p>Partner NGOs</p>
+                        </div>
+                    </div>
+                    <div class="stat-card" onclick="filterUsers('delivery')">
+                        <div class="stat-icon" style="background: rgba(147, 51, 234, 0.1); color: #9333ea;">
+                            <i class="fa-solid fa-truck-fast"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="total-delivery">0</h3>
+                            <p>Delivery Persons</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2>Recent Users</h2>
+                        <button class="btn btn-secondary" onclick="showSection('users')">View All</button>
+                    </div>
+                    <div class="table-container">
+                        <table id="recent-users-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Joined</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Populated via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Section (Hidden by default) -->
+            <div id="users-section" style="display: none;">
+                <h1 id="user-section-title" style="font-family: var(--font-heading); margin-bottom: 30px;">User
+                    Management</h1>
+                <div class="content-section">
+                    <div class="table-container">
+                        <table id="all-users-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Role</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Populated via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Placeholder Sections -->
+            <!-- Donation Analytics Section -->
+            <div id="donations-section" style="display: none;">
+                <h1 style="font-family: var(--font-heading); margin-bottom: 30px;">Donation Analytics</h1>
+
+                <!-- Summary Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon"
+                            style="background: rgba(16, 185, 129, 0.1); color: var(--primary-color);">
+                            <i class="fa-solid fa-bowl-food"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="ana-total">0</h3>
+                            <p>Total Donations</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(245, 158, 11, 0.1); color: var(--accent-color);">
+                            <i class="fa-solid fa-hand-holding-heart"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="ana-claimed">0</h3>
+                            <p>Meals Claimed</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Row -->
+                <div
+                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-bottom: 40px;">
+                    <div class="content-section">
+                        <div class="section-header">
+                            <h2>Status Distribution</h2>
+                        </div>
+                        <div style="height: 250px;">
+                            <canvas id="statusChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="content-section">
+                        <div class="section-header">
+                            <h2>Dietary Breakdown</h2>
+                        </div>
+                        <div style="height: 250px;">
+                            <canvas id="dietChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Donations Table -->
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2>Recent Donations</h2>
+                        <button class="btn btn-secondary" onclick="fetchDonationAnalytics()">Refresh</button>
+                    </div>
+                    <div class="table-container">
+                        <table id="analytics-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Food</th>
+                                    <th>Donor</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Populated via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div id="settings-section" style="display: none;">
+                <h1 style="font-family: var(--font-heading); margin-bottom: 30px;">Platform Settings</h1>
+
+                <!-- System Controls -->
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2>System Controls</h2>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 20px;">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <div>
+                                <h3 style="margin-bottom: 5px;">Allow New Registrations</h3>
+                                <p style="color: var(--text-secondary); font-size: 0.9rem;">Enable or disable new user
+                                    signups.</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <div>
+                                <h3 style="margin-bottom: 5px;">Maintenance Mode</h3>
+                                <p style="color: var(--text-secondary); font-size: 0.9rem;">Take the platform offline
+                                    for updates.</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h3 style="margin-bottom: 5px;">Email Notifications</h3>
+                                <p style="color: var(--text-secondary); font-size: 0.9rem;">Receive alerts for critical
+                                    system events.</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Management -->
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2>Data Management</h2>
+                    </div>
+                    <div style="display: flex; gap: 20px; align-items: center;">
+                        <p style="color: var(--text-secondary); flex: 1;">Download a complete report of all donations in
+                            CSV format for offline analysis.</p>
+                        <a href="/api/admin/export/donations" class="btn btn-primary" style="text-decoration:none;">
+                            <i class="fa-solid fa-file-csv" style="margin-right: 8px;"></i> Export Data
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Certificate Management -->
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2>Certificate Template</h2>
+                    </div>
+                    <div style="display: flex; gap: 30px; flex-wrap: wrap;">
+                        <div style="flex: 1; min-width: 300px;">
+                            <p style="color: var(--text-secondary); margin-bottom: 15px;">Upload a custom certificate
+                                template. This image will be used as the background for donor appreciation certificates.
+                            </p>
+                            <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 20px;">Recommended size:
+                                800x600px (Landscape), PNG/JPG.</p>
+
+                            <input type="file" id="certInput" accept="image/*" style="display: none;"
+                                onchange="previewCertificate(this)">
+
+                            <div style="display: flex; gap: 10px;">
+                                <button onclick="document.getElementById('certInput').click()" class="btn"
+                                    style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2);">
+                                    <i class="fa-solid fa-upload"></i> Select Image
+                                </button>
+                                <button onclick="uploadCertificate()" class="btn btn-primary" id="uploadCertBtn"
+                                    disabled>
+                                    <i class="fa-solid fa-cloud-arrow-up"></i> Upload
+                                </button>
+                            </div>
+                        </div>
+                        <div style="flex: 1; min-width: 300px; text-align: center;">
+                            <p style="color: var(--text-secondary); margin-bottom: 10px;">Current Template Preview</p>
+                            <div
+                                style="border: 2px dashed rgba(255,255,255,0.2); padding: 10px; border-radius: 8px; display: inline-block;">
+                                <img id="certPreview" src="/uploads/certificate_template.png"
+                                    onerror="this.src='https://via.placeholder.com/800x600?text=No+Template+Uploaded'"
+                                    style="max-width: 100%; height: auto; border-radius: 4px; max-height: 250px;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Profile -->
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2>Admin Profile</h2>
+                    </div>
+                    <div style="max-width: 500px;">
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 8px; color: var(--text-secondary);">Current
+                                Password</label>
+                            <input type="password"
+                                style="width: 100%; padding: 10px; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 8px;"
+                                placeholder="••••••••">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 8px; color: var(--text-secondary);">New
+                                Password</label>
+                            <input type="password"
+                                style="width: 100%; padding: 10px; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 8px;"
+                                placeholder="••••••••">
+                        </div>
+                        <button class="btn btn-primary">Update Password</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= COMPLAINTS MANAGEMENT SECTION ================= -->
+            <div id="complaints-section" style="display: none;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 25px;">
+                    <div>
+                        <h1 style="font-family: var(--font-heading); margin: 0 0 6px 0;">Complaint Management</h1>
+                        <p style="color: var(--text-secondary); margin: 0;">Centralized ticket center for Donors, NGOs, and Delivery Partners.</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="EcoBiteComplaints.exportComplaintsCSV()">
+                        <i class="fa-solid fa-file-csv"></i> Export CSV Report
+                    </button>
+                </div>
+
+                <!-- Summary Stats Cards (Matches reference layout: New, In Progress, Waiting User, Resolved, Reopened, Critical) -->
+                <div class="cmp-stats-grid">
+                    <div class="cmp-stat-card" onclick="document.getElementById('adminCmpStatus').value='OPEN'; EcoBiteComplaints.loadAdminComplaints();">
+                        <div class="stat-number" id="cmpStatNew">0</div>
+                        <div class="stat-label">New</div>
+                    </div>
+                    <div class="cmp-stat-card" onclick="document.getElementById('adminCmpStatus').value='IN_PROGRESS'; EcoBiteComplaints.loadAdminComplaints();">
+                        <div class="stat-number" id="cmpStatInProgress">0</div>
+                        <div class="stat-label">In Progress</div>
+                    </div>
+                    <div class="cmp-stat-card" onclick="document.getElementById('adminCmpStatus').value='WAITING_FOR_USER'; EcoBiteComplaints.loadAdminComplaints();">
+                        <div class="stat-number" id="cmpStatWaitingUser">0</div>
+                        <div class="stat-label">Awaiting User</div>
+                    </div>
+                    <div class="cmp-stat-card" onclick="document.getElementById('adminCmpStatus').value='RESOLVED'; EcoBiteComplaints.loadAdminComplaints();">
+                        <div class="stat-number" id="cmpStatResolved">0</div>
+                        <div class="stat-label">Resolved</div>
+                    </div>
+                    <div class="cmp-stat-card" onclick="document.getElementById('adminCmpStatus').value='REOPENED'; EcoBiteComplaints.loadAdminComplaints();">
+                        <div class="stat-number" id="cmpStatReopened" style="color: #ef4444;">0</div>
+                        <div class="stat-label">Reopened</div>
+                    </div>
+                    <div class="cmp-stat-card" onclick="document.getElementById('adminCmpPriority').value='CRITICAL'; EcoBiteComplaints.loadAdminComplaints();">
+                        <div class="stat-number" id="cmpStatCritical" style="color: #dc2626;">0</div>
+                        <div class="stat-label">Critical</div>
+                    </div>
+                </div>
+
+                <!-- Filter & Search Controls Bar -->
+                <div class="content-section" style="padding: 18px 24px; margin-bottom: 24px;">
+                    <div class="cmp-filter-bar">
+                        <div style="flex:2; min-width: 220px;">
+                            <input type="text" id="adminCmpSearch" placeholder="Search ticket #, subject, user, email..." style="width:100%;" onkeyup="EcoBiteComplaints.loadAdminComplaints()">
+                        </div>
+                        
+                        <select id="adminCmpRole" onchange="EcoBiteComplaints.loadAdminComplaints()">
+                            <option value="all">All User Roles</option>
+                            <option value="Donor">Donor</option>
+                            <option value="NGO">NGO</option>
+                            <option value="Delivery Partner">Delivery Partner</option>
+                        </select>
+
+                        <select id="adminCmpPriority" onchange="EcoBiteComplaints.loadAdminComplaints()">
+                            <option value="all">All Priorities</option>
+                            <option value="CRITICAL">CRITICAL</option>
+                            <option value="HIGH">HIGH</option>
+                            <option value="MEDIUM">MEDIUM</option>
+                            <option value="LOW">LOW</option>
+                        </select>
+
+                        <select id="adminCmpStatus" onchange="EcoBiteComplaints.loadAdminComplaints()">
+                            <option value="all">All Statuses</option>
+                            <option value="OPEN">OPEN / New</option>
+                            <option value="IN_PROGRESS">IN_PROGRESS</option>
+                            <option value="WAITING_FOR_USER">WAITING_FOR_USER</option>
+                            <option value="RESOLVED">RESOLVED</option>
+                            <option value="CLOSED">CLOSED</option>
+                            <option value="REOPENED">REOPENED</option>
+                        </select>
+
+                        <button class="btn btn-secondary" onclick="EcoBiteComplaints.loadAdminComplaints()">
+                            <i class="fa-solid fa-arrows-rotate"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Complaint Cards Container (Matches Reference Screenshot) -->
+                <div id="adminComplaintsTableContainer">
+                    <!-- Dynamically populated via EcoBiteComplaints.loadAdminComplaints() -->
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        // Data Fetching
+        async function fetchStats() {
+            try {
+                const res = await fetch('/api/admin/stats');
+                const data = await res.json();
+
+                document.getElementById('total-users').innerText = data.total_users;
+                document.getElementById('total-donors').innerText = data.donors;
+                document.getElementById('total-ngos').innerText = data.ngos;
+                document.getElementById('total-delivery').innerText = data.delivery;
+            } catch (error) {
+                console.error('Error fetching stats:', error);
+            }
+        }
+
+        async function fetchUsers(filterRole = 'all') {
+            try {
+                const res = await fetch('/api/admin/users');
+                const users = await res.json();
+
+                const tbody = document.querySelector('#all-users-table tbody');
+                const recentTbody = document.querySelector('#recent-users-table tbody');
+
+                // Only clear main table if we are in filtering mode, but recent users should always be refreshed on init
+                tbody.innerHTML = '';
+                if (filterRole === 'all') recentTbody.innerHTML = '';
+
+                let filteredUsers = users;
+                if (filterRole !== 'all') {
+                    filteredUsers = users.filter(user => user.role.toLowerCase() === filterRole);
+                }
+
+                // Populate Table
+                filteredUsers.forEach(user => {
+                    const isSystemAdmin = user.id === 1;
+                    const actionBtn = isSystemAdmin
+                        ? `<span style="color:#64748b; font-size:0.8rem;">Protected</span>`
+                        : `<button onclick="deleteUser(${user.id}, '${user.name}')" style="background:none; border:none; color:#ef4444; cursor:pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'" title="Delete User">
+                             <i class="fa-solid fa-trash"></i>
+                           </button>`;
+
+                    const row = `
+                        <tr>
+                            <td>#${user.id}</td>
+                            <td>${user.name}</td>
+                            <td>${user.email}</td>
+                            <td>${user.phone}</td>
+                            <td><span class="role-badge role-${user.role.toLowerCase()}">${user.role}</span></td>
+                            <td>${actionBtn}</td>
+                        </tr>
+                    `;
+                    tbody.innerHTML += row;
+                });
+
+                // Populate Recent Users (only when not filtering or initial load)
+                if (filterRole === 'all') {
+                    users.slice(0, 5).forEach(user => {
+                        const row = `
+                            <tr>
+                                <td>${user.name}</td>
+                                <td>${user.email}</td>
+                                <td><span class="role-badge role-${user.role.toLowerCase()}">${user.role}</span></td>
+                                <td>Just now</td>
+                            </tr>
+                        `;
+                        recentTbody.innerHTML += row;
+                    });
+                }
+
+            } catch (error) {
+                console.error('Error fetching users:', error);
+            }
+        }
+
+        async function deleteUser(id, name) {
+            if (!confirm(`Are you sure you want to delete user "${name}"? This action cannot be undone.`)) return;
+
+            try {
+                const res = await fetch(`/api/admin/users/${id}`, { method: 'DELETE' });
+                const data = await res.json();
+
+                if (data.success) {
+                    alert('User deleted successfully.');
+                    fetchUsers(); // Refresh table
+                    fetchStats(); // Refresh stats
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (err) {
+                alert('Failed to connect to server.');
+            }
+        }
+
+        function filterUsers(role) {
+            showSection('users');
+            fetchUsers(role);
+
+            const titles = {
+                'all': 'User Management - All Users',
+                'donor': 'User Management - Active Donors',
+                'ngo': 'User Management - Partner NGOs',
+                'delivery': 'User Management - Delivery Partners'
+            };
+            document.getElementById('user-section-title').innerText = titles[role] || 'User Management';
+        }
+
+        // Emergency Functions
+        async function sendBroadcast() {
+            const message = document.getElementById('broadcast-msg').value;
+            const level = document.getElementById('broadcast-level').value;
+
+            if (!message) return alert("Please enter a message");
+
+            try {
+                const res = await fetch('/api/broadcast/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message, level, user_id: 1 }) // Assuming admin is ID 1
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert('Broadcast sent successfully!');
+                    document.getElementById('broadcast-msg').value = '';
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (e) { alert('Network Error'); }
+        }
+
+        async function triggerSOS() {
+            const title = document.getElementById('sos-title').value;
+            const location = document.getElementById('sos-location').value;
+            const message = document.getElementById('sos-msg').value;
+
+            if (!title || !location) return alert("Please fill all fields");
+
+            if (!confirm("Are you sure you want to trigger a system-wide SOS alert?")) return;
+
+            try {
+                const res = await fetch('/api/sos/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title, location, message, user_id: 1 })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert('SOS Alert Triggered!');
+                    document.getElementById('sos-title').value = '';
+                    document.getElementById('sos-location').value = '';
+                    document.getElementById('sos-msg').value = '';
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (e) { alert('Network Error'); }
+        }
+        // Certificate Logic
+        function previewCertificate(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('certPreview').src = e.target.result;
+                    document.getElementById('uploadCertBtn').disabled = false;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        async function uploadCertificate() {
+            const input = document.getElementById('certInput');
+            if (!input.files || !input.files[0]) return;
+
+            const formData = new FormData();
+            formData.append('file', input.files[0]);
+
+            const btn = document.getElementById('uploadCertBtn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('/api/admin/upload-certificate', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await res.json();
+
+                if (result.success) {
+                    alert('Certificate template uploaded successfully!');
+                    // Force refresh image to show new version
+                    document.getElementById('certPreview').src = result.path;
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Upload failed.');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        // Navigation Logic
+        // --- SIDEBAR TOGGLE (MOBILE) ---
+        function toggleAdminSidebar() {
+            const sidebar = document.getElementById('adminSidebar');
+            const backdrop = document.getElementById('sidebarBackdrop');
+            if (sidebar) sidebar.classList.toggle('open');
+            if (backdrop) backdrop.classList.toggle('active');
+        }
+
+        function closeAdminSidebar() {
+            const sidebar = document.getElementById('adminSidebar');
+            const backdrop = document.getElementById('sidebarBackdrop');
+            if (sidebar) sidebar.classList.remove('open');
+            if (backdrop) backdrop.classList.remove('active');
+        }
+
+        function showSection(sectionId) {
+            // Hide all sections
+            ['overview', 'users', 'donations', 'settings', 'complaints'].forEach(id => {
+                const el = document.getElementById(id + '-section');
+                if (el) el.style.display = 'none';
+            });
+            // Show target section
+            const target = document.getElementById(sectionId + '-section');
+            if (target) target.style.display = 'block';
+
+            // Update active sidebar link
+            document.querySelectorAll('.sidebar-link').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('onclick') && link.getAttribute('onclick').includes(sectionId)) {
+                    link.classList.add('active');
+                }
+            });
+
+            closeAdminSidebar();
+
+            if (sectionId === 'donations') {
+                fetchDonationAnalytics();
+            }
+            if (sectionId === 'complaints') {
+                EcoBiteComplaints.loadAdminComplaints();
+                EcoBiteComplaints.startPolling('admin');
+            }
+        }
+
+        function logout() {
+            // Add any logout logic here (clearing tokens etc if we had them)
+            window.location.href = '/';
+        }
+
+        // Init
+        // Analytics Globals
+        let statusChartInstance = null;
+        let dietChartInstance = null;
+
+        async function fetchDonationAnalytics() {
+            try {
+                const res = await fetch('/api/admin/analytics/donations');
+                const data = await res.json();
+
+                // 1. Stats
+                document.getElementById('ana-total').innerText = data.total;
+                const claimed = (data.status['Claimed'] || 0) + (data.status['Picked Up'] || 0) + (data.status['Delivered'] || 0) + (data.status['Completed'] || 0);
+                document.getElementById('ana-claimed').innerText = claimed;
+
+                // 2. Table
+                const tbody = document.querySelector('#analytics-table tbody');
+                tbody.innerHTML = '';
+                data.recent.forEach(d => {
+                    const date = d.timestamp ? d.timestamp.split(' ')[0] : 'N/A';
+                    const row = `
+                        <tr>
+                            <td>#${d.id}</td>
+                            <td>${d.food_name || d.food_type}</td>
+                            <td>${d.donor_name || 'Donor #' + d.donor_id}</td>
+                            <td><span class="role-badge role-${d.status.toLowerCase()}">${d.status}</span></td>
+                            <td>${date}</td>
+                        </tr>
+                    `;
+                    tbody.innerHTML += row;
+                });
+
+                // 3. Charts
+                if (data.status && data.diet) {
+                    renderCharts(data);
+                }
+
+            } catch (e) { console.error(e); }
+        }
+
+        function renderCharts(data) {
+            // Status Chart
+            const ctxStatus = document.getElementById('statusChart').getContext('2d');
+            if (statusChartInstance) statusChartInstance.destroy();
+
+            statusChartInstance = new Chart(ctxStatus, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(data.status),
+                    datasets: [{
+                        data: Object.values(data.status),
+                        backgroundColor: ['#10b981', '#f59e0b', '#3b82f6', '#ef4444', '#8b5cf6'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'right', labels: { color: '#94a3b8', font: { family: 'Inter' } } }
+                    }
+                }
+            });
+
+            // Diet Chart logic
+            // Ensure Veg is Green (#10b981) and Non-Veg is Red (#ef4444)
+            const dietLabels = Object.keys(data.diet);
+            const dietValues = Object.values(data.diet);
+
+            const dietColors = dietLabels.map(label => {
+                const l = label.toLowerCase();
+                if (l.includes('non') || l.includes('veg') === false) return '#ef4444'; // Red for Non-Veg
+                return '#10b981'; // Green for Veg
+            });
+
+            const ctxDiet = document.getElementById('dietChart').getContext('2d');
+            if (dietChartInstance) dietChartInstance.destroy();
+
+            dietChartInstance = new Chart(ctxDiet, {
+                type: 'pie',
+                data: {
+                    labels: dietLabels,
+                    datasets: [{
+                        data: dietValues,
+                        backgroundColor: dietColors,
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'right', labels: { color: '#94a3b8', font: { family: 'Inter' } } }
+                    }
+                }
+            });
+        }
+
+        let userStr = localStorage.getItem('user');
+        let user = userStr ? JSON.parse(userStr) : null;
+
+        if (!user || (user.role && user.role.toLowerCase() !== 'admin')) {
+            window.location.href = '/login';
+        }
+
+        // Asynchronously sync session with backend
+        fetch('/api/me').then(res => res.json()).then(data => {
+            if (data.authenticated && data.user) {
+                user = data.user;
+                localStorage.setItem('user', JSON.stringify(user));
+            }
+        }).catch(err => console.warn('Session check skipped:', err));
+
+        async function logout() {
+            try { await fetch('/api/logout', { method: 'POST' }); } catch(e) {}
+            localStorage.removeItem('user');
+            sessionStorage.clear();
+            window.location.href = '/login';
+        }
+
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchStats();
+            fetchUsers();
+        });
+    </script>
+</body>
+
+</html>

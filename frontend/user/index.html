@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoBite | Waste Less, Feed More</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:ital,wght@0,300..700;1,300..700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/style.css?v=2">
+    <link rel="stylesheet" href="/theme-genz.css?v=1">
+
+    <style>
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 90px;
+        }
+
+        .section-tag {
+            display: inline-block;
+            padding: 6px 18px;
+            background: #FAF7F2;
+            color: #E85D04;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            border: 1px solid #EAE5DE;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .mission-vision-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .mv-card {
+            background: #FFFFFF;
+            border: 1px solid #EAE5DE;
+            border-radius: 20px;
+            padding: 40px 32px;
+            box-shadow: 0 4px 16px rgba(28, 37, 32, 0.04);
+            transition: all 0.3s ease;
+        }
+
+        .mv-card:hover {
+            transform: translateY(-5px);
+            border-color: #E85D04;
+            box-shadow: 0 12px 30px rgba(232, 93, 4, 0.1);
+        }
+
+        .timeline-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+            margin-top: 40px;
+        }
+
+        .timeline-card {
+            background: #FFFFFF;
+            border: 1px solid #EAE5DE;
+            border-radius: 18px;
+            padding: 30px 24px;
+            position: relative;
+        }
+
+        .step-number {
+            width: 44px;
+            height: 44px;
+            background: #E85D04;
+            color: #FFFFFF;
+            font-weight: 700;
+            font-size: 1.1rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 18px;
+        }
+
+        .cta-forest-banner {
+            background: #1B3022;
+            color: #FFFFFF;
+            border-radius: 24px;
+            padding: 70px 40px;
+            text-align: center;
+            margin: 80px 0;
+            box-shadow: 0 16px 40px rgba(27, 48, 34, 0.15);
+        }
+
+        .cta-forest-banner h2 {
+            color: #FFFFFF !important;
+            font-size: clamp(2rem, 3.5vw, 2.8rem);
+            margin-bottom: 16px;
+        }
+
+        .cta-forest-banner p {
+            color: #E2E8F0 !important;
+            max-width: 620px;
+            margin: 0 auto 36px;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 1. NAVBAR -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="/" class="logo">Eco<span class="highlight">Bite</span></a>
+            <ul class="nav-links">
+                <li><a href="/" class="active">Home</a></li>
+                <li><a href="/#about">About Us</a></li>
+                <li><a href="/contact">Contact Us</a></li>
+                <li><a href="/signup" class="btn-signup">Sign Up</a></li>
+                <li><a href="/login" class="btn-login">Login</a></li>
+            </ul>
+            <div class="mobile-toggle">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 2. EXISTING HOMEPAGE HERO SECTION -->
+    <header class="hero" id="home">
+        <div class="container hero-container">
+            <div class="hero-content">
+                <div class="badge">Food Waste Management Platform</div>
+                <h1>Bridge the Gap Between <br><span class="gradient-text">Surplus & Hunger</span></h1>
+                <p>Join the EcoBite movement. We connect hotels, weddings, and restaurants with local NGOs to ensure no food goes to waste.</p>
+                <div class="hero-buttons">
+                    <a href="/donate" class="btn btn-primary"><i class="fa-solid fa-hand-holding-heart"></i> Donate Food</a>
+                    <a href="/find-food" class="btn btn-secondary">I Need Food</a>
+                    <a href="/signup" class="btn btn-primary">Sign Up</a>
+                </div>
+                <div class="stats">
+                    <div class="stat-item">
+                        <span class="stat-number" id="heroMealsSaved">0+</span>
+                        <span class="stat-label">Meals Saved</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="heroNgosCount">0+</span>
+                        <span class="stat-label">NGOs Partnered</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="glowing-circle"></div>
+                <div class="card-float donor-card">
+                    <i class="fa-solid fa-utensils"></i>
+                    <div>
+                        <strong>Hotel City Inn</strong>
+                        <small>Just posted 50 meals</small>
+                    </div>
+                </div>
+                <div class="card-float ngo-card">
+                    <i class="fa-solid fa-users"></i>
+                    <div>
+                        <strong>Ranchi Help</strong>
+                        <small>Claimed 5 mins ago</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 3. IMPACT STATISTICS -->
+    <section id="stats" style="padding: 60px 0; background: #FAF7F2; border-top: 1px solid #EAE5DE; border-bottom: 1px solid #EAE5DE;">
+        <div class="container">
+            <div class="stats" style="border: none; justify-content: space-around; flex-wrap: wrap; gap: 30px;">
+                <div class="stat-item" style="text-align: center;">
+                    <span class="stat-number" id="statMeals" style="font-size: 2.8rem; color: #E85D04;">0</span>
+                    <span class="stat-label">Meals Saved</span>
+                </div>
+                <div class="stat-item" style="text-align: center;">
+                    <span class="stat-number" id="statDonations" style="font-size: 2.8rem; color: #1B3022;">0</span>
+                    <span class="stat-label">Food Donations</span>
+                </div>
+                <div class="stat-item" style="text-align: center;">
+                    <span class="stat-number" id="statNgos" style="font-size: 2.8rem; color: #E85D04;">0</span>
+                    <span class="stat-label">Partnered NGOs</span>
+                </div>
+                <div class="stat-item" style="text-align: center;">
+                    <span class="stat-number" id="statDonors" style="font-size: 2.8rem; color: #1B3022;">0</span>
+                    <span class="stat-label">Active Donors</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. ABOUT ECOBITE — OUR STORY -->
+    <section id="about" style="padding: 90px 0; background: #FFFFFF;">
+        <div class="container">
+            <div class="hero-container" style="min-height: auto; align-items: center;">
+                <div class="hero-image" style="background-image: url('/about_story.jpg'); height: 400px; border-radius: 20px;">
+                    <div class="card-float ngo-card">
+                        <i class="fa-solid fa-heart-pulse"></i>
+                        <div>
+                            <strong>Community Driven</strong>
+                            <small>Connecting Donors & NGOs</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-content">
+                    <div class="section-tag">About EcoBite — Our Story</div>
+                    <h2>A Small Idea. <br><span class="gradient-text">A Bigger Impact.</span></h2>
+                    <p style="margin-bottom: 16px;">Every day, perfectly good food is left unused after events, restaurant operations, and social gatherings. At the same time, many individuals and families face food insecurity.</p>
+                    <p style="margin-bottom: 16px;">EcoBite was created to help bridge this gap. By using technology to connect food donors with verified NGOs and delivery partners, we aim to make surplus food redistribution simpler, faster, and more accessible.</p>
+                    <p>Our goal is to turn food waste into an opportunity to support people and protect the environment.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. OUR MISSION & VISION -->
+    <section id="mission-vision" style="padding: 90px 0; background: #FAF7F2; border-top: 1px solid #EAE5DE; border-bottom: 1px solid #EAE5DE;">
+        <div class="container">
+            <div style="text-align: center; max-width: 650px; margin: 0 auto 50px;">
+                <div class="section-tag">Guided By Purpose</div>
+                <h2 class="section-title" style="margin-bottom: 16px;">Our Mission & Vision</h2>
+            </div>
+            <div class="mission-vision-grid">
+                <div class="mv-card">
+                    <div class="icon-box"><i class="fa-solid fa-bullseye"></i></div>
+                    <h3>Our Mission</h3>
+                    <p>To reduce avoidable food waste by making surplus food donation easy, accessible, and efficient while helping communities facing food insecurity.</p>
+                </div>
+                <div class="mv-card">
+                    <div class="icon-box" style="color: #1B3022;"><i class="fa-solid fa-eye"></i></div>
+                    <h3>Our Vision</h3>
+                    <p>To build a future where surplus food reaches people in need instead of ending up in landfills.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. THE PROBLEM WE'RE SOLVING -->
+    <section id="problem" style="padding: 90px 0; background: #FFFFFF;">
+        <div class="container">
+            <div style="text-align: center; max-width: 650px; margin: 0 auto 50px;">
+                <div class="section-tag">Addressing Challenges</div>
+                <h2 class="section-title" style="margin-bottom: 16px;">The Problem We're Solving</h2>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="icon-box"><i class="fa-solid fa-trash-can-arrow-up"></i></div>
+                    <h3>1. Food Waste</h3>
+                    <p>Large quantities of edible food are discarded despite opportunities for redistribution.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon-box"><i class="fa-solid fa-hand-holding-heart"></i></div>
+                    <h3>2. Food Insecurity</h3>
+                    <p>Many communities struggle to access sufficient nutritious food on a daily basis.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon-box"><i class="fa-solid fa-link-slash"></i></div>
+                    <h3>3. Connection Gap</h3>
+                    <p>Food donors and charitable organizations often lack an efficient way to connect in real time.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. HOW ECOBITE WORKS -->
+    <section id="how-it-works" style="padding: 90px 0; background: #FAF7F2; border-top: 1px solid #EAE5DE; border-bottom: 1px solid #EAE5DE;">
+        <div class="container">
+            <div style="text-align: center; max-width: 650px; margin: 0 auto 50px;">
+                <div class="section-tag">Seamless Process</div>
+                <h2 class="section-title" style="margin-bottom: 16px;">How EcoBite Works</h2>
+            </div>
+            <div class="timeline-grid">
+                <div class="timeline-card">
+                    <div class="step-number">1</div>
+                    <h3>Post Surplus Food</h3>
+                    <p>Hotels, restaurants, and event organizers submit details about available surplus food.</p>
+                </div>
+                <div class="timeline-card">
+                    <div class="step-number">2</div>
+                    <h3>Discover Donations</h3>
+                    <p>NGOs explore available food donations and identify suitable opportunities nearby.</p>
+                </div>
+                <div class="timeline-card">
+                    <div class="step-number">3</div>
+                    <h3>Coordinate Pickup</h3>
+                    <p>Donors, NGOs, and delivery partners coordinate the collection and delivery process.</p>
+                </div>
+                <div class="timeline-card">
+                    <div class="step-number">4</div>
+                    <h3>Create Impact</h3>
+                    <p>Surplus food is redirected toward communities in need instead of being wasted.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 8. WHO CAN JOIN ECOBITE? -->
+    <section id="who-can-join" style="padding: 90px 0; background: #FFFFFF;">
+        <div class="container">
+            <div style="text-align: center; max-width: 650px; margin: 0 auto 50px;">
+                <div class="section-tag">Our Network</div>
+                <h2 class="section-title" style="margin-bottom: 16px;">Who Can Join EcoBite?</h2>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="icon-box"><i class="fa-solid fa-utensils"></i></div>
+                    <h3>Restaurants & Hotels</h3>
+                    <p>Post surplus buffet items, prepared meals, and unserved inventory quickly.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon-box"><i class="fa-solid fa-champagne-glasses"></i></div>
+                    <h3>Event Organizers</h3>
+                    <p>Avoid post-wedding or banquet food waste by scheduling bulk meal pickups.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon-box"><i class="fa-solid fa-users-between-lines"></i></div>
+                    <h3>NGOs & Shelters</h3>
+                    <p>Browse real-time available food listings and request pickup for local communities.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon-box"><i class="fa-solid fa-truck-fast"></i></div>
+                    <h3>Delivery Partners</h3>
+                    <p>Volunteer or assist in transporting meals safely from donors to partner organizations.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 9. WHY CHOOSE ECOBITE? -->
+    <section id="why-choose-us" style="padding: 90px 0; background: #FAF7F2; border-top: 1px solid #EAE5DE; border-bottom: 1px solid #EAE5DE;">
+        <div class="container">
+            <div style="text-align: center; max-width: 650px; margin: 0 auto 50px;">
+                <div class="section-tag">Key Advantages</div>
+                <h2 class="section-title" style="margin-bottom: 16px;">Why Choose EcoBite?</h2>
+            </div>
+            <div class="features-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+                <div class="feature-card">
+                    <div class="icon-box"><i class="fa-solid fa-bolt"></i></div>
+                    <h3>Simple Donation Process</h3>
+                    <p>List food in seconds with an intuitive, mobile-friendly interface.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon-box"><i class="fa-solid fa-network-wired"></i></div>
+                    <h3>NGO Connectivity</h3>
+                    <p>Direct communication and instant notification dispatch to nearby shelters.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon-box"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                    <h3>Donation Status Tracking</h3>
+                    <p>Real-time status updates from posting to claim and delivery completion.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon-box"><i class="fa-solid fa-route"></i></div>
+                    <h3>Delivery Coordination</h3>
+                    <p>Integrated routing tools for prompt food transfer before spoilage.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon-box"><i class="fa-solid fa-earth-americas"></i></div>
+                    <h3>Community-Driven Impact</h3>
+                    <p>Empowering local neighborhoods to reduce carbon footprint together.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon-box"><i class="fa-solid fa-mobile-screen-button"></i></div>
+                    <h3>Easy-to-Use Platform</h3>
+                    <p>Accessible for donors, NGOs, and delivery partners across all devices.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 10. OUR IMPACT -->
+    <section id="our-impact" style="padding: 90px 0; background: #FFFFFF;">
+        <div class="container">
+            <div style="text-align: center; max-width: 650px; margin: 0 auto 50px;">
+                <div class="section-tag">Transforming Communities</div>
+                <h2 class="section-title" style="margin-bottom: 16px;">Our Impact</h2>
+            </div>
+            <div class="hero-container" style="min-height: auto; align-items: center;">
+                <div class="hero-content">
+                    <h3 style="font-size: 1.8rem; color: #1B3022; margin-bottom: 16px;">Together We Save Thousands of Meals Each Month</h3>
+                    <p style="font-size: 1.05rem; line-height: 1.8; color: var(--text-body); margin-bottom: 20px;">
+                        Through the dedication of our food donors, partner NGOs, and logistics volunteers, EcoBite is turning potential food waste into nutritious sustenance for thousands of people across the region.
+                    </p>
+                    <p style="font-size: 1.05rem; line-height: 1.8; color: var(--text-body);">
+                        Every single donation prevents organic waste from generating greenhouse gas emissions while directly relieving hunger in underserved neighborhoods.
+                    </p>
+                </div>
+                <div class="hero-image" style="background-image: url('/community_food.jpg'); height: 380px; border-radius: 20px;">
+                    <div class="card-float donor-card">
+                        <i class="fa-solid fa-earth-americas"></i>
+                        <div>
+                            <strong>Zero Hunger Goal</strong>
+                            <small>Sustainable Social Impact</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 11. FINAL CALL TO ACTION -->
+    <div class="container" id="cta">
+        <div class="cta-forest-banner">
+            <h2>Together, We Can Make Every Meal Matter.</h2>
+            <p>Whether you're donating surplus food or helping distribute it, every contribution brings us closer to a world with less waste and more care.</p>
+            <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                <a href="/donate" class="btn btn-primary" style="padding: 14px 32px;"><i class="fa-solid fa-hand-holding-heart"></i> Donate Food</a>
+                <a href="/signup" class="btn btn-login" style="padding: 14px 32px; border-color: #FFFFFF !important; color: #FFFFFF !important; background: transparent !important;"><i class="fa-solid fa-users"></i> Join as NGO</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 12. FOOTER -->
+    <footer>
+        <div class="container">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 40px; margin-bottom: 40px;">
+                <div>
+                    <a href="/" class="logo" style="color: #FFFFFF !important; display: inline-block; margin-bottom: 16px;">Eco<span class="highlight">Bite</span></a>
+                    <p style="color: #E2E8E0; font-size: 0.95rem; line-height: 1.6;">Bridging the gap between food surplus and hunger by connecting donors, NGOs, and volunteers.</p>
+                </div>
+                <div>
+                    <h4 style="color: #FFFFFF !important; font-family: var(--font-body); margin-bottom: 16px; font-weight: 600;">Quick Links</h4>
+                    <ul style="display: flex; flex-direction: column; gap: 10px;">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/#about">About Us</a></li>
+                        <li><a href="/contact">Contact Us</a></li>
+                        <li><a href="/donate">Donate Food</a></li>
+                        <li><a href="/find-food">Find Food</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="color: #FFFFFF !important; font-family: var(--font-body); margin-bottom: 16px; font-weight: 600;">Contact Info</h4>
+                    <p style="color: #F1F5F0; margin-bottom: 8px;"><i class="fa-solid fa-envelope" style="color: #E85D04; margin-right: 8px;"></i> support@ecobite.com</p>
+                    <p style="color: #F1F5F0; margin-bottom: 8px;"><i class="fa-solid fa-phone" style="color: #E85D04; margin-right: 8px;"></i> +91 7004042572</p>
+                    <p style="color: #F1F5F0;"><i class="fa-solid fa-location-dot" style="color: #E85D04; margin-right: 8px;"></i> Ranchi, Jharkhand, India</p>
+                </div>
+            </div>
+            <div style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 24px; text-align: center; color: #CBD5CF; font-size: 0.9rem;">
+                © 2026 EcoBite. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script src="/app.js"></script>
+    <script>
+        async function fetchGlobalStats() {
+            try {
+                const res = await fetch('/api/stats');
+                if (res.ok) {
+                    const data = await res.json();
+                    const meals = data.meals_saved || 0;
+                    const donations = data.donations_count || 0;
+                    const ngos = data.ngos_count || 0;
+                    const donors = data.donors_count || 0;
+
+                    if (document.getElementById('heroMealsSaved')) document.getElementById('heroMealsSaved').innerText = meals + '+';
+                    if (document.getElementById('heroNgosCount')) document.getElementById('heroNgosCount').innerText = ngos + '+';
+
+                    if (document.getElementById('statMeals')) document.getElementById('statMeals').innerText = meals;
+                    if (document.getElementById('statDonations')) document.getElementById('statDonations').innerText = donations;
+                    if (document.getElementById('statNgos')) document.getElementById('statNgos').innerText = ngos;
+                    if (document.getElementById('statDonors')) document.getElementById('statDonors').innerText = donors;
+                }
+            } catch (e) {
+                console.error('Error fetching global stats:', e);
+            }
+        }
+
+        // Smooth scroll handling for hash links
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchGlobalStats();
+
+            // Mobile menu toggle
+            const mobileToggle = document.querySelector('.mobile-toggle');
+            const navLinks = document.querySelector('.nav-links');
+            if (mobileToggle && navLinks) {
+                mobileToggle.addEventListener('click', () => {
+                    navLinks.classList.toggle('show');
+                });
+            }
+
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href*="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    const href = this.getAttribute('href');
+                    if (href === '#' || href === '/#') return;
+                    
+                    if (href.includes('#')) {
+                        const targetId = href.split('#')[1];
+                        const targetElement = document.getElementById(targetId);
+                        
+                        // If on index page and target element exists
+                        if (targetElement && (window.location.pathname === '/' || window.location.pathname === '' || window.location.pathname.endsWith('index.html'))) {
+                            e.preventDefault();
+                            targetElement.scrollIntoView({ behavior: 'smooth' });
+                            history.pushState(null, null, `/#${targetId}`);
+                            if (navLinks) navLinks.classList.remove('show');
+                        }
+                    }
+                });
+            });
+
+            // If page was loaded directly with a hash like /#about
+            if (window.location.hash) {
+                const hashId = window.location.hash.substring(1);
+                const targetElement = document.getElementById(hashId);
+                if (targetElement) {
+                    setTimeout(() => {
+                        targetElement.scrollIntoView({ behavior: 'smooth' });
+                    }, 150);
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,2003 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Food | EcoBite NGO Dashboard</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:ital,wght@0,300..700;1,300..700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/style.css?v=2">
+    <link rel="stylesheet" href="/theme-genz.css?v=1">
+    <link rel="stylesheet" href="/chat.css">
+    <link rel="stylesheet" href="/complaints.css">
+
+    <style>
+        :root {
+            --primary-orange: #E85D04;
+            --forest-green: #1B3022;
+            --bg-cream: #FAF7F2;
+            --card-white: #FFFFFF;
+            --text-dark: #1C2520;
+            --text-muted: #475569;
+            --border-light: #EAE5DE;
+            --navbar-height: 100px;
+            --sidebar-width: 250px;
+        }
+
+        body {
+            background-color: #FAF7F2;
+            color: #1C2520;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding-top: var(--navbar-height);
+            box-sizing: border-box;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: #FFFFFF !important;
+            border-bottom: 1px solid var(--border-light) !important;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--navbar-height);
+            padding: 0 !important;
+            margin: 0;
+            z-index: 1000;
+            box-sizing: border-box;
+            box-shadow: 0 2px 10px rgba(28, 37, 32, 0.04) !important;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+            box-sizing: border-box;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            text-decoration: none;
+            color: var(--forest-green);
+        }
+
+        .logo .highlight {
+            color: var(--primary-orange);
+        }
+
+        .sidebar-toggle-btn {
+            display: none;
+            background: var(--bg-cream);
+            border: 1px solid var(--border-light);
+            color: var(--forest-green);
+            font-size: 1.15rem;
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-toggle-btn:hover {
+            background: var(--border-light);
+            color: var(--primary-orange);
+        }
+
+        /* Layout Wrapper */
+        .donor-layout-wrapper {
+            display: flex;
+            min-height: calc(100vh - var(--navbar-height));
+            position: relative;
+        }
+
+        /* Vertical Left Sidebar */
+        .donor-sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--forest-green);
+            color: #E8F0E8;
+            position: fixed;
+            top: var(--navbar-height);
+            left: 0;
+            bottom: 0;
+            height: calc(100vh - var(--navbar-height));
+            overflow-y: auto;
+            overflow-x: hidden;
+            z-index: 990;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 24px 16px 20px;
+            box-shadow: 4px 0 16px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            scrollbar-width: thin;
+            box-sizing: border-box;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            margin-bottom: 16px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .sidebar-user-info .avatar-icon {
+            font-size: 2.2rem;
+            color: var(--primary-orange);
+            flex-shrink: 0;
+            line-height: 1;
+        }
+
+        .user-details {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .user-name {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #FFFFFF;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.3;
+        }
+
+        .user-badge {
+            font-size: 0.75rem;
+            color: #A3E635;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 3px;
+            white-space: nowrap;
+            line-height: 1.2;
+        }
+
+        .sidebar-close-btn {
+            display: none;
+            background: transparent;
+            border: none;
+            color: #E8F0E8;
+            font-size: 1.25rem;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-close-btn:hover {
+            color: #FFFFFF;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex-grow: 1;
+        }
+
+        .sidebar-btn {
+            background: transparent;
+            border: none;
+            color: #E8F0E8;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 0.93rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            width: 100%;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            outline: none;
+        }
+
+        .sidebar-btn i {
+            font-size: 1.15rem;
+            width: 22px;
+            text-align: center;
+            color: #C2D6C6;
+            transition: color 0.2s ease;
+        }
+
+        .sidebar-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #FFFFFF;
+        }
+
+        .sidebar-btn:hover i {
+            color: var(--primary-orange);
+        }
+
+        .sidebar-btn:focus-visible {
+            outline: 2px solid var(--primary-orange);
+            outline-offset: 2px;
+        }
+
+        .sidebar-btn.active {
+            background: var(--primary-orange) !important;
+            color: #FFFFFF !important;
+            box-shadow: 0 4px 14px rgba(232, 93, 4, 0.35);
+            font-weight: 700;
+        }
+
+        .sidebar-btn.active i {
+            color: #FFFFFF !important;
+        }
+
+        .sidebar-footer {
+            padding-top: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
+            margin-top: 16px;
+        }
+
+        .quick-eco-badge {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            color: #A3E635;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+
+        /* Main Right Content */
+        .donor-main-content {
+            flex-grow: 1;
+            margin-left: var(--sidebar-width);
+            padding: 30px 32px 60px;
+            max-width: 1300px;
+            width: calc(100% - var(--sidebar-width));
+            box-sizing: border-box;
+            transition: margin-left 0.3s ease;
+        }
+
+        /* Mobile Sidebar Backdrop */
+        .sidebar-backdrop {
+            display: none;
+            position: fixed;
+            top: var(--navbar-height);
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(2px);
+            z-index: 985;
+        }
+
+        @media (max-width: 992px) {
+            :root {
+                --navbar-height: 80px;
+            }
+
+            .sidebar-toggle-btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+            .donor-sidebar {
+                transform: translateX(-100%);
+                z-index: 1050;
+            }
+
+            .donor-sidebar.open {
+                transform: translateX(0);
+            }
+
+            .sidebar-close-btn {
+                display: block;
+            }
+
+            .sidebar-backdrop.active {
+                display: block;
+                z-index: 1040;
+            }
+
+            .donor-main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px 16px 40px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            :root {
+                --navbar-height: 70px;
+            }
+
+            .nav-container {
+                padding: 0 16px;
+            }
+
+            .nav-links {
+                gap: 12px;
+            }
+
+            .btn-logout-nav, .btn-nav-logout {
+                padding: 6px 14px;
+                font-size: 0.82rem;
+            }
+
+            .donor-sidebar {
+                width: 270px;
+            }
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            background: #FFFFFF;
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            padding: 24px 32px;
+            box-shadow: 0 4px 16px rgba(28, 37, 32, 0.04);
+        }
+
+        .dashboard-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.9rem;
+            color: #1C2520;
+            margin: 0;
+        }
+            border: 1px solid #EAE5DE;
+            color: #475569;
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .tab-btn:hover {
+            border-color: #E85D04;
+            color: #E85D04;
+        }
+
+        .tab-btn.active {
+            background: #E85D04;
+            color: #FFFFFF;
+            border-color: #E85D04;
+            box-shadow: 0 4px 12px rgba(232, 93, 4, 0.2);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .feed-filters {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+
+        .filter-btn {
+            background: #FFFFFF;
+            border: 1px solid #EAE5DE;
+            color: #475569;
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-btn:hover {
+            border-color: #1B3022;
+            color: #1B3022;
+        }
+
+        .filter-btn.active {
+            background: #1B3022;
+            color: #FFFFFF;
+            border-color: #1B3022;
+        }
+
+        .donations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        .donation-card {
+            background: #FFFFFF;
+            border: 1px solid #EAE5DE;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 16px rgba(28, 37, 32, 0.04);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .donation-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(28, 37, 32, 0.08);
+        }
+
+        .donation-card h3 {
+            color: #1C2520;
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+
+        .donation-card p {
+            color: #475569;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+
+        .empty-state, .loading-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            background: #FFFFFF;
+            border: 1px dashed #CBD5E1;
+            border-radius: 16px;
+            color: #64748B;
+        }
+
+        .empty-state i, .loading-state i {
+            font-size: 2.5rem;
+            color: #E85D04;
+            margin-bottom: 16px;
+        }
+
+        .empty-state p, .loading-state p {
+            font-size: 1.05rem;
+            color: #475569;
+            margin: 0;
+        }
+
+        .section-heading {
+            color: #1C2520;
+            font-size: 1.5rem;
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 20px;
+        }
+
+        /* --- MODAL POPUP FIX --- */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(27, 48, 34, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .modal.active {
+            display: flex !important;
+        }
+
+        .modal-content {
+            background: #FFFFFF !important;
+            color: #1C2520 !important;
+            border-radius: 20px;
+            border: 1px solid #EAE5DE;
+            padding: 32px;
+            width: 100%;
+            max-width: 520px;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            animation: modalFadeIn 0.25s ease-out;
+            box-sizing: border-box;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1.5rem;
+            color: #64748B;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .close-modal:hover {
+            background: #F1F5F9;
+            color: #1C2520;
+        }
+
+        .modal-content h2 {
+            color: #1B3022;
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 8px;
+            font-size: 1.6rem;
+        }
+
+        .modal-content label {
+            color: #1C2520;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .modal-content input, .modal-content textarea, .modal-content select {
+            background: #FAF7F2;
+            border: 1px solid #EAE5DE;
+            color: #1C2520;
+            padding: 10px 14px;
+            border-radius: 8px;
+            width: 100%;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+        }
+
+        .modal-content input:focus, .modal-content textarea:focus {
+            outline: none;
+            border-color: #E85D04;
+            background: #FFFFFF;
+        }
+
+        .profile-card {
+            background: #FFFFFF;
+            border: 1px solid #EAE5DE;
+            border-radius: 20px;
+            padding: 36px;
+            box-shadow: 0 4px 16px rgba(28, 37, 32, 0.04);
+        }
+
+        /* Organization Profile Section Styles */
+        .org-profile-card {
+            background: #FFFFFF;
+            border: 1px solid #EAE5DE;
+            border-radius: 20px;
+            padding: 36px;
+            box-shadow: 0 4px 20px rgba(28, 37, 32, 0.05);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .org-profile-header {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        @media (max-width: 600px) {
+            .org-profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        .org-avatar-wrapper {
+            position: relative;
+            width: 120px !important;
+            height: 120px !important;
+            min-width: 120px !important;
+            min-height: 120px !important;
+            max-width: 120px !important;
+            max-height: 120px !important;
+            border-radius: 50% !important;
+            background: #EAF2EC;
+            border: 3px solid #FFFFFF;
+            box-shadow: 0 4px 14px rgba(27, 48, 34, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0 !important;
+        }
+
+        @media (max-width: 768px) {
+            .org-avatar-wrapper {
+                width: 90px !important;
+                height: 90px !important;
+                min-width: 90px !important;
+                min-height: 90px !important;
+                max-width: 90px !important;
+                max-height: 90px !important;
+            }
+        }
+
+        .org-profile-avatar {
+            width: 120px !important;
+            height: 120px !important;
+            max-width: 120px !important;
+            max-height: 120px !important;
+            border-radius: 50% !important;
+            object-fit: cover !important;
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .org-profile-avatar {
+                width: 90px !important;
+                height: 90px !important;
+                max-width: 90px !important;
+                max-height: 90px !important;
+            }
+        }
+
+        .org-avatar-fallback {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            background: #EAF2EC;
+            color: #1B3022;
+            font-size: 3.2rem;
+        }
+
+        @media (max-width: 768px) {
+            .org-avatar-fallback {
+                font-size: 2.2rem;
+            }
+        }
+
+        .avatar-edit-overlay {
+            position: absolute;
+            bottom: 4px;
+            right: 4px;
+            background: #E85D04;
+            color: #FFFFFF;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            border: 2px solid #FFFFFF;
+            font-size: 0.85rem;
+            transition: transform 0.2s ease;
+        }
+
+        .avatar-edit-overlay:hover {
+            transform: scale(1.1);
+        }
+
+        .org-header-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .org-name-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: #1C2520;
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .org-type-subtitle {
+            font-size: 0.95rem;
+            color: #475569;
+            margin: 0;
+            font-weight: 500;
+        }
+
+        .org-profile-tag {
+            background: #FAF7F2;
+            border: 1px solid #EAE5DE;
+            color: #1B3022;
+            padding: 4px 14px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+            width: fit-content;
+            margin-top: 4px;
+        }
+
+        .org-profile-divider {
+            border: 0;
+            border-top: 1px solid #EAE5DE;
+            margin: 24px 0;
+        }
+
+        .org-details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px 32px;
+            margin-bottom: 32px;
+        }
+
+        @media (max-width: 600px) {
+            .org-details-grid {
+                grid-template-columns: 1fr;
+                gap: 18px;
+            }
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .detail-label {
+            font-size: 0.85rem;
+            color: #64748B;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-value {
+            font-size: 1.05rem;
+            color: #1C2520;
+            font-weight: 600;
+            word-break: break-word;
+        }
+
+        .btn-edit-profile-cta {
+            background: #E85D04;
+            color: #FFFFFF;
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 14px 28px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(232, 93, 4, 0.2);
+        }
+
+        .btn-edit-profile-cta:hover {
+            background: #d05203;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(232, 93, 4, 0.3);
+        }
+
+        .profile-edit-section {
+            display: none;
+        }
+
+        .profile-edit-section.active {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div style="display: flex; align-items: center; gap: 14px;">
+                <button class="sidebar-toggle-btn" onclick="toggleNgoSidebar()" aria-label="Toggle Navigation Sidebar">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <a href="/find-food" class="logo">Eco<span class="highlight">Bite</span></a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/find-food" class="active">Dashboard</a></li>
+                <li><a href="#" onclick="logout()">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Mobile Sidebar Backdrop -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeNgoSidebar()"></div>
+
+    <!-- Main Layout Wrapper -->
+    <div class="donor-layout-wrapper">
+
+        <!-- Vertical Left Sidebar -->
+        <aside class="donor-sidebar" id="ngoSidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-user-info">
+                    <i class="fa-solid fa-building-ngo avatar-icon"></i>
+                    <div class="user-details">
+                        <span class="user-name" id="sidebarUserName">NGO Partner</span>
+                        <span class="user-badge"><i class="fa-solid fa-shield-halved"></i> Verified NGO</span>
+                    </div>
+                </div>
+                <button class="sidebar-close-btn" onclick="closeNgoSidebar()" aria-label="Close Sidebar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <nav class="sidebar-menu">
+                <button class="sidebar-btn tab-btn active" onclick="switchTab('feed')">
+                    <i class="fa-solid fa-hand-holding-heart"></i>
+                    <span>Find Food</span>
+                </button>
+                <button class="sidebar-btn tab-btn" onclick="switchTab('my-claims')">
+                    <i class="fa-solid fa-box-archive"></i>
+                    <span>My Collections</span>
+                </button>
+                <button class="sidebar-btn tab-btn" onclick="switchTab('broadcasts')">
+                    <i class="fa-solid fa-bullhorn"></i>
+                    <span>Emergency Alerts</span>
+                </button>
+                <button class="sidebar-btn tab-btn" onclick="switchTab('impact')">
+                    <i class="fa-solid fa-award"></i>
+                    <span>Impact</span>
+                </button>
+                <button class="sidebar-btn tab-btn" onclick="switchTab('profile')">
+                    <i class="fa-solid fa-building-ngo"></i>
+                    <span>Profile</span>
+                </button>
+                <button class="sidebar-btn tab-btn" onclick="switchTab('complaints')">
+                    <i class="fa-solid fa-headset"></i>
+                    <span>Help & Complaints</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="quick-eco-badge">
+                    <i class="fa-solid fa-seedling"></i>
+                    <span>Verified Rescue NGO</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="donor-main-content">
+
+            <!-- Header -->
+            <div class="dashboard-header">
+                <h1 id="welcomeMsg">Welcome, NGO Partner</h1>
+                <div style="display: flex; gap: 15px; align-items: center;">
+                    <div style="position: relative; cursor: pointer;">
+                        <i class="fa-solid fa-bell" style="font-size: 1.4rem; color: #1B3022;"></i>
+                    </div>
+                </div>
+            </div>
+
+        <!-- 1. Feed Tab -->
+        <div id="feed" class="tab-content active">
+            <div class="feed-filters">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="human">For Humans 🥘</button>
+                <button class="filter-btn" data-filter="animal">For Animals 🐾</button>
+                <button class="filter-btn" data-filter="compost">Compost 🌿</button>
+                <button class="filter-btn" data-filter="landfill">Landfill ⚠️</button>
+            </div>
+
+            <div id="donationGrid" class="donations-grid">
+                <div class="loading-state">
+                    <i class="fa-solid fa-circle-notch fa-spin"></i>
+                    <p>Scanning for available food donations...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. My Claims Tab -->
+        <div id="my-claims" class="tab-content">
+            <h2 class="section-heading">Your Claimed Food Collections</h2>
+            <div id="myClaimsGrid" class="donations-grid">
+                <div class="loading-state">
+                    <i class="fa-solid fa-circle-notch fa-spin"></i>
+                    <p>Loading your collection history...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Broadcasts Tab -->
+        <div id="broadcasts" class="tab-content">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap: wrap; gap: 15px;">
+                <h2 class="section-heading" style="margin: 0;">Emergency Broadcasts</h2>
+                <button class="btn btn-primary" onclick="openBroadcastModal(this)" style="background:#ef4444; border:none; padding: 10px 20px;">
+                    <i class="fa-solid fa-bullhorn"></i> Publish New Alert
+                </button>
+            </div>
+
+            <div id="broadcastGrid" class="donations-grid" style="grid-template-columns: 1fr;">
+                <div class="loading-state">
+                    <i class="fa-solid fa-circle-notch fa-spin"></i>
+                    <p>Loading broadcast history...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Impact Tab -->
+        <div id="impact" class="tab-content">
+            <h2 class="section-heading">Community Impact Metrics</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px;">
+                <div class="profile-card" style="text-align: center; padding: 36px;">
+                    <i class="fa-solid fa-box-open" style="font-size: 2.8rem; color: var(--primary-color); margin-bottom: 16px;"></i>
+                    <h2 id="totalClaimed" style="font-size: 2.8rem; margin: 0; color: #1C2520;">0</h2>
+                    <p style="color: #64748B; font-weight: 500; margin-top: 8px;">Donations Collected</p>
+                </div>
+                <div class="profile-card" style="text-align: center; padding: 36px;">
+                    <i class="fa-solid fa-users" style="font-size: 2.8rem; color: #1B3022; margin-bottom: 16px;"></i>
+                    <h2 id="peopleServed" style="font-size: 2.8rem; margin: 0; color: #1C2520;">0</h2>
+                    <p style="color: #64748B; font-weight: 500; margin-top: 8px;">People Served</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. Profile Tab -->
+        <div id="profile" class="tab-content">
+            <h2 class="section-heading" style="margin-bottom: 24px;">Organization Profile</h2>
+            <div class="org-profile-card">
+                <!-- Profile Header -->
+                <div class="org-profile-header">
+                    <div class="org-avatar-wrapper">
+                        <img id="avatarPreview" class="org-profile-avatar" src="" alt="Organization Logo" style="display:none;" onerror="handleAvatarError()">
+                        <div id="avatarFallback" class="org-avatar-fallback">
+                            <i class="fa-solid fa-building"></i>
+                        </div>
+                        <label for="profilePicInput" class="avatar-edit-overlay" title="Upload Logo">
+                            <i class="fa-solid fa-camera"></i>
+                        </label>
+                        <input type="file" id="profilePicInput" name="profile_pic" accept="image/*" hidden>
+                    </div>
+                    <div class="org-header-meta">
+                        <h3 id="profileNameDisplay" class="org-name-title">Organization Name</h3>
+                        <p class="org-type-subtitle">NGO / Community Organization</p>
+                        <span class="org-profile-tag">Organization Profile</span>
+                    </div>
+                </div>
+
+                <hr class="org-profile-divider">
+
+                <!-- Profile Read View (Matches Reference Screenshot) -->
+                <div id="profileReadView">
+                    <div class="org-details-grid">
+                        <div class="detail-item">
+                            <span class="detail-label">Contact Person</span>
+                            <span id="viewContactPerson" class="detail-value">--</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Phone Number</span>
+                            <span id="viewPhone" class="detail-value">--</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Email</span>
+                            <span id="viewEmail" class="detail-value">--</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Location</span>
+                            <span id="viewAddress" class="detail-value">--</span>
+                        </div>
+                        <div class="detail-item full-width" style="grid-column: 1 / -1;">
+                            <span class="detail-label">Mission / Description</span>
+                            <span id="viewBio" class="detail-value">--</span>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn-edit-profile-cta" onclick="toggleEditProfile(true)">
+                        <i class="fa-solid fa-pencil"></i> Edit Profile
+                    </button>
+                </div>
+
+                <!-- Profile Edit Form -->
+                <div id="profileEditView" class="profile-edit-section">
+                    <form id="profileForm">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Organization Name</label>
+                                <input type="text" id="profileName" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Email Address</label>
+                                <input type="email" id="profileEmail" disabled style="opacity: 0.7;">
+                            </div>
+                            <div class="form-group">
+                                <label>Phone Number</label>
+                                <input type="tel" id="profilePhone" name="phone" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Office Address / Location</label>
+                                <input type="text" id="profileAddress" name="address">
+                            </div>
+                            <div class="form-group full-width" style="grid-column: 1 / -1;">
+                                <label>Mission / Bio</label>
+                                <textarea id="profileBio" name="bio" rows="3"></textarea>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 12px; margin-top: 24px;">
+                            <button type="submit" class="btn-edit-profile-cta" style="flex: 2;">
+                                <i class="fa-solid fa-check"></i> Save Profile
+                            </button>
+                            <button type="button" class="tab-btn" style="flex: 1; padding: 14px;" onclick="toggleEditProfile(false)">
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+        <!-- 6. Complaints Tab -->
+        <div id="complaints" class="tab-content">
+            <h2 class="section-heading" style="margin-bottom: 24px;">NGO Help & Complaint Center</h2>
+            <div class="org-profile-card" style="max-width: 1000px;">
+                <p style="color:var(--cmp-muted); margin-bottom:20px;">Submit food claim issues, delivery delays, food safety concerns, or account problems directly to EcoBite Admin Support.</p>
+
+                <!-- Form -->
+                <div class="cmp-form-card">
+                    <h3 style="margin:0 0 16px 0; color:#1B3022;"><i class="fa-solid fa-pen-to-square"></i> Submit NGO Complaint</h3>
+                    <form id="ngoComplaintForm" onsubmit="EcoBiteComplaints.submitComplaintForm(event, 'ngoComplaintForm', 'NGO')">
+                        <input type="hidden" name="user_role" value="NGO">
+                        <div class="cmp-form-grid">
+                            <div class="cmp-form-group">
+                                <label>Organization / Contact Name</label>
+                                <input type="text" name="full_name" id="ngoCmpName" placeholder="NGO Name" required>
+                            </div>
+                            <div class="cmp-form-group">
+                                <label>Email Address</label>
+                                <input type="email" name="email" id="ngoCmpEmail" placeholder="NGO Email" required>
+                            </div>
+                            <div class="cmp-form-group">
+                                <label>Phone Number (Optional)</label>
+                                <input type="tel" name="phone" id="ngoCmpPhone" placeholder="Contact Phone">
+                            </div>
+                            <div class="cmp-form-group">
+                                <label>Complaint Category</label>
+                                <select name="category" id="ngoCmpCategory" required>
+                                    <option value="">-- Select Category --</option>
+                                    <option value="NGO Claim Issue">NGO Claim Issue</option>
+                                    <option value="Food Safety Complaint">Food Safety Complaint ⚠️ (Critical)</option>
+                                    <option value="Delivery Delay">Delivery Delay</option>
+                                    <option value="Pickup Problem">Pickup Problem</option>
+                                    <option value="OTP Verification Problem">OTP Verification Problem</option>
+                                    <option value="Incorrect Donation Information">Incorrect Donation Information</option>
+                                    <option value="Account/Login Issue">Account/Login Issue</option>
+                                    <option value="Technical Issue">Technical Issue</option>
+                                    <option value="Fraud or Suspicious Activity">Fraud or Suspicious Activity 🚨 (Critical)</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="cmp-form-group">
+                                <label>Priority Level</label>
+                                <select name="priority" id="ngoCmpPriority">
+                                    <option value="LOW">LOW</option>
+                                    <option value="MEDIUM" selected>MEDIUM</option>
+                                    <option value="HIGH">HIGH</option>
+                                    <option value="CRITICAL">CRITICAL</option>
+                                </select>
+                            </div>
+                            <div class="cmp-form-group">
+                                <label>Related Donation ID (Optional)</label>
+                                <input type="text" name="related_donation_id" placeholder="e.g. 15">
+                            </div>
+                        </div>
+
+                        <div class="cmp-form-group" style="margin-bottom:16px;">
+                            <label>Subject</label>
+                            <input type="text" name="subject" placeholder="Brief subject" required>
+                        </div>
+
+                        <div class="cmp-form-group" style="margin-bottom:16px;">
+                            <label>Detailed Description</label>
+                            <textarea name="description" rows="4" placeholder="Explain the issue in detail..." required></textarea>
+                        </div>
+
+                        <div class="cmp-form-group" style="margin-bottom:20px;">
+                            <label>Screenshot or Evidence Attachment (Optional)</label>
+                            <input type="file" name="attachment" accept="image/*">
+                        </div>
+
+                        <button type="submit" class="btn-cmp-submit">
+                            <i class="fa-solid fa-paper-plane"></i> Submit NGO Complaint
+                        </button>
+                    </form>
+                </div>
+
+                <!-- NGO My Complaints List -->
+                <div style="margin-top:32px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                        <h3 style="margin:0; color:#1B3022;"><i class="fa-solid fa-clock-rotate-left"></i> Submitted Tickets & Responses</h3>
+                        <button class="btn-cmp-view" onclick="EcoBiteComplaints.loadUserComplaints('ngoComplaintsContainer')">
+                            <i class="fa-solid fa-arrows-rotate"></i> Refresh
+                        </button>
+                    </div>
+                    <div id="ngoComplaintsContainer">
+                        <!-- Populated via JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/complaints.js"></script>
+
+    <!-- Chat Widget -->
+    <div id="chatModal" class="chat-modal-overlay">
+        <div class="chat-box">
+            <div class="chat-header">
+                <div class="chat-info">
+                    <div class="chat-avatar-placeholder" id="chatAvatar">
+                        <i class="fa-solid fa-hand-holding-heart"></i>
+                    </div>
+                    <div class="chat-text">
+                        <h3 id="chatTitleText">Chat</h3>
+                        <p id="chatSubtitle"><span class="status-dot"></span> Online</p>
+                    </div>
+                </div>
+                <button class="chat-close" onclick="closeChat()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+            </div>
+            <div class="chat-input-area">
+                <input type="text" class="chat-input" id="chatInput" placeholder="Type a message...">
+                <button class="chat-send-btn" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Claim Modal -->
+    <div id="claimModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeClaimModal()">&times;</span>
+            <h2>Confirm Claim</h2>
+            <p style="color: #475569; margin-bottom: 20px;">Please confirm your details before claiming this donation.</p>
+            <form id="claimForm">
+                <input type="hidden" id="claimDonationId">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="claimName" required>
+                </div>
+                <div class="form-group" style="margin-top: 12px;">
+                    <label>NGO Name</label>
+                    <input type="text" id="claimNgoName" required>
+                </div>
+                <div class="form-group" style="margin-top: 12px;">
+                    <label>Contact Number</label>
+                    <input type="tel" id="claimPhone" required>
+                </div>
+                <div class="form-group" style="margin-top: 12px;">
+                    <label>Delivery Address</label>
+                    <input type="text" id="claimAddress" required>
+                </div>
+
+                <div class="form-group" style="background: #F0FDF4; padding: 16px; border-radius: 12px; border: 1px solid #BBF7D0; margin-top: 20px;">
+                    <label style="display: block; margin-bottom: 8px; color: #166534; font-weight: bold; font-size: 0.95rem;">
+                        <i class="fa-solid fa-truck-fast"></i> Delivery Options
+                    </label>
+
+                    <div style="display: flex; align-items: flex-start; gap: 10px;">
+                        <input type="checkbox" id="claimDeliveryReq" style="width: 18px; height: 18px; accent-color: var(--primary-color); margin-top: 3px;">
+                        <div>
+                            <label for="claimDeliveryReq" style="margin: 0; color: #1C2520; font-weight: 600;">Request a Delivery Partner</label>
+                            <small style="display: block; color: #64748B; margin-top: 4px;">
+                                Check this box if you need a volunteer driver to pick this up. Uncheck if picking up yourself.
+                            </small>
+                            <div id="feeNote" style="display:none; color: #B45309; margin-top: 6px; font-weight:bold; font-size:0.9rem;">
+                                <i class="fa-solid fa-coins"></i> Delivery Fee: ₹50.00
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width:100%; margin-top:20px; padding: 12px; font-size: 1.05rem;">
+                    Confirm & Claim Donation (Free)
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Broadcast Create Modal -->
+    <div id="broadcastModal" class="modal">
+        <div class="modal-content" style="border-top: 5px solid #ef4444;">
+            <span class="close-modal" onclick="closeBroadcastModal()">&times;</span>
+            <h2 style="color: #ef4444;"><i class="fa-solid fa-triangle-exclamation"></i> Create Emergency Alert</h2>
+            <p style="color: #475569; margin-bottom: 20px;">This will be broadcasted to all logged-in donors immediately.</p>
+
+            <form id="broadcastForm">
+                <div class="form-group">
+                    <label>Title / Situation</label>
+                    <input type="text" id="bcTitle" placeholder="e.g. Flash Floods in Downtown" required>
+                </div>
+
+                <div class="form-group" style="margin-top: 12px;">
+                    <label>Severity Level</label>
+                    <div class="radio-group" style="display:flex; gap:20px; margin-top:6px;">
+                        <label style="color: #ef4444; font-weight:bold;"><input type="radio" name="bcLevel" value="Critical" checked> Critical</label>
+                        <label style="color: #d97706; font-weight:bold;"><input type="radio" name="bcLevel" value="Warning"> Warning</label>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 12px;">
+                    <label>Affected Area / Location</label>
+                    <input type="text" id="bcArea" placeholder="e.g. Sector 4, Indiranagar" required>
+                </div>
+
+                <div class="form-group full-width" style="margin-top: 12px;">
+                    <label>Description & Needs</label>
+                    <textarea id="bcDesc" rows="3" placeholder="Describe the situation and what food/resources are urgently needed..." required></textarea>
+                </div>
+
+                <div class="form-group" style="margin-top: 12px;">
+                    <label>Contact Details</label>
+                    <input type="text" id="bcContact" placeholder="Phone Number / Coordinator Name" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width:100%; background: #ef4444; margin-top:20px; padding: 12px;">
+                    <i class="fa-solid fa-tower-broadcast"></i> Publish Broadcast
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Script Overrides for NGO Logic -->
+    <script src="/app.js?v=4"></script>
+    <script>
+        const API_BASE_URL = '/api';
+        let userStr = localStorage.getItem('user');
+        let user = userStr ? JSON.parse(userStr) : null;
+
+        if (!user) {
+            window.location.href = '/login';
+        } else if (user.role && user.role.toLowerCase() !== 'ngo') {
+            alert('Access Denied. NGO Account Required.');
+            window.location.href = '/login';
+        } else if (document.getElementById('welcomeMsg')) {
+            document.getElementById('welcomeMsg').innerText = `Welcome, ${user.name || 'NGO Partner'}`;
+        }
+
+        // Asynchronously sync session with backend
+        fetch('/api/me').then(res => res.json()).then(data => {
+            if (data.authenticated && data.user) {
+                user = data.user;
+                localStorage.setItem('user', JSON.stringify(user));
+                if (document.getElementById('welcomeMsg')) {
+                    document.getElementById('welcomeMsg').innerText = `Welcome, ${user.name}`;
+                }
+                if (document.getElementById('sidebarUserName')) {
+                    document.getElementById('sidebarUserName').innerText = user.name;
+                }
+            }
+        }).catch(err => console.warn('Session check skipped:', err));
+
+        // --- SIDEBAR TOGGLE (MOBILE) ---
+        function toggleNgoSidebar() {
+            const sidebar = document.getElementById('ngoSidebar');
+            const backdrop = document.getElementById('sidebarBackdrop');
+            if (sidebar) sidebar.classList.toggle('open');
+            if (backdrop) backdrop.classList.toggle('active');
+        }
+
+        function closeNgoSidebar() {
+            const sidebar = document.getElementById('ngoSidebar');
+            const backdrop = document.getElementById('sidebarBackdrop');
+            if (sidebar) sidebar.classList.remove('open');
+            if (backdrop) backdrop.classList.remove('active');
+        }
+
+        // --- Tab Logic ---
+        function switchTab(tabId) {
+            document.querySelectorAll('.sidebar-btn, .tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+            const targetBtns = document.querySelectorAll(`button[onclick="switchTab('${tabId}')"]`);
+            targetBtns.forEach(b => b.classList.add('active'));
+            
+            const targetTab = document.getElementById(tabId);
+            if (targetTab) targetTab.classList.add('active');
+
+            closeNgoSidebar();
+        let lastTriggerButton = null;
+
+        function openModal(modalId, triggerElement) {
+            closeAllModals(); // Enforce single modal visible at a time
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                lastTriggerButton = triggerElement || document.activeElement;
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.remove('active');
+            }
+            if (!document.querySelector('.modal.active')) {
+                document.body.style.overflow = '';
+                if (lastTriggerButton && typeof lastTriggerButton.focus === 'function') {
+                    lastTriggerButton.focus();
+                }
+            }
+        }
+
+        function closeAllModals() {
+            document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
+            document.body.style.overflow = '';
+        }
+
+        function openBroadcastModal(triggerBtn) {
+            openModal('broadcastModal', triggerBtn);
+        }
+
+        function closeBroadcastModal() {
+            closeModal('broadcastModal');
+        }
+
+        function openClaimModal(donationId, triggerBtn) {
+            document.getElementById('claimDonationId').value = donationId;
+
+            document.getElementById('claimName').value = user.name || '';
+            document.getElementById('claimNgoName').value = user.name || '';
+            document.getElementById('claimPhone').value = user.phone || '';
+            document.getElementById('claimAddress').value = user.address || '';
+
+            document.getElementById('claimDeliveryReq').checked = false;
+
+            const event = new Event('change');
+            document.getElementById('claimDeliveryReq').dispatchEvent(event);
+
+            openModal('claimModal', triggerBtn);
+        }
+
+        function closeClaimModal() {
+            closeModal('claimModal');
+        }
+
+        // Backdrop click to close
+        window.addEventListener('click', function (event) {
+            if (event.target.classList.contains('modal')) {
+                closeAllModals();
+            }
+        });
+
+        // Escape key to close
+        window.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                closeAllModals();
+            }
+        });
+
+        // --- BROADCAST LOGIC ---
+        document.getElementById('broadcastForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = 'Publishing...';
+            btn.disabled = true;
+
+            try {
+                const payload = {
+                    ngo_id: user.id,
+                    title: document.getElementById('bcTitle').value,
+                    level: document.querySelector('input[name="bcLevel"]:checked').value,
+                    area: document.getElementById('bcArea').value,
+                    description: document.getElementById('bcDesc').value,
+                    contact_details: document.getElementById('bcContact').value
+                };
+
+                const res = await fetch(`${API_BASE_URL}/broadcast/create`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (res.ok) {
+                    alert('Broadcast Published Successfully!');
+                    closeBroadcastModal();
+                    e.target.reset();
+                    fetchMyBroadcasts();
+                } else {
+                    alert('Failed to publish broadcast');
+                }
+            } catch (e) { console.error(e); alert('Error publishing broadcast'); }
+            finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        });
+
+        async function fetchMyBroadcasts() {
+            const container = document.getElementById('broadcastGrid');
+            container.innerHTML = '<div class="loading-state"><i class="fa-solid fa-circle-notch fa-spin"></i><p>Loading broadcast history...</p></div>';
+
+            try {
+                const res = await fetch(`${API_BASE_URL}/broadcast/ngo/${user.id}`);
+                const list = await res.json();
+
+                if (!Array.isArray(list) || list.length === 0) {
+                    container.innerHTML = '<div class="empty-state"><i class="fa-solid fa-bullhorn"></i><p>No active broadcasts yet.</p></div>';
+                    return;
+                }
+
+                container.innerHTML = '';
+                list.forEach(item => {
+                    const isResolved = item.status === 'Resolved';
+                    const color = item.level === 'Critical' ? '#ef4444' : '#f59e0b';
+
+                    container.innerHTML += `
+                        <div class="donation-card" style="border-left: 5px solid ${isResolved ? '#94a3b8' : color}; opacity: ${isResolved ? 0.75 : 1};">
+                            <div style="display:flex; justify-content:space-between; align-items: flex-start;">
+                                <h3 style="color:#1C2520;">${item.title} <span style="font-size:0.8rem; background:${color}; color:white; padding:2px 8px; border-radius:50px;">${item.level}</span></h3>
+                                <span style="font-size:0.85rem; color:#64748B;">${item.timestamp}</span>
+                            </div>
+                            <p style="color:#475569;">${item.description}</p>
+                            <p style="color:#475569;"><strong>Area:</strong> ${item.area} | <strong>Contact:</strong> ${item.contact_details}</p>
+                            
+                            ${!isResolved ? `
+                                <div style="display:flex; gap:10px; margin-top:12px;">
+                                    <button onclick="resolveBroadcast(${item.id})" class="btn-claim" style="width:auto; background:#10b981; border:none; color:white; padding: 6px 16px;">
+                                        <i class="fa-solid fa-check"></i> Mark Resolved
+                                    </button>
+                                    <button onclick="deleteBroadcast(${item.id})" class="btn-claim" style="width:auto; background:#ef4444; border:none; color:white; padding: 6px 16px;">
+                                        <i class="fa-solid fa-trash"></i> Delete
+                                    </button>
+                                </div>
+                            ` : `
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px;">
+                                    <span style="color:#10b981; font-weight:bold;"><i class="fa-solid fa-circle-check"></i> Resolved</span>
+                                    <button onclick="deleteBroadcast(${item.id})" style="background:none; border:none; color:#94a3b8; cursor:pointer;">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
+                            `}
+                        </div>
+                    `;
+                });
+
+            } catch (e) {
+                console.error(e);
+                container.innerHTML = '<div class="empty-state"><i class="fa-solid fa-exclamation-triangle"></i><p>Unable to load broadcasts.</p></div>';
+            }
+        }
+
+        async function resolveBroadcast(id) {
+            if (!confirm('Mark this emergency as resolved?')) return;
+            try {
+                await fetch(`${API_BASE_URL}/broadcast/resolve`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id })
+                });
+                fetchMyBroadcasts();
+            } catch (e) { alert('Error resolving broadcast'); }
+        }
+
+        async function deleteBroadcast(id) {
+            if (!confirm('Permanently delete this broadcast?')) return;
+            try {
+                const res = await fetch(`${API_BASE_URL}/broadcast/delete/${id}`, {
+                    method: 'DELETE'
+                });
+                if (res.ok) {
+                    fetchMyBroadcasts();
+                } else {
+                    alert('Failed to delete.');
+                }
+            } catch (e) { console.error(e); alert('Error deleting broadcast'); }
+        }
+
+        // --- Claim Interceptor ---
+        window.updateStatus = function (donationId, newStatus, triggerBtn) {
+            if (newStatus === 'Claimed') {
+                openClaimModal(donationId, triggerBtn);
+            }
+        };
+
+        document.getElementById('claimDeliveryReq').addEventListener('change', function (e) {
+            const btn = document.querySelector('#claimForm button[type="submit"]');
+            if (e.target.checked) {
+                btn.innerHTML = 'Pay ₹50 to Claim Donation';
+                btn.style.background = '#d97706';
+                document.getElementById('feeNote').innerHTML = '<i class="fa-solid fa-coins"></i> Delivery Fee: ₹50.00 will be applied.';
+                document.getElementById('feeNote').style.display = 'block';
+            } else {
+                btn.innerHTML = 'Confirm & Claim Donation (Free)';
+                btn.style.background = 'var(--primary-color)';
+                document.getElementById('feeNote').style.display = 'none';
+            }
+        });
+
+        document.getElementById('claimForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const isDelivery = document.getElementById('claimDeliveryReq').checked;
+
+            if (isDelivery) {
+                const paid = confirm("💰 EcoBite Secure Payment Gateway\n\n-------------------------------\nPayable Amount: ₹50.00\nReason: Delivery Partner Fee\n-------------------------------\n\nClick OK to simulate Successful Payment (UPI/Card)\nClick Cancel to Abort");
+                if (!paid) {
+                    alert("Payment Cancelled. Claim not processed.");
+                    return;
+                }
+
+                const btn = e.target.querySelector('button');
+                btn.innerHTML = 'Processing Payment...';
+                btn.disabled = true;
+                await new Promise(r => setTimeout(r, 1000));
+            }
+
+            const donationId = document.getElementById('claimDonationId').value;
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/update-status`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        id: donationId,
+                        status: 'Claimed',
+                        ngo_id: user.id,
+                        delivery_req: isDelivery,
+                        payment_status: isDelivery ? 'PAID_MOCK_50' : 'NA'
+                    })
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    if (isDelivery) {
+                        alert('✅ Payment Successful!\nDonation Claimed & Delivery Requested.');
+                    } else {
+                        alert('Donation Claimed Successfully! Please coordinate pickup.');
+                    }
+                    closeClaimModal();
+                    if (typeof fetchDonations === 'function') fetchDonations('find-food');
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (err) {
+                console.error(err);
+                alert('An error occurred while claiming.');
+            } finally {
+                const btn = e.target.querySelector('button');
+                if (btn) btn.disabled = false;
+            }
+        });
+
+        // --- Tab Logic ---
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+            const targetBtn = document.querySelector(`button[onclick="switchTab('${tabId}')"]`);
+            if (targetBtn) targetBtn.classList.add('active');
+            
+            const targetTab = document.getElementById(tabId);
+            if (targetTab) targetTab.classList.add('active');
+
+            if (tabId === 'my-claims') fetchMyClaims();
+            if (tabId === 'broadcasts') fetchMyBroadcasts();
+            if (tabId === 'impact') calculateImpact();
+            if (tabId === 'profile') fetchProfile();
+            if (tabId === 'complaints') {
+                if (user) {
+                    if (document.getElementById('ngoCmpName')) document.getElementById('ngoCmpName').value = user.name || '';
+                    if (document.getElementById('ngoCmpEmail')) document.getElementById('ngoCmpEmail').value = user.email || '';
+                    if (document.getElementById('ngoCmpPhone')) document.getElementById('ngoCmpPhone').value = user.phone || '';
+                }
+                EcoBiteComplaints.loadUserComplaints('ngoComplaintsContainer');
+                EcoBiteComplaints.handleCategoryChange('ngoCmpCategory', 'ngoCmpPriority');
+                EcoBiteComplaints.startPolling('user');
+            }
+        }
+
+        async function logout() {
+            try { await fetch('/api/logout', { method: 'POST' }); } catch(e) {}
+            localStorage.removeItem('user');
+            sessionStorage.clear();
+            window.location.href = '/login';
+        }
+
+        // --- Fetch My Claims ---
+        async function fetchMyClaims() {
+            const container = document.getElementById('myClaimsGrid');
+            container.innerHTML = '<div class="loading-state"><i class="fa-solid fa-circle-notch fa-spin"></i><p>Loading your history...</p></div>';
+
+            try {
+                const res = await fetch(`${API_BASE_URL}/donations/ngo/${user.id}`);
+                const donations = await res.json();
+
+                if (!Array.isArray(donations) || donations.length === 0) {
+                    container.innerHTML = '<div class="empty-state"><i class="fa-solid fa-box-open"></i><p>You haven\'t claimed any food donations yet.</p></div>';
+                    return;
+                }
+
+                container.innerHTML = '';
+                donations.forEach(d => {
+                    let cancelBtn = '';
+                    let timeLabel = '';
+                    let isCancelable = false;
+
+                    if (d.status === 'Claimed' && d.claimed_at) {
+                        const claimedTime = new Date(d.claimed_at);
+                        const now = new Date();
+                        const diffMins = (now - claimedTime) / 1000 / 60;
+
+                        if (diffMins <= 20) {
+                            isCancelable = true;
+                            const remaining = Math.ceil(20 - diffMins);
+                            timeLabel = `Cancel Claim (${remaining}m left)`;
+                        } else {
+                            timeLabel = 'Cancellation Period Expired';
+                        }
+                    } else {
+                        timeLabel = 'Cancellation Unavailable';
+                    }
+
+                    if (isCancelable) {
+                        cancelBtn = `
+                            <button class="btn-claim" style="background-color: #ef4444; margin-top: 12px; width: auto; font-size: 0.85rem; padding: 6px 14px;" onclick="cancelClaim(${d.id})">
+                                ${timeLabel}
+                            </button>
+                        `;
+                    } else {
+                        cancelBtn = `
+                            <button class="btn-claim" style="background-color: #94a3b8; cursor: not-allowed; margin-top: 12px; width: auto; font-size: 0.85rem; padding: 6px 14px;" disabled>
+                                ${timeLabel}
+                            </button>
+                        `;
+                    }
+
+                    const foodTitle = (d.food_name && d.food_name !== 'undefined') ? d.food_name : (d.food_type || 'Food Item').replace('_', ' ').toUpperCase();
+
+                    container.innerHTML += `
+                        <div class="donation-card" style="border-left: 5px solid #d97706;">
+                             <h3>${foodTitle}</h3>
+                             <p><strong>Quantity:</strong> ${d.quantity} Servings | <strong>Status:</strong> ${d.status}</p>
+                             <p><i class="fa-solid fa-location-dot" style="color:#E85D04;"></i> ${d.pickup_address || d.address || 'Address on file'}</p>
+                             ${d.otp && d.delivery_req ? `<div style="background:#F0FDF4; color:#166534; padding:8px; border-radius:6px; margin-top:8px; font-weight:bold; text-align:center; border: 1px solid #BBF7D0;">Driver OTP: ${d.otp}</div>` : ''}
+                             ${cancelBtn}
+                        </div>
+                    `;
+                });
+
+                window.myClaims = donations;
+
+            } catch (e) {
+                console.error(e);
+                container.innerHTML = '<div class="empty-state"><i class="fa-solid fa-exclamation-triangle"></i><p>Failed to load collection history.</p></div>';
+            }
+        }
+
+        async function cancelClaim(id) {
+            if (!confirm('Are you sure you want to cancel this claim?')) return;
+
+            try {
+                const response = await fetch('/api/cancel-claim', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id, ngo_id: user.id })
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    alert('Claim cancelled.');
+                    fetchMyClaims();
+                } else {
+                    alert(result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to cancel claim.');
+            }
+        }
+
+        // --- Impact Stats ---
+        function calculateImpact() {
+            const claims = window.myClaims || [];
+            document.getElementById('totalClaimed').innerText = claims.length;
+
+            let totalQty = 0;
+            claims.forEach(c => {
+                const num = parseInt(c.quantity) || 0;
+                totalQty += num;
+            });
+            document.getElementById('peopleServed').innerText = totalQty;
+        }
+
+        // --- Profile Logic & View Toggle ---
+        function toggleEditProfile(showEdit) {
+            const readView = document.getElementById('profileReadView');
+            const editView = document.getElementById('profileEditView');
+            if (readView && editView) {
+                if (showEdit) {
+                    readView.style.display = 'none';
+                    editView.classList.add('active');
+                } else {
+                    readView.style.display = 'block';
+                    editView.classList.remove('active');
+                }
+            }
+        }
+
+        function handleAvatarError() {
+            const img = document.getElementById('avatarPreview');
+            const fallback = document.getElementById('avatarFallback');
+            if (img) img.style.display = 'none';
+            if (fallback) fallback.style.display = 'flex';
+        }
+
+        function updateAvatarDisplay(picUrl) {
+            const img = document.getElementById('avatarPreview');
+            const fallback = document.getElementById('avatarFallback');
+            if (img && fallback) {
+                if (picUrl && picUrl !== '/hero_food.jpg' && picUrl.trim() !== '') {
+                    img.src = picUrl;
+                    img.style.display = 'block';
+                    fallback.style.display = 'none';
+                } else {
+                    img.style.display = 'none';
+                    fallback.style.display = 'flex';
+                }
+            }
+        }
+
+        document.getElementById('profilePicInput').addEventListener('change', function (e) {
+            if (e.target.files && e.target.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const img = document.getElementById('avatarPreview');
+                    const fallback = document.getElementById('avatarFallback');
+                    if (img && fallback) {
+                        img.src = e.target.result;
+                        img.style.display = 'block';
+                        fallback.style.display = 'none';
+                    }
+                };
+                reader.readAsDataURL(e.target.files[0]);
+            }
+        });
+
+        async function fetchProfile() {
+            try {
+                const res = await fetch(`${API_BASE_URL}/user/${user.id}`);
+                const data = await res.json();
+                if (data.error) return;
+
+                // Populate Form Fields
+                document.getElementById('profileName').value = data.name || '';
+                document.getElementById('profileEmail').value = data.email || '';
+                document.getElementById('profilePhone').value = data.phone || '';
+                document.getElementById('profileAddress').value = data.address || '';
+                document.getElementById('profileBio').value = data.bio || '';
+
+                // Populate Read View Card Details (matching reference screenshot)
+                if (document.getElementById('viewContactPerson')) {
+                    document.getElementById('viewContactPerson').innerText = data.name || user.name || 'N/A';
+                }
+                if (document.getElementById('viewPhone')) {
+                    document.getElementById('viewPhone').innerText = data.phone || 'Not Provided';
+                }
+                if (document.getElementById('viewEmail')) {
+                    document.getElementById('viewEmail').innerText = data.email || 'Not Provided';
+                }
+                if (document.getElementById('viewAddress')) {
+                    document.getElementById('viewAddress').innerText = data.address || 'Not Provided';
+                }
+                if (document.getElementById('viewBio')) {
+                    document.getElementById('viewBio').innerText = data.bio || 'No mission statement provided.';
+                }
+                if (document.getElementById('profileNameDisplay')) {
+                    document.getElementById('profileNameDisplay').innerText = data.name || 'Organization Name';
+                }
+
+                // Avatar display check
+                updateAvatarDisplay(data.profile_pic);
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        document.getElementById('profileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            formData.append('id', user.id);
+
+            try {
+                const res = await fetch(`${API_BASE_URL}/user/update`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await res.json();
+
+                if (result.success) {
+                    alert('Profile Updated Successfully!');
+                    const newName = formData.get('name');
+                    user.name = newName;
+                    localStorage.setItem('user', JSON.stringify(user));
+                    if (document.getElementById('welcomeMsg')) {
+                        document.getElementById('welcomeMsg').innerText = `Welcome, ${newName}`;
+                    }
+                    await fetchProfile();
+                    toggleEditProfile(false);
+                } else {
+                    alert('Error updating profile: ' + result.message);
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Failed to connect to server');
+            }
+        });
+
+        // --- CHAT LOGIC ---
+        let chatInterval;
+        let currentDonationId = null;
+        let currentReceiverId = null;
+
+        window.openChat = function (donationId, donorName, donorId) {
+            currentDonationId = donationId;
+            currentReceiverId = donorId;
+
+            document.getElementById('chatModal').style.display = 'flex';
+            document.getElementById('chatTitleText').innerText = `Chat: ${donorName}`;
+            document.getElementById('chatMessages').innerHTML = '<p style="text-align:center; color:#888;">Loading messages...</p>';
+
+            fetch(`${API_BASE_URL}/chat/mark-read`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ donation_id: donationId, user_id: user.id })
+            }).then(() => pollNotifications());
+
+            loadMessages();
+
+            if (chatInterval) clearInterval(chatInterval);
+            chatInterval = setInterval(loadMessages, 3000);
+        };
+
+        function closeChat(e) {
+            if (e) e.stopPropagation();
+            document.getElementById('chatModal').style.display = 'none';
+            if (chatInterval) clearInterval(chatInterval);
+        }
+
+        async function loadMessages() {
+            if (!currentDonationId) return;
+            try {
+                const res = await fetch(`${API_BASE_URL}/chat/${currentDonationId}`);
+                const msgs = await res.json();
+
+                const container = document.getElementById('chatMessages');
+                container.innerHTML = '';
+
+                if (msgs.length === 0) {
+                    container.innerHTML = '<p style="text-align:center; color:#888; margin-top:50px;">Start the conversation!</p>';
+                }
+
+                msgs.forEach(m => {
+                    const isMe = m.sender_id == user.id;
+                    const div = document.createElement('div');
+                    div.className = `message ${isMe ? 'message-sent' : 'message-received'}`;
+
+                    const senderLabel = !isMe ? `<span class="sender-name">${m.sender_name || 'User'}</span>` : '';
+
+                    div.innerHTML = `
+                        ${senderLabel}
+                        ${m.message}
+                        <span class="message-time">${m.timestamp ? m.timestamp.split(' ')[1].slice(0, 5) : ''}</span>
+                    `;
+                    container.appendChild(div);
+                });
+
+                container.scrollTop = container.scrollHeight;
+
+            } catch (e) { console.error(e); }
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            try {
+                const res = await fetch(`${API_BASE_URL}/chat/send`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        sender_id: user.id,
+                        receiver_id: currentReceiverId,
+                        donation_id: currentDonationId,
+                        message: text
+                    })
+                });
+                if (res.ok) {
+                    input.value = '';
+                    loadMessages();
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        document.getElementById('chatInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        async function pollNotifications() {
+            try {
+                if (!user || !user.id) return;
+                const res = await fetch(`${API_BASE_URL}/notifications/${user.id}`);
+                const data = await res.json();
+
+                let badge = document.getElementById('notifBadge');
+                const bellIcon = document.querySelector('.fa-bell');
+                if (!bellIcon) return;
+
+                if (data.unread_count > 0) {
+                    if (!badge) {
+                        const iconDiv = bellIcon.parentNode;
+                        const span = document.createElement('span');
+                        span.id = 'notifBadge';
+                        span.style = 'position: absolute; top: -8px; right: -5px; background: #ef4444; color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 0.7rem; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid #FFFFFF;';
+                        span.innerText = data.unread_count;
+                        iconDiv.appendChild(span);
+                    } else {
+                        badge.innerText = data.unread_count;
+                        badge.style.display = 'flex';
+                    }
+                } else if (badge) {
+                    badge.style.display = 'none';
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        setInterval(pollNotifications, 5000);
+        pollNotifications();
+    </script>
+</body>
+
+</html>

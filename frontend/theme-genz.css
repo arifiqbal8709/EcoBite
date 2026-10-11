@@ -1,0 +1,348 @@
+/* EcoBite • High Contrast Design System & Scoped Overrides */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:ital,wght@0,300..700;1,300..700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+
+:root {
+  --bg-color: #FFFFFF;
+  --surface-color: #FAF7F2;
+  --cream-bg: #FAF7F2;
+  --primary-color: #E85D04;
+  --primary-dark: #C94D00;
+  --accent-color: #1B3022;
+  --forest-green: #1B3022;
+  --forest-green-hover: #122117;
+  --heading-color: #1C2520;
+  --text-primary: #1C2520;
+  --text-body: #475569;
+  --text-secondary: #64748B;
+  --card-bg: #FFFFFF;
+  --border-color: #EAE5DE;
+  --gradient-main: linear-gradient(135deg, #E85D04 0%, #C94D00 100%);
+  --glass-bg: #FFFFFF;
+  --glass-border: 1px solid #EAE5DE;
+  --font-heading: 'Playfair Display', 'DM Serif Display', Georgia, serif;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #FFFFFF;
+  color: #475569;
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: #E85D04;
+  color: #FFFFFF;
+}
+
+/* Headings on light surfaces */
+.hero-content h1, .features h2, .section-title, .feature-card h3, .form-header h2, .mv-card h3, .timeline-card h3 {
+  color: #1C2520 !important;
+  font-family: var(--font-heading);
+}
+
+p {
+  color: #475569;
+}
+
+/* Navbar — Pure White with High-Contrast Text */
+.navbar {
+  background: #FFFFFF !important;
+  border-bottom: 1px solid #EAE5DE !important;
+  box-shadow: 0 2px 10px rgba(28, 37, 32, 0.04) !important;
+}
+
+.logo {
+  font-family: var(--font-heading);
+  letter-spacing: -.03em;
+  font-weight: 800;
+  color: #1B3022 !important; /* Forest Green for "Eco" */
+}
+
+.logo .highlight,
+.logo span {
+  color: #E85D04 !important; /* Burnt Orange for "Bite" */
+}
+
+.nav-links a {
+  transition: color .2s ease;
+  color: #1C2520 !important; /* Dark Charcoal for readable nav labels */
+  font-weight: 500;
+}
+
+.nav-links a:hover {
+  color: #E85D04 !important;
+}
+
+.nav-links a.active {
+  color: #E85D04 !important;
+  font-weight: 600 !important;
+}
+
+/* Buttons */
+.btn, .btn-login, .btn-signup, .btn-claim, .filter-btn, .tab-btn, button {
+  transition: all .2s ease;
+}
+
+.btn-signup, .btn-primary, .btn-claim {
+  background: #E85D04 !important;
+  color: #FFFFFF !important;
+  border: 1.5px solid #E85D04 !important;
+  box-shadow: 0 4px 14px rgba(232, 93, 4, 0.2) !important;
+  font-weight: 600 !important;
+}
+
+.btn-signup:hover, .btn-primary:hover, .btn-claim:hover {
+  background: #C94D00 !important;
+  border-color: #C94D00 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 6px 20px rgba(232, 93, 4, 0.35) !important;
+  transform: translateY(-1px);
+}
+
+.btn-login {
+  background: #FFFFFF !important;
+  color: #1B3022 !important;
+  border: 1.5px solid #1B3022 !important;
+  font-weight: 600 !important;
+}
+
+.btn-login:hover {
+  background: #1B3022 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 14px rgba(27, 48, 34, 0.15) !important;
+}
+
+.btn-secondary {
+  border: 1px solid #1B3022 !important;
+  background: #1B3022 !important;
+  color: #FFFFFF !important;
+}
+
+.btn-secondary:hover {
+  background: #122117 !important;
+  color: #FFFFFF !important;
+}
+
+/* Hero Section */
+.hero {
+  isolation: isolate;
+  background: #FFFFFF;
+}
+
+.badge {
+  background: #FAF7F2;
+  color: #E85D04;
+  border: 1px solid #EAE5DE;
+  font-weight: 600;
+  letter-spacing: .02em;
+}
+
+.stats {
+  border-top-color: #EAE5DE;
+}
+
+.stat-number {
+  font-family: var(--font-heading);
+  color: #1C2520 !important;
+  font-weight: 700;
+}
+
+.stat-label {
+  color: #64748B !important;
+}
+
+.glowing-circle {
+  display: none;
+}
+
+.card-float {
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid #EAE5DE;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(28, 37, 32, 0.08);
+}
+
+.card-float i, .icon-box {
+  color: #E85D04;
+  background: #FAF7F2;
+  border: 1px solid #EAE5DE;
+}
+
+.ngo-card i {
+  color: #1B3022;
+  background: #FAF7F2;
+  border: 1px solid #EAE5DE;
+}
+
+.features {
+  background: #FAF7F2;
+  border-top: 1px solid #EAE5DE;
+  border-bottom: 1px solid #EAE5DE;
+}
+
+.feature-card, .donation-card, .profile-card, .form-wrapper, .dashboard-card {
+  border: 1px solid #EAE5DE;
+  border-radius: 18px;
+  box-shadow: 0 4px 16px rgba(28, 37, 32, 0.04);
+  background: #FFFFFF;
+}
+
+.feature-card:hover, .donation-card:hover {
+  border-color: #E85D04;
+  box-shadow: 0 10px 28px rgba(232, 93, 4, 0.1);
+}
+
+.profile-card {
+  background: #FFFFFF;
+}
+
+.tab-btn {
+  color: #64748B;
+}
+
+.tab-btn.active {
+  color: #E85D04;
+  font-weight: 600;
+}
+
+.tab-btn.active::after {
+  background: #E85D04;
+}
+
+.form-group label {
+  color: #1C2520 !important;
+}
+
+.form-group input, .form-group textarea, .form-group select, .input-icon input, .input-icon select {
+  border-color: #EAE5DE;
+  border-radius: 10px;
+  background-color: #FFFFFF;
+  color: #1C2520;
+}
+
+.form-group input:focus, .form-group textarea:focus, .form-group select:focus, .input-icon input:focus, .input-icon select:focus {
+  outline: 2px solid #E85D04;
+  outline-offset: 1px;
+  border-color: #E85D04;
+  background: #FFFFFF;
+}
+
+:focus-visible {
+  outline: 2px solid #E85D04;
+  outline-offset: 2px;
+}
+
+/* Sidebar for Dashboards */
+.sidebar, .dashboard-sidebar {
+  background: #1B3022 !important;
+  color: #FFFFFF !important;
+  border-right: 1px solid #EAE5DE;
+}
+
+.sidebar h1, .sidebar h2, .sidebar h3, .sidebar h4, .sidebar h5, .sidebar h6,
+.sidebar .logo, .dashboard-sidebar .logo {
+  color: #FFFFFF !important;
+  font-family: var(--font-heading);
+}
+
+.sidebar a, .dashboard-sidebar a {
+  color: #F1F5F0 !important;
+  transition: all 0.2s ease;
+}
+
+.sidebar a:hover, .sidebar a.active,
+.dashboard-sidebar a:hover, .dashboard-sidebar a.active {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #FFFFFF !important;
+  border-left: 3px solid #E85D04 !important;
+}
+
+/* Topbar Header for Dashboards */
+.topbar, .dashboard-header {
+  background: #FFFFFF !important;
+  border-bottom: 1px solid #EAE5DE !important;
+  color: #1C2520 !important;
+}
+
+/* Dark Green Banner Overrides */
+.cta-forest-banner {
+  background: #1B3022 !important;
+  color: #FFFFFF !important;
+}
+
+.cta-forest-banner h1, .cta-forest-banner h2, .cta-forest-banner h3, .cta-forest-banner h4 {
+  color: #FFFFFF !important;
+}
+
+.cta-forest-banner p {
+  color: #E2E8E0 !important;
+}
+
+/* Footer Contrast Rules */
+footer {
+  background: #1B3022 !important;
+  color: #E2E8E0 !important;
+}
+
+footer h1, footer h2, footer h3, footer h4, footer h5, footer h6,
+footer .logo, footer strong, footer h4 {
+  color: #FFFFFF !important;
+  font-weight: 600 !important;
+}
+
+footer p {
+  color: #E2E8E0 !important;
+}
+
+footer a {
+  color: #F1F5F0 !important;
+}
+
+footer a:hover {
+  color: #FF8A45 !important;
+}
+
+footer i {
+  color: #E85D04 !important;
+}
+
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #FFFFFF;
+  border: 1px solid #EAE5DE;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+th {
+  background: #FAF7F2 !important;
+  color: #1C2520 !important;
+  font-weight: 600 !important;
+  padding: 14px 18px !important;
+  border-bottom: 1px solid #EAE5DE !important;
+  text-align: left;
+}
+
+td {
+  padding: 14px 18px !important;
+  border-bottom: 1px solid #EAE5DE !important;
+  color: #475569 !important;
+}
+
+tr:last-child td {
+  border-bottom: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
