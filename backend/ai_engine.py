@@ -255,7 +255,14 @@ def analyze_food_image(image_bytes, filename="food.jpg"):
     models_to_try = []
     if configured_model and re.fullmatch(r"[a-zA-Z0-9._-]+", configured_model):
         models_to_try.append(configured_model)
-    for default_m in ["gemini-flash-latest", "gemini-3.8-flash", "gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-pro"]:
+    for default_m in [
+        "gemini-3.5-flash",
+        "gemini-3.8-flash",
+        "gemini-3.7-flash",
+        "gemini-flash-latest",
+        "gemini-3.1-flash-lite",
+        "gemini-flash-lite-latest"
+    ]:
         if default_m not in models_to_try:
             models_to_try.append(default_m)
 
@@ -291,41 +298,94 @@ STRICT INSTRUCTIONS:
     last_status = "AI_UNAVAILABLE"
 
     for model_name in models_to_try:
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
-        payload = {
-            "contents": [{
-                "parts": [
-                    {"text": system_prompt},
-                    {"inline_data": {"mime_type": "image/jpeg", "data": encoded_jpeg}}
-                ]
-            }],
-            "generationConfig": {
-                "responseMimeType": "application/json",
-                "temperature": 0.1
-            }
-        }
+        raw_text = None
 
-        # Try with x-goog-api-key header first
-        req = urllib.request.Request(
-            url,
-            data=json.dumps(payload).encode("utf-8"),
-            headers={"Content-Type": "application/json", "x-goog-api-key": api_key}
-        )
+        # 1. Primary Engine: Official Google GenAI SDK
+        try:
+            from google import genai
+            from google.genai import types
+            client = genai.Client(api_key=api_key)
+            part = types.Part.from_bytes(data=image_bytes, mime_type="image/jpeg")
+            sdk_res = client.models.generate_content(
+                model=model_name,
+                contents=[part, system_prompt],
+                config=types.GenerateContentConfig(
+                    response_mime_type="application/json",
+                    temperature=0.1
+                )
+            )
+            raw_text = sdk_res.text or ""
+        except Exception as sdk_err:
+            sdk_str = str(sdk_err)
+            print(f"GenAI SDK notice for model '{model_name}': {sdk_str[:120]}")
+            if "API_KEY_INVALID" in sdk_str or "API key not valid" in sdk_str:
+                return make_response(
+                    "API_KEY_INVALID",
+                    error="The provided GEMINI_API_KEY is invalid. Please check your Google AI Studio API key.",
+                    quality_notes=quality["quality_notes"]
+                )
+            if "429" in sdk_str or "RESOURCE_EXHAUSTED" in sdk_str:
+                return make_response(
+                    "RATE_LIMITED",
+                    error="Gemini Vision API rate limit reached. Please wait a moment before analyzing another photo.",
+                    quality_notes=quality["quality_notes"]
+                )
+            if "404" in sdk_str or "NOT_FOUND" in sdk_str:
+                last_error_message = f"Model '{model_name}' was not found (404)."
+                last_status = "MODEL_NOT_FOUND"
+                continue
+            if "503" in sdk_str or "UNAVAILABLE" in sdk_str:
+                last_error_message = f"Model '{model_name}' is experiencing high demand (503). Retrying next fallback model..."
+                last_status = "SERVICE_UNAVAILABLE"
+                continue
+
+            # 2. Secondary Engine Fallback: Direct REST API
+            try:
+                url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
+                payload = {
+                    "contents": [{
+                        "parts": [
+                            {"text": system_prompt},
+                            {"inline_data": {"mime_type": "image/jpeg", "data": encoded_jpeg}}
+                        ]
+                    }],
+                    "generationConfig": {
+                        "responseMimeType": "application/json",
+                        "temperature": 0.1
+                    }
+                }
+                req = urllib.request.Request(
+                    url,
+                    data=json.dumps(payload).encode("utf-8"),
+                    headers={"Content-Type": "application/json", "x-goog-api-key": api_key}
+                )
+                with urllib.request.urlopen(req, timeout=15) as resp:
+                    resp_data = json.loads(resp.read().decode("utf-8"))
+                candidates = resp_data.get("candidates", [])
+                if candidates:
+                    parts = candidates[0].get("content", {}).get("parts", [])
+                    raw_text = "".join(p.get("text", "") for p in parts).strip()
+            except urllib.error.HTTPError as http_err:
+                if http_err.code in (400, 403):
+                    return make_response("API_KEY_INVALID", error="Invalid Gemini API key.", quality_notes=quality["quality_notes"])
+                if http_err.code == 429:
+                    return make_response("RATE_LIMITED", error="Gemini API rate limit reached.", quality_notes=quality["quality_notes"])
+                if http_err.code == 404:
+                    last_error_message = f"Model '{model_name}' was not found (404)."
+                    last_status = "MODEL_NOT_FOUND"
+                    continue
+                continue
+            except Exception as rest_err:
+                print(f"REST fallback error for model '{model_name}': {rest_err}")
+                continue
+
+        if not raw_text:
+            continue
 
         try:
-            with urllib.request.urlopen(req, timeout=20) as resp:
-                resp_data = json.loads(resp.read().decode("utf-8"))
-
-            candidates = resp_data.get("candidates", [])
-            if not candidates:
-                raise ValueError("No response candidate returned by vision model.")
-
-            parts = candidates[0].get("content", {}).get("parts", [])
-            raw_text = "".join(p.get("text", "") for p in parts).strip()
-
-            # Clean JSON if any markdown formatting leaked through
-            raw_text = re.sub(r"^```(?:json)?\s*", "", raw_text)
-            raw_text = re.sub(r"\s*```$", "", raw_text)
+            # Clean JSON if markdown backticks leaked through
+            raw_text = re.sub(r"^```(?:json)?\s*", "", raw_text.strip())
+            raw_text = re.sub(r"\s*```$", "", raw_text.strip())
 
             parsed = json.loads(raw_text)
             status = parsed.get("status", "UNCERTAIN")
@@ -390,55 +450,9 @@ STRICT INSTRUCTIONS:
                 quality_notes=quality["quality_notes"]
             )
 
-        except urllib.error.HTTPError as http_err:
-            error_body = ""
-            try:
-                error_body = http_err.read().decode("utf-8")
-                err_json = json.loads(error_body)
-                err_message = err_json.get("error", {}).get("message", "")
-                err_status = err_json.get("error", {}).get("status", "")
-            except Exception:
-                err_message = str(http_err)
-                err_status = ""
-
-            print(f"Gemini API model '{model_name}' HTTP Error {http_err.code} ({err_status}): {err_message}")
-
-            if http_err.code in (400, 403) and ("API_KEY_INVALID" in err_message or "API key not valid" in err_message):
-                return make_response(
-                    "API_KEY_INVALID",
-                    error="The provided GEMINI_API_KEY is invalid. Please check your Google AI Studio API key.",
-                    quality_notes=quality["quality_notes"]
-                )
-            elif http_err.code == 429:
-                return make_response(
-                    "RATE_LIMITED",
-                    error="Gemini Vision API rate limit reached. Please wait a moment before analyzing another photo.",
-                    quality_notes=quality["quality_notes"]
-                )
-            elif http_err.code == 404:
-                # Model not found for this account/endpoint; continue to next fallback model
-                last_error_message = f"Model '{model_name}' was not found (404)."
-                last_status = "MODEL_NOT_FOUND"
-                continue
-            else:
-                last_error_message = f"Gemini API returned error ({http_err.code}): {err_message or str(http_err)}"
-                last_status = "SERVICE_UNAVAILABLE"
-                continue
-
-        except (urllib.error.URLError, TimeoutError) as net_err:
-            print(f"Network or timeout notice connecting to Gemini API model '{model_name}': {net_err}")
-            is_timeout = isinstance(net_err, TimeoutError) or "timed out" in str(net_err).lower()
-            last_error_message = (
-                "Gemini Vision API is experiencing high demand and timed out. Please wait a moment and try again."
-                if is_timeout else
-                "Could not connect to Gemini Vision service. Check backend internet connection."
-            )
-            last_status = "AI_UNAVAILABLE"
-            continue
-
-        except Exception as gen_err:
-            print(f"Vision response parsing exception with model '{model_name}': {gen_err}")
-            last_error_message = f"Vision recognition response parsing error: {gen_err}"
+        except Exception as parse_err:
+            print(f"JSON parsing exception with model '{model_name}': {parse_err}")
+            last_error_message = f"Vision recognition response parsing error: {parse_err}"
             last_status = "AI_UNAVAILABLE"
             continue
 
