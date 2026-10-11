@@ -6,6 +6,20 @@ import sqlite3
 from werkzeug.utils import secure_filename
 import random
 
+# Load environment variables from .env file securely
+try:
+    from dotenv import load_dotenv
+    root_env = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '.env'))
+    local_env = os.path.abspath(os.path.join(os.path.dirname(__file__), '.env'))
+    if os.path.exists(root_env):
+        load_dotenv(root_env, override=True)
+    elif os.path.exists(local_env):
+        load_dotenv(local_env, override=True)
+    else:
+        load_dotenv(override=True)
+except Exception:
+    pass
+
 # Add project root to sys.path to import from database folder
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from database.db import get_db_connection, init_db

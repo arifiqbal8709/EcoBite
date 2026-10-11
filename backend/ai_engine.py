@@ -7,6 +7,20 @@ import re
 from io import BytesIO
 from PIL import Image, ImageStat, ImageOps
 
+# Ensure .env is loaded if present
+try:
+    from dotenv import load_dotenv
+    root_env = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".env"))
+    local_env = os.path.abspath(os.path.join(os.path.dirname(__file__), ".env"))
+    if os.path.exists(root_env):
+        load_dotenv(root_env)
+    elif os.path.exists(local_env):
+        load_dotenv(local_env)
+    else:
+        load_dotenv()
+except Exception:
+    pass
+
 # Global Model Cache for Local PyTorch Checkpoint (MobileNetV3)
 _MODEL_CACHE = None
 _CLASS_MAPPING = None
@@ -216,17 +230,32 @@ def analyze_food_image(image_bytes, filename="food.jpg"):
     except Exception as exc:
         return make_response("INVALID_IMAGE", error=f"Could not read image file: {str(exc)}")
 
-    # 2. Check Gemini API Configuration
+    # 2. Check Gemini API Configuration (with dynamic .env reload)
     api_key = os.environ.get("GEMINI_API_KEY", "").strip()
+    if not api_key:
+        try:
+            from dotenv import load_dotenv
+            root_env = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".env"))
+            local_env = os.path.abspath(os.path.join(os.path.dirname(__file__), ".env"))
+            if os.path.exists(root_env):
+                load_dotenv(root_env, override=True)
+            elif os.path.exists(local_env):
+                load_dotenv(local_env, override=True)
+            else:
+                load_dotenv(override=True)
+            api_key = os.environ.get("GEMINI_API_KEY", "").strip()
+        except Exception:
+            pass
+
     if not api_key:
         return make_response(
             "SERVICE_UNAVAILABLE",
-            error="Gemini Vision AI is not configured. Set the GEMINI_API_KEY environment variable on the backend to enable live multimodal scanning. Manual donation entry is available.",
+            error="Gemini Vision AI is not configured. Set the GEMINI_API_KEY environment variable on the backend (in your .env file or hosting environment) to enable live multimodal scanning. Manual donation entry is available below.",
             quality_notes=quality["quality_notes"]
         )
 
-    # Candidate supported vision models in order of preference
-    configured_model = os.environ.get("ECOBITE_VISION_MODEL", "").strip()
+    # Candidate supported vision models in order of preference (supports GEMINI_MODEL & ECOBITE_VISION_MODEL)
+    configured_model = (os.environ.get("GEMINI_MODEL") or os.environ.get("ECOBITE_VISION_MODEL") or "").strip()
     models_to_try = []
     if configured_model and re.fullmatch(r"[a-zA-Z0-9._-]+", configured_model):
         models_to_try.append(configured_model)
