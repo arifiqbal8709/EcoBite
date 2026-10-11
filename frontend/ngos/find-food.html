@@ -376,6 +376,9 @@
             color: #1C2520;
             margin: 0;
         }
+
+        .tab-btn {
+            background: #FFFFFF;
             border: 1px solid #EAE5DE;
             color: #475569;
             padding: 10px 24px;
@@ -1334,18 +1337,6 @@
             if (backdrop) backdrop.classList.remove('active');
         }
 
-        // --- Tab Logic ---
-        function switchTab(tabId) {
-            document.querySelectorAll('.sidebar-btn, .tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-
-            const targetBtns = document.querySelectorAll(`button[onclick="switchTab('${tabId}')"]`);
-            targetBtns.forEach(b => b.classList.add('active'));
-            
-            const targetTab = document.getElementById(tabId);
-            if (targetTab) targetTab.classList.add('active');
-
-            closeNgoSidebar();
         let lastTriggerButton = null;
 
         function openModal(modalId, triggerElement) {
@@ -1613,14 +1604,16 @@
 
         // --- Tab Logic ---
         function switchTab(tabId) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.sidebar-btn, .tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
 
-            const targetBtn = document.querySelector(`button[onclick="switchTab('${tabId}')"]`);
-            if (targetBtn) targetBtn.classList.add('active');
+            const targetBtns = document.querySelectorAll(`button[onclick="switchTab('${tabId}')"]`);
+            targetBtns.forEach(b => b.classList.add('active'));
             
             const targetTab = document.getElementById(tabId);
             if (targetTab) targetTab.classList.add('active');
+
+            if (typeof closeNgoSidebar === 'function') closeNgoSidebar();
 
             if (tabId === 'my-claims') fetchMyClaims();
             if (tabId === 'broadcasts') fetchMyBroadcasts();
