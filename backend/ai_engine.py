@@ -249,7 +249,7 @@ def analyze_food_image(image_bytes, filename="food.jpg"):
 
     if not api_key:
         return make_response(
-            "SERVICE_UNAVAILABLE",
+            "AI_UNAVAILABLE",
             error="Gemini Vision AI is not configured. Set the GEMINI_API_KEY environment variable on the backend (in your .env file or hosting environment) to enable live multimodal scanning. Manual donation entry is available below.",
             quality_notes=quality["quality_notes"]
         )
@@ -259,7 +259,7 @@ def analyze_food_image(image_bytes, filename="food.jpg"):
     models_to_try = []
     if configured_model and re.fullmatch(r"[a-zA-Z0-9._-]+", configured_model):
         models_to_try.append(configured_model)
-    for default_m in ["gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-pro"]:
+    for default_m in ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-pro"]:
         if default_m not in models_to_try:
             models_to_try.append(default_m)
 
@@ -267,16 +267,16 @@ def analyze_food_image(image_bytes, filename="food.jpg"):
 
 STRICT INSTRUCTIONS:
 1. Base recognition SOLELY on visual pixels in the photograph. NEVER use filename, date, or outside assumptions.
-2. RECOGNITION VARIETIES:
-   - Indian cuisines (North, South, East, West, street food, curries, dals, rotis, rice varieties, biryani, thalis, samosas, sweets, mithai, etc.)
-   - International cuisines (pizza, pasta, noodles, burgers, sandwiches, sushi, etc.)
-   - Grains and raw ingredients (raw rice, flour, pulses, spices, oils)
-   - Fresh produce (vegetables, fruits, herbs)
-   - Packaged and canned food items
+2. RECOGNITION VARIETIES TO IDENTIFY:
+   - Cooked Indian meals: Rice, Biryani, Dal, Roti, Chapati, Paneer curries, Indian Thali, Idli, Dosa, Samosa, Regional specialties.
+   - International cuisines: Pizza, Burger, Pasta, Noodles, Sandwiches, Soups, Baked goods.
+   - Fresh Produce: Raw vegetables, fresh fruits, leafy greens, herbs.
+   - Grains & Ingredients: Raw rice, wheat flour, pulses, lentils, cooking spices, edible oils.
+   - Packaged & dry food: Packaged snacks, biscuits, cereals, canned foods.
 3. MULTIPLE FOOD DETECTION: If multiple distinct dishes/items are visible in a thali, buffet, plate, or tray, list all individual items in "food_items".
-4. NON-FOOD REJECTION: If the image depicts no edible food (e.g. laptops, electronics, furniture, animals without food, people without food, blank walls, office items, documents), return status "NO_FOOD_DETECTED".
+4. NON-FOOD REJECTION: If the image depicts no edible food (e.g. laptop, computer, smartphone, electronics, person without food, face, document, paper, furniture, clothing, astronaut poster, wall art, blank wall, empty background), return status "NO_FOOD_DETECTED". Never fabricate food names for non-food images.
 5. UNCERTAIN REJECTION: If the image is blurry, ambiguous, or indistinct such that food cannot be reliably identified, return status "UNCERTAIN".
-6. ACCURACY & SAFETY HONESTY: Never fabricate quantities, number of servings, preparation times, or expiry dates—set them to null.
+6. ACCURACY & SAFETY HONESTY: Never fabricate exact weights, quantities, number of servings, preparation times, or expiry dates—set them to null.
 7. Return ONLY a valid JSON object with NO markdown formatting, NO backticks:
 {
   "status": "FOOD_DETECTED" | "NO_FOOD_DETECTED" | "UNCERTAIN",
@@ -292,10 +292,10 @@ STRICT INSTRUCTIONS:
 }"""
 
     last_error_message = None
-    last_status = "SERVICE_UNAVAILABLE"
+    last_status = "AI_UNAVAILABLE"
 
     for model_name in models_to_try:
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent"
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
         payload = {
             "contents": [{
                 "parts": [
@@ -432,13 +432,13 @@ STRICT INSTRUCTIONS:
         except (urllib.error.URLError, TimeoutError) as net_err:
             print(f"Network error connecting to Gemini API model '{model_name}': {net_err}")
             last_error_message = "Could not connect to Gemini Vision service. Check backend internet connection."
-            last_status = "SERVICE_UNAVAILABLE"
+            last_status = "AI_UNAVAILABLE"
             break
 
         except Exception as gen_err:
             print(f"Vision response parsing exception with model '{model_name}': {gen_err}")
             last_error_message = f"Vision recognition response parsing error: {gen_err}"
-            last_status = "SERVICE_UNAVAILABLE"
+            last_status = "AI_UNAVAILABLE"
             continue
 
     # If all models were exhausted without success

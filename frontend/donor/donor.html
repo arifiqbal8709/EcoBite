@@ -1833,6 +1833,53 @@
             }, false);
         })();
 
+        // Professional inline notification toast (replaces disruptive browser alert popups)
+        function showAppNotification(message, type = 'info') {
+            let toast = document.getElementById('ecoBiteToast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'ecoBiteToast';
+                toast.style.cssText = `
+                    position: fixed;
+                    bottom: 24px;
+                    right: 24px;
+                    z-index: 99999;
+                    padding: 14px 20px;
+                    border-radius: 12px;
+                    font-size: 0.92rem;
+                    font-weight: 600;
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+                    transition: opacity 0.3s ease, transform 0.3s ease;
+                    max-width: 440px;
+                `;
+                document.body.appendChild(toast);
+            }
+            const colors = {
+                success: { bg: '#E8F5E9', text: '#166534', border: '#86EFAC', icon: 'fa-circle-check' },
+                error: { bg: '#FEF2F2', text: '#991B1B', border: '#FECACA', icon: 'fa-circle-xmark' },
+                warning: { bg: '#FFFBEB', text: '#92400E', border: '#FDE68A', icon: 'fa-triangle-exclamation' },
+                info: { bg: '#EFF6FF', text: '#1E40AF', border: '#BFDBFE', icon: 'fa-circle-info' }
+            };
+            const c = colors[type] || colors.info;
+            toast.style.background = c.bg;
+            toast.style.color = c.text;
+            toast.style.border = `1px solid ${c.border}`;
+            toast.innerHTML = `<i class="fa-solid ${c.icon}" style="font-size:1.15rem;"></i> <span>${message}</span>`;
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateY(0)';
+            toast.style.display = 'flex';
+
+            if (window._toastTimeout) clearTimeout(window._toastTimeout);
+            window._toastTimeout = setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(10px)';
+                setTimeout(() => { toast.style.display = 'none'; }, 300);
+            }, 4500);
+        }
+
         function showAIScanError(status, message) {
             let banner = document.getElementById('aiScanErrorInline');
             if (!banner) return;
@@ -1857,7 +1904,7 @@
                 bg = '#EFF6FF';
                 color = '#1E40AF';
                 border = '#BFDBFE';
-            } else if (status === 'SERVICE_UNAVAILABLE' || status === 'API_KEY_INVALID') {
+            } else if (status === 'AI_UNAVAILABLE' || status === 'SERVICE_UNAVAILABLE' || status === 'API_KEY_INVALID') {
                 icon = '<i class="fa-solid fa-triangle-exclamation" style="color:#B45309;"></i>';
                 bg = '#FFF8E1';
                 color = '#78350F';
@@ -1988,7 +2035,7 @@
 
         async function promptAICorrection() {
             if (!window.currentAIAnalysis) {
-                alert('Please scan a food image first.');
+                showAppNotification('Please scan a food image first.', 'warning');
                 return;
             }
             const currentName = window.currentAIAnalysis.food_name || '';
@@ -2010,7 +2057,7 @@
                         body: JSON.stringify(payload)
                     });
                     const data = await res.json();
-                    alert(data.message || 'Feedback saved! AI prediction updated.');
+                    showAppNotification(data.message || 'Feedback saved! AI prediction updated.', 'success');
                     
                     window.currentAIAnalysis.food_name = corrected.trim();
                     document.getElementById('resFoodName').innerText = corrected.trim();
@@ -2018,7 +2065,7 @@
                     document.getElementById('inputFoodName').dispatchEvent(new Event('change', { bubbles: true }));
                 } catch(e) {
                     console.error('Feedback submission error:', e);
-                    alert('Failed to submit feedback.');
+                    showAppNotification('Failed to submit feedback.', 'error');
                 }
             }
         }
@@ -2171,12 +2218,12 @@
             const storage = document.getElementById('inputStorage').value;
 
             if (!foodName || !quantity || !address) {
-                alert('Please fill in all required fields: Food Title, Quantity, and Pickup Address.');
+                showAppNotification('Please fill in all required fields: Food Title, Quantity, and Pickup Address.', 'error');
                 return;
             }
 
             if (!user || !user.id) {
-                alert('User session error. Please log in again.');
+                showAppNotification('User session error. Please log in again.', 'error');
                 return;
             }
 
@@ -2216,7 +2263,7 @@
 
                 const result = await res.json();
                 if (res.ok && (result.success || result.id)) {
-                    alert('Donation Published Successfully!');
+                    showAppNotification('Donation Published Successfully!', 'success');
                     e.target.reset();
                     window.currentAIAnalysis = null;
                     const container = document.getElementById('photoPreviewContainer');
@@ -2229,11 +2276,11 @@
                     await fetchOverviewStats();
                     switchTab('my-donations');
                 } else {
-                    alert('Error publishing donation: ' + (result.message || result.error || 'Unknown server error'));
+                    showAppNotification('Error publishing donation: ' + (result.message || result.error || 'Unknown server error'), 'error');
                 }
             } catch(err) {
                 console.error('Donation submission error:', err);
-                alert('Error publishing donation. Please check your network connection and try again.');
+                showAppNotification('Error publishing donation. Please check your network connection and try again.', 'error');
             } finally {
                 submitBtn.innerHTML = origText;
                 submitBtn.disabled = false;
@@ -2356,7 +2403,7 @@
                     })
                 });
                 if (res.ok) {
-                    alert('Donation Schedule Saved!');
+                    showAppNotification('Donation Schedule Saved!', 'success');
                     e.target.reset();
                     fetchScheduledDonations();
                 }
@@ -2444,7 +2491,7 @@
                 });
                 const result = await res.json();
                 if (result.success) {
-                    alert('Profile Details Saved!');
+                    showAppNotification('Profile Details Saved!', 'success');
                     user.name = formData.get('name');
                     localStorage.setItem('user', JSON.stringify(user));
                 }

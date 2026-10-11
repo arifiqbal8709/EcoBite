@@ -472,6 +472,22 @@
     </div>
 
     <script>
+        function showDonateToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            if (!toast || !toastMsg) return;
+            toastMsg.innerText = message;
+            const icon = toast.querySelector('i');
+            if (icon) {
+                icon.className = type === 'success' ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-exclamation';
+            }
+            toast.style.background = type === 'success' ? '#16A34A' : '#DC2626';
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3500);
+        }
+
         // Track AI scan results for feedback comparison
         let currentAIScan = null;
 
@@ -648,11 +664,11 @@
                     document.getElementById('aiAnalysisResult').style.display = 'none';
                     currentAIScan = null;
                 } else {
-                    alert('Failed to post: ' + (data.message || 'Unknown error'));
+                    showDonateToast('Failed to post: ' + (data.message || 'Unknown error'), 'error');
                 }
             } catch (err) {
                 console.error(err);
-                alert('Error submitting donation: ' + err.message);
+                showDonateToast('Error submitting donation: ' + err.message, 'error');
             } finally {
                 const submitBtn = document.getElementById('submitDonationBtn');
                 submitBtn.disabled = false;
@@ -897,11 +913,11 @@
                     document.getElementById('noFoodAlertBanner').style.display = 'none';
                     currentAIScan = null;
                 } else {
-                    alert('Failed to post: ' + (data.message || 'Unknown error'));
+                    showDonateToast('Failed to post: ' + (data.message || 'Unknown error'), 'error');
                 }
             } catch (err) {
                 console.error(err);
-                alert('Error submitting donation: ' + err.message);
+                showDonateToast('Error submitting donation: ' + err.message, 'error');
             } finally {
                 const submitBtn = document.getElementById('submitDonationBtn');
                 submitBtn.disabled = false;
@@ -956,7 +972,7 @@
             const fileInput = document.getElementById('foodImage');
 
             if (!fileInput.files || !fileInput.files[0]) {
-                alert("Please select a food photo first.");
+                showDonateToast("Please select a food photo first.", "error");
                 return;
             }
 

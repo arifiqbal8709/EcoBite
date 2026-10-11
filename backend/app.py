@@ -288,14 +288,14 @@ def ai_scan_food():
             code = 429
         elif status == 'API_KEY_INVALID':
             code = 403
-        elif status in ('SERVICE_UNAVAILABLE', 'MODEL_NOT_FOUND'):
+        elif status in ('SERVICE_UNAVAILABLE', 'AI_UNAVAILABLE', 'MODEL_NOT_FOUND'):
             code = 503
         else:
             code = 400
         return jsonify(result), code
     except Exception as exc:
         app.logger.exception('AI image analysis failed')
-        return jsonify({'success': False, 'status': 'SERVICE_UNAVAILABLE', 'error': 'AI scanning is unavailable. Enter donation details manually.'}), 503
+        return jsonify({'success': False, 'status': 'AI_UNAVAILABLE', 'error': 'AI scanning is unavailable. Enter donation details manually.'}), 503
 
 @app.route('/api/ai-feedback', methods=['POST'])
 def save_ai_feedback():
