@@ -230,22 +230,18 @@ def analyze_food_image(image_bytes, filename="food.jpg"):
     except Exception as exc:
         return make_response("INVALID_IMAGE", error=f"Could not read image file: {str(exc)}")
 
-    # 2. Check Gemini API Configuration (with dynamic .env reload)
+    # 2. Check Gemini API Configuration (always reload .env dynamically)
+    try:
+        from dotenv import load_dotenv
+        root_env = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".env"))
+        local_env = os.path.abspath(os.path.join(os.path.dirname(__file__), ".env"))
+        if os.path.exists(root_env):
+            load_dotenv(root_env, override=True)
+        if os.path.exists(local_env):
+            load_dotenv(local_env, override=True)
+    except Exception:
+        pass
     api_key = os.environ.get("GEMINI_API_KEY", "").strip()
-    if not api_key:
-        try:
-            from dotenv import load_dotenv
-            root_env = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".env"))
-            local_env = os.path.abspath(os.path.join(os.path.dirname(__file__), ".env"))
-            if os.path.exists(root_env):
-                load_dotenv(root_env, override=True)
-            elif os.path.exists(local_env):
-                load_dotenv(local_env, override=True)
-            else:
-                load_dotenv(override=True)
-            api_key = os.environ.get("GEMINI_API_KEY", "").strip()
-        except Exception:
-            pass
 
     if not api_key:
         return make_response(
@@ -259,7 +255,7 @@ def analyze_food_image(image_bytes, filename="food.jpg"):
     models_to_try = []
     if configured_model and re.fullmatch(r"[a-zA-Z0-9._-]+", configured_model):
         models_to_try.append(configured_model)
-    for default_m in ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-pro"]:
+    for default_m in ["gemini-flash-latest", "gemini-3.8-flash", "gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-pro"]:
         if default_m not in models_to_try:
             models_to_try.append(default_m)
 
