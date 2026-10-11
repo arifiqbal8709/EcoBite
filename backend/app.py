@@ -2688,6 +2688,5 @@ if __name__ == '__main__':
     print("\n--------------------------------------------")
     print("   ShareMeal Python Server is Live!")
     print("   Database: SQLite (sharemeal.db)")
-    print("   Open your browser at: http://localhost:3000")
-    print("--------------------------------------------\n")
-    app.run(port=3000, debug=False)
+    port = int(os.environ.get('PORT', 3000))
+    app.run(host='0.0.0.0', port=port, debug=False)
