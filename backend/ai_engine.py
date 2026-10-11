@@ -313,7 +313,7 @@ STRICT INSTRUCTIONS:
         )
 
         try:
-            with urllib.request.urlopen(req, timeout=30) as resp:
+            with urllib.request.urlopen(req, timeout=20) as resp:
                 resp_data = json.loads(resp.read().decode("utf-8"))
 
             candidates = resp_data.get("candidates", [])
@@ -426,10 +426,15 @@ STRICT INSTRUCTIONS:
                 continue
 
         except (urllib.error.URLError, TimeoutError) as net_err:
-            print(f"Network error connecting to Gemini API model '{model_name}': {net_err}")
-            last_error_message = "Could not connect to Gemini Vision service. Check backend internet connection."
+            print(f"Network or timeout notice connecting to Gemini API model '{model_name}': {net_err}")
+            is_timeout = isinstance(net_err, TimeoutError) or "timed out" in str(net_err).lower()
+            last_error_message = (
+                "Gemini Vision API is experiencing high demand and timed out. Please wait a moment and try again."
+                if is_timeout else
+                "Could not connect to Gemini Vision service. Check backend internet connection."
+            )
             last_status = "AI_UNAVAILABLE"
-            break
+            continue
 
         except Exception as gen_err:
             print(f"Vision response parsing exception with model '{model_name}': {gen_err}")
