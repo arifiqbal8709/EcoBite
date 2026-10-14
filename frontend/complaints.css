@@ -497,3 +497,52 @@
     border-radius: 8px;
     font-size: 0.9rem;
 }
+
+/* Responsive Overrides for Complaints System */
+@media (max-width: 768px) {
+    .cmp-stats-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px;
+    }
+
+    .cmp-stat-card {
+        padding: 14px 12px;
+    }
+
+    .cmp-stat-card .stat-number {
+        font-size: 1.4rem;
+    }
+
+    .cmp-stat-card .stat-label {
+        font-size: 0.75rem;
+    }
+
+    .cmp-filter-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    .cmp-filter-bar input,
+    .cmp-filter-bar select {
+        width: 100% !important;
+        font-size: 16px !important;
+    }
+
+    .cmp-modal-box {
+        width: 95vw !important;
+        max-width: 95vw !important;
+        padding: 20px 16px !important;
+        border-radius: 16px !important;
+    }
+
+    .cmp-chat-msg {
+        max-width: 92% !important;
+        font-size: 0.9rem !important;
+        padding: 10px 14px !important;
+    }
+
+    .cmp-form-grid-2col {
+        grid-template-columns: 1fr !important;
+    }
+}

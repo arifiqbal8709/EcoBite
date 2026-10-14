@@ -296,6 +296,29 @@
             color: #FFFFFF !important;
         }
 
+        /* Sidebar Logout Button */
+        .sidebar-logout-btn {
+            color: #FCA5A5 !important;
+            background: rgba(239, 68, 68, 0.08) !important;
+            border: 1px solid rgba(239, 68, 68, 0.22) !important;
+            margin-top: 10px;
+        }
+
+        .sidebar-logout-btn i {
+            color: #F87171 !important;
+        }
+
+        .sidebar-logout-btn:hover {
+            background: #EF4444 !important;
+            color: #FFFFFF !important;
+            border-color: #EF4444 !important;
+            box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+        }
+
+        .sidebar-logout-btn:hover i {
+            color: #FFFFFF !important;
+        }
+
         .sidebar-footer {
             padding-top: 16px;
             border-top: 1px solid rgba(255, 255, 255, 0.12);
@@ -885,10 +908,6 @@
                 </button>
                 <a href="/" class="logo">Eco<span class="highlight">Bite</span></a>
             </div>
-            <ul class="nav-links">
-                <li><a href="/delivery" class="active">Delivery Dashboard</a></li>
-                <li><button class="btn-logout-nav" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</button></li>
-            </ul>
         </div>
     </nav>
 
@@ -932,6 +951,10 @@
                 <button class="sidebar-btn task-nav-btn" onclick="switchTab('complaints')">
                     <i class="fa-solid fa-headset"></i>
                     <span>Help & Complaints</span>
+                </button>
+                <button class="sidebar-btn sidebar-logout-btn" onclick="logout()">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
                 </button>
             </nav>
 

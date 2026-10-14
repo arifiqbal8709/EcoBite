@@ -4,8 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Donor Home | EcoBite</title>
-
+    <script>window.location.replace('/donor');</script>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,9 +26,10 @@
             <a href="#" class="logo">Eco<span class="highlight">Bite</span></a>
             <ul class="nav-links">
                 <li><a href="#" class="active">Home</a></li>
+                <li><a href="/donor?tab=donate-tab"><i class="fa-solid fa-camera-retro" style="color:var(--primary-color);"></i> AI Scanner & Donate</a></li>
                 <li><a href="/donor">My Dashboard</a></li>
                 <li><a href="#recent-activity">Recent Activity</a></li>
-                <li><a href="/donor" id="profileLink">Profile</a></li>
+                <li><a href="/donor?tab=profile" id="profileLink">Profile</a></li>
                 <li><a href="#" onclick="logout()" class="btn-login">Logout</a></li>
             </ul>
             <div class="mobile-toggle">
@@ -77,9 +77,8 @@
                 <p>Your contributions have already helped many. Continue to bridge the gap between surplus and hunger.
                 </p>
                 <div class="hero-buttons">
-                    <a href="/donate" class="btn btn-primary"><i class="fa-solid fa-hand-holding-heart"></i> Donate
-                        Food</a>
-                    <a href="/donor" class="btn btn-secondary">View My History</a>
+                    <a href="/donor?tab=donate-tab" class="btn btn-primary"><i class="fa-solid fa-camera-retro"></i> AI Scanner & Donate</a>
+                    <a href="/donor?tab=my-donations" class="btn btn-secondary">View My History</a>
                 </div>
                 <div class="stats">
                     <div class="stat-item">

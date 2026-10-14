@@ -191,7 +191,7 @@
                 const user = JSON.parse(userStr);
                 // Update Logo Link
                 const logo = document.querySelector('.logo');
-                if (logo) logo.href = '/donor-home';
+                if (logo) logo.href = '/donor';
 
                 // Auto-fill available details
                 if (user.phone) document.getElementById('mobile').value = user.phone;
@@ -254,7 +254,7 @@
                     toast.classList.add('show');
                     setTimeout(() => {
                         toast.classList.remove('show');
-                        window.location.href = '/donor-home';
+                        window.location.href = '/donor';
                     }, 2000);
                 } else {
                     alert('Failed to post: ' + (data.message || 'Unknown error'));

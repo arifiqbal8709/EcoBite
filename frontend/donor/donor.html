@@ -293,6 +293,29 @@
             color: #FFFFFF !important;
         }
 
+        /* Sidebar Logout Button */
+        .sidebar-logout-btn {
+            color: #FCA5A5 !important;
+            background: rgba(239, 68, 68, 0.08) !important;
+            border: 1px solid rgba(239, 68, 68, 0.22) !important;
+            margin-top: 10px;
+        }
+
+        .sidebar-logout-btn i {
+            color: #F87171 !important;
+        }
+
+        .sidebar-logout-btn:hover {
+            background: #EF4444 !important;
+            color: #FFFFFF !important;
+            border-color: #EF4444 !important;
+            box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+        }
+
+        .sidebar-logout-btn:hover i {
+            color: #FFFFFF !important;
+        }
+
         /* Sidebar Footer */
         .sidebar-footer {
             padding-top: 16px;
@@ -385,16 +408,126 @@
             }
 
             .nav-links {
-                gap: 12px;
+                gap: 8px;
+            }
+
+            .nav-links a {
+                font-size: 0.85rem;
             }
 
             .btn-nav-logout {
-                padding: 6px 14px;
-                font-size: 0.82rem;
+                padding: 6px 12px;
+                font-size: 0.8rem;
             }
 
             .donor-sidebar {
-                width: 270px;
+                width: 280px;
+                max-width: 85vw;
+            }
+
+            .dashboard-header-card {
+                padding: 20px 18px;
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .header-title-text h1 {
+                font-size: 1.6rem;
+            }
+
+            .dashboard-header-card .btn-cta-orange {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            .stat-box {
+                padding: 16px 12px;
+            }
+
+            .stat-number {
+                font-size: 1.5rem;
+            }
+
+            .dashboard-card {
+                padding: 20px 16px;
+                border-radius: 14px;
+            }
+
+            .ai-scanner-box {
+                padding: 20px 14px;
+            }
+
+            .scanner-actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .scanner-actions label,
+            .scanner-actions button {
+                width: 100% !important;
+                justify-content: center;
+            }
+
+            .donations-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            #donorTabFreshBtn, #donorTabExpiredBtn {
+                flex: 1 1 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            :root {
+                --navbar-height: 64px;
+            }
+
+            .donor-main-content {
+                padding: 14px 10px 32px;
+            }
+
+            .logo {
+                font-size: 1.35rem;
+            }
+
+            .header-title-text h1 {
+                font-size: 1.4rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+
+            .stat-box {
+                padding: 12px 8px;
+            }
+
+            .stat-box i {
+                font-size: 1.4rem;
+            }
+
+            .stat-number {
+                font-size: 1.3rem;
+            }
+
+            .stat-label {
+                font-size: 0.75rem;
+            }
+
+            .card-heading {
+                font-size: 1.2rem;
+            }
+
+            .ai-grid {
+                grid-template-columns: 1fr;
             }
         }
 
@@ -889,13 +1022,8 @@
                 <button class="sidebar-toggle-btn" onclick="toggleDonorSidebar()" aria-label="Toggle Navigation Sidebar">
                     <i class="fa-solid fa-bars"></i>
                 </button>
-                <a href="/" class="logo">Eco<span class="highlight">Bite</span></a>
+                <a href="/donor" class="logo">Eco<span class="highlight">Bite</span></a>
             </div>
-            <ul class="nav-links">
-                <li><a href="/donor-home">Home</a></li>
-                <li><a href="/donor" class="active">My Dashboard</a></li>
-                <li><button class="btn-nav-logout" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</button></li>
-            </ul>
         </div>
     </nav>
 
@@ -952,6 +1080,10 @@
                 <button class="sidebar-btn tab-btn" onclick="switchTab('complaints')">
                     <i class="fa-solid fa-headset"></i>
                     <span>Help & Complaints</span>
+                </button>
+                <button class="sidebar-btn sidebar-logout-btn" onclick="logout()">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
                 </button>
             </nav>
 
@@ -1643,10 +1775,27 @@
             const tab = document.getElementById(tabId);
             if (tab) tab.classList.add('active');
 
+            // Update URL without reloading page
+            try {
+                const newUrl = new URL(window.location);
+                newUrl.searchParams.set('tab', tabId);
+                history.replaceState(null, '', newUrl);
+            } catch (e) {}
+
             // Close mobile sidebar drawer on selection
             closeDonorSidebar();
 
             if (tabId === 'overview') fetchOverviewStats();
+            if (tabId === 'donate-tab') {
+                if (user) {
+                    if (user.address && document.getElementById('inputAddress') && !document.getElementById('inputAddress').value) {
+                        document.getElementById('inputAddress').value = user.address;
+                    }
+                    if (user.phone && document.getElementById('inputPhone') && !document.getElementById('inputPhone').value) {
+                        document.getElementById('inputPhone').value = user.phone;
+                    }
+                }
+            }
             if (tabId === 'my-donations') fetchMyDonations();
             if (tabId === 'scheduled') fetchScheduledDonations();
             if (tabId === 'impact') fetchImpactData();
@@ -2773,8 +2922,14 @@
             window.location.href = '/login';
         }
 
-        // Initial tab load
-        fetchOverviewStats();
+        // Initial tab load (supports ?tab=donate-tab, ?tab=my-donations or #donate-tab)
+        const initialUrlParams = new URLSearchParams(window.location.search);
+        const initialTab = initialUrlParams.get('tab') || (window.location.hash ? window.location.hash.replace('#', '') : null);
+        if (initialTab && document.getElementById(initialTab)) {
+            switchTab(initialTab);
+        } else {
+            fetchOverviewStats();
+        }
     </script>
 </body>
 

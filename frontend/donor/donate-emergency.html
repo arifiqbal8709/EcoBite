@@ -205,13 +205,13 @@
             if (userStr) {
                 // Update Logo Link
                 const logo = document.querySelector('.logo');
-                if (logo) logo.href = '/donor-home';
+                if (logo) logo.href = '/donor';
 
                 // Update Nav Links
                 const navLinks = document.querySelectorAll('.nav-links a');
                 navLinks.forEach(link => {
                     const text = link.textContent.trim();
-                    if (text === 'Home') link.href = '/donor-home';
+                    if (text === 'Home') link.href = '/donor';
                 });
             }
         });
@@ -282,7 +282,7 @@
                     toast.classList.add('show');
                     setTimeout(() => {
                         toast.classList.remove('show');
-                        window.location.href = '/donor-home'; // Return to home
+                        window.location.href = '/donor'; // Return to donor dashboard
                     }, 2000);
                 } else {
                     alert('Failed to post: ' + (data.message || 'Unknown error'));

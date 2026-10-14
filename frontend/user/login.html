@@ -64,12 +64,18 @@
                 </div>
             </div>
 
+            <!-- Demo Credentials Helper Pill -->
+            <div id="demoCredPill" onclick="fillDemoCreds()" style="cursor: pointer; background: rgba(232, 93, 4, 0.08); border: 1px dashed rgba(232, 93, 4, 0.4); padding: 9px 14px; border-radius: 10px; font-size: 0.85rem; color: var(--text-dark); margin-bottom: 18px; display: flex; align-items: center; justify-content: space-between; transition: all 0.2s ease;" title="Click to auto-fill credentials">
+                <span><i class="fa-solid fa-key" style="color: var(--primary-orange); margin-right: 6px;"></i> <span id="demoCredText">donor@eco.com / donor</span></span>
+                <span style="font-size: 0.78rem; color: var(--primary-orange); font-weight: 700; display: flex; align-items: center; gap: 4px;">Auto-fill <i class="fa-solid fa-bolt"></i></span>
+            </div>
+
             <form id="login-form">
                 <div class="form-group">
                     <label for="email">Email Address</label>
                     <div class="input-icon">
                         <i class="fa-solid fa-envelope"></i>
-                        <input type="email" id="email" placeholder="e.g. user@ecobite.com" required>
+                        <input type="email" id="email" placeholder="e.g. donor@eco.com" required>
                     </div>
                 </div>
 
@@ -77,7 +83,7 @@
                     <label for="password">Password</label>
                     <div class="input-icon">
                         <i class="fa-solid fa-lock"></i>
-                        <input type="password" id="password" placeholder="Enter your password" required>
+                        <input type="password" id="password" placeholder="e.g. donor" required>
                     </div>
                 </div>
 
@@ -96,12 +102,56 @@
     </div>
 
     <script>
+        const roleCredentials = {
+            'donor': { email: 'donor@eco.com', pass: 'donor' },
+            'ngo': { email: 'ngo@eco.com', pass: 'ngo' },
+            'delivery': { email: 'del@eco.com', pass: 'del' },
+            'admin': { email: 'admin@eco.com', pass: 'admin' }
+        };
+
+        function updateRoleDisplay(role) {
+            const cred = roleCredentials[role] || roleCredentials['donor'];
+            const emailInput = document.getElementById('email');
+            const passInput = document.getElementById('password');
+            const demoText = document.getElementById('demoCredText');
+            if (emailInput) emailInput.placeholder = `e.g. ${cred.email}`;
+            if (passInput) passInput.placeholder = `e.g. ${cred.pass}`;
+            if (demoText) demoText.innerText = `${cred.email} / ${cred.pass}`;
+        }
+
+        function fillDemoCreds() {
+            const activeRoleEl = document.querySelector('.role-option.active');
+            const role = activeRoleEl ? activeRoleEl.getAttribute('data-role') : 'donor';
+            const cred = roleCredentials[role] || roleCredentials['donor'];
+            document.getElementById('email').value = cred.email;
+            document.getElementById('password').value = cred.pass;
+        }
+
+        // Auto-redirect if already logged in
+        (function checkExistingSession() {
+            try {
+                const userStr = localStorage.getItem('user');
+                if (userStr) {
+                    const u = JSON.parse(userStr);
+                    if (u && u.role) {
+                        const r = u.role.toLowerCase();
+                        if (r === 'donor') { window.location.href = '/donor'; return; }
+                        if (r === 'admin') { window.location.href = '/admin'; return; }
+                        if (r === 'ngo') { window.location.href = '/find-food'; return; }
+                        if (r === 'delivery') { window.location.href = '/delivery/dashboard'; return; }
+                    }
+                }
+            } catch (e) {}
+        })();
+
         // Role Selection Logic
         const roleOptions = document.querySelectorAll('.role-option');
         roleOptions.forEach(option => {
             option.addEventListener('click', () => {
                 roleOptions.forEach(opt => opt.classList.remove('active'));
                 option.classList.add('active');
+                const role = option.getAttribute('data-role');
+                updateRoleDisplay(role);
             });
         });
 
@@ -134,18 +184,24 @@
 
                     setTimeout(() => {
                         toast.classList.remove('show');
-                        const role = data.role.toLowerCase();
+                        const userRole = data.role.toLowerCase();
                         const urlParams = new URLSearchParams(window.location.search);
                         const redirectUrl = urlParams.get('redirect');
                         const hasDraft = sessionStorage.getItem('ecobite_donation_draft');
 
-                        if (role === 'donor' && (hasDraft || redirectUrl === '/donate')) {
-                            window.location.href = '/donate';
-                        } else if (role === 'admin') window.location.href = '/admin';
-                        else if (role === 'donor') window.location.href = '/donor-home';
-                        else if (role === 'ngo') window.location.href = '/find-food';
-                        else if (role === 'delivery') window.location.href = '/delivery/dashboard';
-                        else window.location.href = '/';
+                        if (redirectUrl) {
+                            window.location.href = redirectUrl;
+                        } else if (userRole === 'admin') {
+                            window.location.href = '/admin';
+                        } else if (userRole === 'donor') {
+                            window.location.href = '/donor';
+                        } else if (userRole === 'ngo') {
+                            window.location.href = '/find-food';
+                        } else if (userRole === 'delivery') {
+                            window.location.href = '/delivery/dashboard';
+                        } else {
+                            window.location.href = '/';
+                        }
                     }, 1000);
                 } else {
                     alert(data.message);

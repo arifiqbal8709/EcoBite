@@ -309,10 +309,10 @@ def init_db():
 
     # Ensure Standard Demo Accounts Exist with Working Passwords
     default_users = [
-        ('ARSH (Verified Donor)', 'donor@sharemeal.com', 'password123', '7070280186', 'donor', 'Chas, Bokaro, Jharkhand', 'Active Surplus Food Donor'),
-        ('Jyoti NGO Center', 'ngo@sharemeal.com', 'password123', '7070280186', 'ngo', 'GGSESTC, Kandra, Chas', 'Community Hunger Relief Mission'),
-        ('Delivery Partner Rider', 'del@sharemeal.com', 'password123', '9876543212', 'delivery', 'Ranchi Hub Station', 'EcoBite Volunteer Driver'),
-        ('System Administrator', 'admin@sharemeal.com', 'password123', '9876543210', 'admin', 'HQ Office, Ranchi', 'Central Platform Admin'),
+        ('ARSH (Verified Donor)', 'donor@eco.com', 'donor', '7070280186', 'donor', 'Chas, Bokaro, Jharkhand', 'Active Surplus Food Donor'),
+        ('Jyoti NGO Center', 'ngo@eco.com', 'ngo', '7070280186', 'ngo', 'GGSESTC, Kandra, Chas', 'Community Hunger Relief Mission'),
+        ('Delivery Partner Rider', 'del@eco.com', 'del', '9876543212', 'delivery', 'Ranchi Hub Station', 'EcoBite Volunteer Driver'),
+        ('System Administrator', 'admin@eco.com', 'admin', '9876543210', 'admin', 'HQ Office, Ranchi', 'Central Platform Admin'),
     ]
 
     for name, email, password, phone, role, address, bio in default_users:

@@ -242,6 +242,22 @@
                     </div>
                 </div>
 
+                <!-- AI Food Camera Scanner Banner -->
+                <div style="background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%); border: 1.5px solid #FDBA74; border-radius: 16px; padding: 18px 22px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; box-shadow: 0 4px 14px rgba(234, 88, 12, 0.08);">
+                    <div style="display: flex; align-items: center; gap: 14px;">
+                        <div style="width: 46px; height: 46px; border-radius: 12px; background: #EA580C; color: white; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0;">
+                            <i class="fa-solid fa-camera-retro"></i>
+                        </div>
+                        <div>
+                            <strong style="color: #9A3412; font-size: 1rem; display: block; margin-bottom: 2px;">Prefer using the Live AI Food Scanner?</strong>
+                            <span style="color: #7C2D12; font-size: 0.86rem;">Snap or upload food photo to auto-detect dish name, quantity, category, and food safety!</span>
+                        </div>
+                    </div>
+                    <a href="/donor?tab=donate-tab" class="btn btn-primary" style="white-space: nowrap; padding: 10px 20px; font-size: 0.92rem; background: #EA580C; border: none; display: inline-flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Open AI Scanner & Donate
+                    </a>
+                </div>
+
                 <div class="form-header">
                     <h2>List Surplus Food</h2>
                     <p>Your contribution can save a life today. Fill out the details below.</p>
@@ -655,7 +671,7 @@
 
                     setTimeout(() => {
                         toast.classList.remove('show');
-                        window.location.href = '/donor-home';
+                        window.location.href = '/donor?tab=my-donations';
                     }, 2000);
 
                     document.getElementById('donationForm').reset();
@@ -903,7 +919,7 @@
 
                     setTimeout(() => {
                         toast.classList.remove('show');
-                        window.location.href = '/donor-home';
+                        window.location.href = '/donor?tab=my-donations';
                     }, 2000);
 
                     document.getElementById('donationForm').reset();

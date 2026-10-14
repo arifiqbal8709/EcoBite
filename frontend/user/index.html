@@ -487,6 +487,16 @@
             if (mobileToggle && navLinks) {
                 mobileToggle.addEventListener('click', () => {
                     navLinks.classList.toggle('show');
+                    const icon = mobileToggle.querySelector('i');
+                    if (icon) {
+                        if (navLinks.classList.contains('show')) {
+                            icon.classList.remove('fa-bars');
+                            icon.classList.add('fa-xmark');
+                        } else {
+                            icon.classList.remove('fa-xmark');
+                            icon.classList.add('fa-bars');
+                        }
+                    }
                 });
             }
 
